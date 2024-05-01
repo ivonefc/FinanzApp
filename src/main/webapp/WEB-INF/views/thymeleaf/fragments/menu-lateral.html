@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<aside id="sidebar" class="sidebar" th:fragment="menu-lateral">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" th:href="@{/panel}">
+                <i class="bi bi-grid"></i>
+                <span>Panel</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#movimientos-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-credit-card-2-back"></i><span>Movimientos</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="movimientos-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a th:href="@{/movimientos}">
+                        <i class="bi bi-circle"></i><span>Ver movimientos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Agregar movimiento</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="bi bi-cash-coin"></i><span>Metas</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="bi bi-bank"></i><span>Cuentas compartidas</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="bi bi-gear"></i><span>Ajustes</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+</body>
+</html>

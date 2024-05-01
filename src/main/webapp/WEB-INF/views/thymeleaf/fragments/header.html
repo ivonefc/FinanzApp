@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<header th:fragment="header" id="header" class="header fixed-top d-flex align-items-center">
+    <!-- Logo -->
+    <div class="d-flex align-items-center justify-content-between">
+        <a th:href="@{/panel}" class="logo d-flex align-items-center">
+            <img th:src="@{/img/logo.png}" alt="logo">
+            <span class="d-none d-lg-block">FinanzApp</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center">
+            <!-- Usuario -->
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#menu-colapsado" data-bs-toggle="dropdown">
+                    <img th:src="@{/img/profile-img.jpg}" alt="Profile" class="rounded-circle">
+                    <span class="d-none d-md-block dropdown-toggle ps-2">Usuario</span>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" id="menu-colapsado">
+                    <li class="dropdown-header">
+                        <h6>Usuario</h6>
+                        <span>Estudiante Taller Web I</span>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="#">
+                            <i class="bi bi-person"></i>
+                            <span>Mi Perfil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="#">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>

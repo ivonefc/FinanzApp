@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head(title='Movimientos')">
+</head>
+
+<body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main">
+    <h1>Movimientos</h1>
+
+</main>
+
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>
