@@ -1,19 +1,61 @@
+
+:root {
+    scroll-behavior: smooth;
+}
+
 body {
-  padding-top: 5rem;
-}
-.starter-template {
-  padding: 3rem 1.5rem;
-  text-align: center;
+    font-family: "Open Sans", sans-serif;
+    background: #f6f9ff;
+    color: #444444;
 }
 
-h1{
-	color:#0000FF;
+a {
+    color: #4154f1;
+    text-decoration: none;
 }
 
-h2{
-	color:#FF0000;
+a:hover {
+    color: #717ff5;
+    text-decoration: none;
 }
 
-.navbar-brand{
-    margin:0 2rem;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Nunito", sans-serif;
 }
+
+/*--------------------------------------------------------------
+# Main
+--------------------------------------------------------------*/
+#main {
+    margin-top: 60px;
+    padding: 20px 30px;
+    transition: all 0.3s;
+}
+
+@media (max-width: 1199px) {
+    #main {
+        padding: 20px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Titulo pagina
+--------------------------------------------------------------*/
+.pagetitle {
+    margin-bottom: 10px;
+}
+
+.pagetitle h1 {
+    font-size: 24px;
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #012970;
+}
+
+
+
