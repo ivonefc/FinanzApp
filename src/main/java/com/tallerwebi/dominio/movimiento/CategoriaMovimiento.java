@@ -1,0 +1,5 @@
+package com.tallerwebi.dominio.movimiento;
+
+public enum CategoriaMovimiento {
+    SUELDO, REGALO, REEMBOLSO, EXTRA, RESTAURANTE, ENTRETENIMIENTO, SALUD_BELLEZA, INDUMENTARIA, TRANSPORTE, PAGO_DE_SERVICIOS, SUPERMERCADO
+}

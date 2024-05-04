@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/head :: head(title='Movimientos')">
+    <link rel="stylesheet" th:href="@{/css/movimientos.css}">
 </head>
 
 <body>
@@ -13,6 +14,21 @@
 
 <main id="main" class="main">
     <h1>Movimientos</h1>
+    <div class="grid-movimientos">
+    <div class="card">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="movimiento : ${movimientos}">
+                    <span th:text="${movimiento.descripcion}"></span> - <!-- Mostrar la descripción del movimiento -->
+                    <span th:text="${movimiento.tipo}"></span> - <!-- Mostrar el tipo del movimiento -->
+                    <span th:text="${movimiento.categoria}"></span> - <!-- Mostrar la categoría del movimiento -->
+                    <span th:text="${movimiento.monto}"></span> - <!-- Mostrar el monto del movimiento -->
+                    <span th:text="${movimiento.fechayHora}"></span> <!-- Mostrar la fecha y hora del movimiento -->
+                </li>
+            </ul>
+        </div>
+    </div>
+    </div>
 </main>
 
 <!-- Menu Lateral -->
