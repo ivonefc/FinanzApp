@@ -2,7 +2,6 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/head :: head(title='Movimientos')">
-    <link rel="stylesheet" th:href="@{/css/movimientos.css}">
 </head>
 
 <body>
@@ -14,28 +13,141 @@
 
 <main id="main" class="main">
     <h1>Movimientos</h1>
-    <div class="grid-movimientos">
-    <div class="card">
-        <div class="card-body">
-            <ul class="list-group">
-                <li class="list-group-item" th:each="movimiento : ${movimientos}">
-                    <span th:text="${movimiento.descripcion}"></span> - <!-- Mostrar la descripción del movimiento -->
-                    <span th:text="${movimiento.tipo}"></span> - <!-- Mostrar el tipo del movimiento -->
-                    <span th:text="${movimiento.categoria}"></span> - <!-- Mostrar la categoría del movimiento -->
-                    <span th:text="${movimiento.monto}"></span> - <!-- Mostrar el monto del movimiento -->
-                    <span th:text="${movimiento.fechayHora}"></span> <!-- Mostrar la fecha y hora del movimiento -->
-                </li>
-            </ul>
+    <div class="flex-movimientos">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group" id="lista-movimientos">
+
+                </ul>
+            </div>
         </div>
-    </div>
+        <div class="calendario-grafico">
+            <div class="contenedor-calendario">
+                <input type="date" name="calendario" id="calendario">
+            </div>
+            <div class="contenedor-grafico">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
     </div>
 </main>
 
-<!-- Menu Lateral -->
+<!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>
+
 
 <script th:src="@{/js/principal.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script th:inline="javascript">
+
+    const canvas = document.getElementById('myChart');
+    const movimientos = [[${movimientos}]]
+    const inputCalendarioNodo = document.getElementById("calendario");
+    const listaMovimientosNodo = document.getElementById("lista-movimientos")
+
+    inputCalendarioNodo.addEventListener("change", actualizarVistaMovimientos)
+    document.addEventListener("DOMContentLoaded", inicializarVistaMovimientos)
+
+    const chart = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ingreso', 'Egreso'],
+            datasets: [{
+                label: 'Monto $',
+                data: [0, 0],
+                borderWidth: 1
+            }]
+        }
+    })
+
+
+    function actualizarVistaMovimientos(e) {
+        const fechaSeleccionada = e.target.value;
+
+        const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(fechaSeleccionada)
+
+        listaMovimientosNodo.innerText = ''
+        mostrarMovimientos(movimientosFiltradosPorFecha)
+
+        const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'INGRESO')
+        const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
+
+        const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'EGRESO')
+        const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
+
+        actualizarGrafico(totalIngresos, totalEgresos)
+    }
+
+    function inicializarVistaMovimientos() {
+        const fechaActual = new Date()
+        inputCalendarioNodo.value = fechaActual.toISOString().slice(0, 10)
+
+        const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(inputCalendarioNodo.value)
+        mostrarMovimientos(movimientosFiltradosPorFecha)
+
+        const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "INGRESO")
+        const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "EGRESO")
+
+        const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
+        const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
+        actualizarGrafico(totalIngresos, totalEgresos)
+    }
+
+    function actualizarGrafico(totalIngresos, totalEgresos) {
+        chart.data.datasets[0].data = [totalIngresos, totalEgresos]
+        chart.update()
+    }
+
+    function calcularMontoTotal(movimientos) {
+        let acumulador = 0
+        movimientos.forEach(movimiento => {
+            acumulador += movimiento.monto
+        })
+        return acumulador
+    }
+
+    function filtrarMovimientosPorTipo(movimientos, tipo) {
+        return movimientos.filter(movimiento => {
+            return movimiento.tipo === tipo
+        })
+    }
+
+    function mostrarMovimientos(movimientos) {
+        if(movimientos.length===0) {
+            const li = document.createElement('li')
+            li.classList = 'list-group-item'
+            li.innerHTML = `<span>No hay movimientos</span>`
+            listaMovimientosNodo.appendChild(li)
+        } else {
+            movimientos.forEach(movimiento => {
+                const li = document.createElement('li')
+                li.classList = 'list-group-item'
+                li.innerHTML = `<span>
+                                <i></i>
+                                <span>${movimiento.descripcion}</span><br>
+                                <span>${movimiento.categoria}</span>
+                            </span>
+                           <span class="${movimiento.tipo === 'INGRESO' ? 'tipo-ingreso' : (movimiento.tipo === 'EGRESO' ? 'tipo-egreso' : '')}">
+                               ${movimiento.tipo === 'INGRESO'? '+$' : (movimiento.tipo === 'EGRESO'? '-$':'')} ${movimiento.monto}
+                            </span>`
+                listaMovimientosNodo.appendChild(li)
+            })
+        }
+    }
+
+    function filtrarMovimientosPorFecha(fechaSeleccionada) {
+        return movimientos.filter(movimiento => {
+            const {year, monthValue, dayOfMonth} = movimiento.fechayHora
+            console.log(dayOfMonth)
+            const fechaArray = fechaSeleccionada.split("-")
+            const igualAno = Number(fechaArray[0]) === year
+            const igualMes = Number(fechaArray[1]) === monthValue
+            const igualDia = Number(fechaArray[2]) === dayOfMonth
+            return igualAno && igualMes && igualDia
+        });
+    }
+</script>
+</body>
 </html>
