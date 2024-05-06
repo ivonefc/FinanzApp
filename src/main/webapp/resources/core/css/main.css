@@ -1,21 +1,27 @@
 
 :root {
     scroll-behavior: smooth;
+    --azul-dos: hsl(234, 86%, 60%);
+    --azul-tres: hsl(234, 87%, 70%);
+    --azul-uno: hsl(218, 98%, 22%);
+    --fuente: 	hsl(0, 0%, 27%);
+    --background: hsl(220, 100%, 98%);
+    --blanco: hsl(0, 0%, 100%);
 }
 
 body {
     font-family: "Open Sans", sans-serif;
-    background: #f6f9ff;
-    color: #444444;
+    background: var(--background);
+    color: var(--fuente);
 }
 
 a {
-    color: #4154f1;
+    color: var(--azul-dos);
     text-decoration: none;
 }
 
 a:hover {
-    color: #717ff5;
+    color: var(--azul-tres);
     text-decoration: none;
 }
 
@@ -54,7 +60,7 @@ h6 {
     font-size: 24px;
     margin-bottom: 0;
     font-weight: 600;
-    color: #012970;
+    color: var(--azul-uno);
 }
 
 
