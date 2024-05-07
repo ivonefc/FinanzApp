@@ -2,6 +2,8 @@ INSERT INTO Usuario(id_usuario, email, password, rol, activo) VALUES(null, 'test
 
 INSERT INTO Movimiento(id_movimiento, descripcion, tipo, categoria, monto, fechayHora) VALUES (null, 'Compra', 'EGRESO', 'INDUMENTARIA', 20.0, '2024-05-04');
 INSERT INTO Movimiento(id_movimiento, descripcion, tipo, categoria, monto, fechayHora) VALUES (null, 'Cobro', 'INGRESO', 'EXTRA', 20.0, '2024-05-04');
+INSERT INTO Movimiento(id_movimiento, descripcion, tipo, categoria, monto, fechayHora) VALUES (null, 'Comida', 'EGRESO', 'RESTAURANTE', 30.0, '2024-05-06');
 
 INSERT INTO usuarios_movimientos(id_usuario, id_movimiento) VALUES (1, 1);
 INSERT INTO usuarios_movimientos(id_usuario, id_movimiento) VALUES (1, 2);
+INSERT INTO usuarios_movimientos(id_usuario, id_movimiento) VALUES (1, 3);
