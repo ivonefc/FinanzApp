@@ -1,11 +1,15 @@
 package com.tallerwebi.presentacion;
 
 
+import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +21,7 @@ public class ControladorMovimiento{
 
     private ServicioMovimiento servicioMovimiento;
 
+    @Autowired
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
