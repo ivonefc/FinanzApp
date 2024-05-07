@@ -1,7 +1,18 @@
+
+:root {
+    --azul-dos: hsl(234, 86%, 60%);
+    --azul-tres: hsl(234, 87%, 70%);
+    --azul-uno: hsl(218, 98%, 22%);
+    --fuente: 	hsl(0, 0%, 27%);
+    --background: hsl(220, 100%, 98%);
+    --blanco: hsl(0, 0%, 100%);
+}
+
 .footer {
-    background-color: rgba(68,58,219,0.85);
-    padding: 20px;
+    background-color: var(--azul-dos);
+    padding: 10px;
     text-align: center;
     margin-bottom: 0;
+    color: var(--blanco)
 }
 
