@@ -50,7 +50,8 @@ public class RepositorioMovimientoTest {
         movimientoSet.add(movimiento2);
 
         usuario.setMovimientos(movimientoSet);
-        this.crearUsuario(usuario);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(usuario);
 
         //ejecucion
         List<Movimiento> movimientos =  repositorioMovimiento.obtenerMovimientos(1L);
@@ -66,4 +67,5 @@ public class RepositorioMovimientoTest {
         Session session = sessionFactory.getCurrentSession();
         session.save(usuario);
     }
+
 }

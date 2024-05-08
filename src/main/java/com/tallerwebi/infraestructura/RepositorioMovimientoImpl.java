@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -13,10 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
+@Repository("repositorioMovimiento")
 public class RepositorioMovimientoImpl implements RepositorioMovimiento {
+
     private SessionFactory sessionFactory;
 
+    @Autowired
     public RepositorioMovimientoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -26,7 +29,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         Session session = sessionFactory.getCurrentSession();
         Usuario usuario =  session.get(Usuario.class, idUsuario);
 
-        return new ArrayList<>(usuario.getMovimientos()) ;
+        return new ArrayList<>(usuario.getMovimientos());
     }
 
     @Override
