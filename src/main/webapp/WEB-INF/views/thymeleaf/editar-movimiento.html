@@ -47,7 +47,11 @@
             <input th:field="*{monto}" type="text" class="form-control" th:value="${movimiento.monto}">
         </div>
         <div class="botones">
-            <button type="submit" class="btn btn-primary">Editar Movimiento</button>
+            <div>
+                <button type="submit" class="btn btn-primary">Editar Movimiento</button>
+                <a href="/spring/movimientos" class="btn btn-warning" style="color:white">Cancelar</a>
+            </div>
+
             <button type="button" class="btn btn-danger">Eliminar movimiento</button>
         </div>
     </fieldset>
@@ -85,6 +89,7 @@
             option.text = categoria
             selectCategorias.add(option)
         })
+        selectCategorias.value = movimiento.categoria
     }
 
     function cambiarTipo(e){
