@@ -85,4 +85,17 @@ public class Movimiento {
     public Long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Movimiento{" +
+                "id=" + id +
+                ", descripcion='" + descripcion + '\'' +
+                ", tipo=" + tipo +
+                ", categoria=" + categoria +
+                ", monto=" + monto +
+                ", fechayHora=" + fechayHora +
+                ", usuarios=" + usuarios +
+                '}';
+    }
 }

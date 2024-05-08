@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository("repositorioMovimiento")
 public class RepositorioMovimientoImpl implements RepositorioMovimiento {
@@ -30,4 +32,23 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         return new ArrayList<>(usuario.getMovimientos());
     }
 
+    @Override
+    public Optional<Movimiento> obtenerMovimientoPorId(Long idUsuario, Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        Usuario usuario = session.get(Usuario.class, idUsuario);
+
+        Set<Movimiento> movimientos = usuario.getMovimientos();
+
+        return movimientos
+                .stream()
+                .filter(movimiento -> movimiento.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public void editarMovimiento(Movimiento movimiento) {
+        Session session = sessionFactory.getCurrentSession();
+
+        session.update(movimiento);
+    }
 }
