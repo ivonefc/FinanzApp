@@ -83,4 +83,16 @@ public class Usuario {
     public void setMovimientos(Set<Movimiento> movimientos) {
         this.movimientos = movimientos;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", rol='" + rol + '\'' +
+                ", activo=" + activo +
+                ", movimientos=" + movimientos +
+                '}';
+    }
 }
