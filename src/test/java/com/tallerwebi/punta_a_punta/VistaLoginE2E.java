@@ -66,4 +66,5 @@ public class VistaLoginE2E {
         String url = vistaLogin.obtenerURLActual();
         assertThat(url, containsStringIgnoringCase("/spring/home"));
     }
+
 }
