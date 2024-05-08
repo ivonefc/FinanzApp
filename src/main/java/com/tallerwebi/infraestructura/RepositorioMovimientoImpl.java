@@ -30,8 +30,4 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         return new ArrayList<>(usuario.getMovimientos());
     }
 
-    @Override
-    public void guardarMovimiento(Movimiento movimiento) {
-        sessionFactory.getCurrentSession().save(movimiento);
-    }
 }

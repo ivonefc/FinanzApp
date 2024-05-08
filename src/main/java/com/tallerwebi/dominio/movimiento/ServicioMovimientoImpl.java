@@ -23,10 +23,5 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         return movimientos;
     }
 
-    @Override
-    public void nuevoMovimiento(Movimiento movimiento) {
-        repositorioMovimiento.guardarMovimiento(movimiento);
-    }
-
 
 }
