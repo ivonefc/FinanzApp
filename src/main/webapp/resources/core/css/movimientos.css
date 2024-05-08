@@ -1,8 +1,18 @@
+
 .flex-movimientos{
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-evenly;
 }
+
+@media (max-width: 768px) {
+    .flex-movimientos{
+        flex-direction: column-reverse;
+        align-items: center;
+        padding-bottom: 80px;
+    }
+}
+
 .tipo-ingreso{
     color: green;
 }
@@ -11,6 +21,12 @@
 }
 .card{
     width: 50%;
+}
+
+@media (max-width: 768px) {
+    .card{
+        width: 80%;
+    }
 }
 
 .list-group-item{

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head(title='Movimientos')">
+</head>
+
+<body>
+
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+<main id="main" class="main">
+<div>
+<form th:object="${movimiento}" class="formulario-editar" th:action="@{/movimientos/editar}" method="POST">
+    <fieldset>
+        <legend>Editar movimiento</legend>
+        <div class="mb-3">
+            <label class="form-label">Fecha de registro</label>
+            <input th:field="*{fechayHora}" type="text" class="form-control" th:value="${movimiento.fechayHora}">
+        </div>
+
+        <input th:field="*{id}" type="hidden" class="form-control" th:value="${movimiento.id}">
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <input th:field="*{descripcion}" type="text" class="form-control" th:value="${movimiento.descripcion}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tipo</label>
+            <select class="form-select" id="tipos" th:field="*{tipo}">
+                <option  th:selected="${movimiento.getTipo().toString().equals('INGRESO')}" value="INGRESO">INGRESO</option>
+                <option th:selected="${movimiento.getTipo().toString().equals('EGRESO')}" value="EGRESO">EGRESO</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Categoria</label>
+            <div>
+            <select th:field="*{categoria}" class="form-select" id="categorias">
+
+            </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Monto</label>
+            <input th:field="*{monto}" type="text" class="form-control" th:value="${movimiento.monto}">
+        </div>
+        <div class="botones">
+            <button type="submit" class="btn btn-primary">Editar Movimiento</button>
+            <button type="button" class="btn btn-danger">Eliminar movimiento</button>
+        </div>
+    </fieldset>
+</form>
+</div>
+</main>
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+<script th:inline="javascript">
+    const movimiento = [[${movimiento}]]
+    const selectTipos = document.getElementById("tipos");
+    const selectCategorias = document.getElementById("categorias")
+
+    selectTipos.addEventListener("change", cambiarTipo)
+
+    cargarCategorias(movimiento.tipo)
+
+    function cargarCategorias(tipo){
+        selectCategorias.innerHTML=""
+        let categorias = []
+
+        if(tipo === "INGRESO"){
+            categorias = ['SUELDO', 'REGALO', 'REEMBOLSO', 'EXTRA']
+        }else{
+            categorias = ['RESTAURANTE', 'ENTRETENIMIENTO', 'INDUMENTARIA', 'TRANSPORTE', 'PAGO_DE_SERVICIOS', 'SUPERMERCADO']
+        }
+
+        categorias.forEach((categoria) => {
+            const option = document.createElement('option')
+            option.value = categoria
+            option.text = categoria
+            selectCategorias.add(option)
+        })
+    }
+
+    function cambiarTipo(e){
+        const tipo = e.target.value
+        cargarCategorias(tipo)
+    }
+
+</script>
+</body>
+</html>

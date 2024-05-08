@@ -65,7 +65,6 @@
 
     function actualizarVistaMovimientos(e) {
         const fechaSeleccionada = e.target.value;
-
         const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(fechaSeleccionada)
 
         listaMovimientosNodo.innerText = ''
@@ -130,7 +129,10 @@
                                 <span>${movimiento.categoria}</span>
                             </span>
                            <span class="${movimiento.tipo === 'INGRESO' ? 'tipo-ingreso' : (movimiento.tipo === 'EGRESO' ? 'tipo-egreso' : '')}">
-                               ${movimiento.tipo === 'INGRESO'? '+$' : (movimiento.tipo === 'EGRESO'? '-$':'')} ${movimiento.monto}
+                            <span>${movimiento.tipo === 'INGRESO'? '+$' : (movimiento.tipo === 'EGRESO'? '-$':'')} ${movimiento.monto}</span>
+                            <a href="/spring/movimientos/editar/${movimiento.id}">
+                                <i class="bi bi-pencil" style="color: hsl(0, 0%, 27%);" id="editar"></i>
+                            </a>
                             </span>`
                 listaMovimientosNodo.appendChild(li)
             })
