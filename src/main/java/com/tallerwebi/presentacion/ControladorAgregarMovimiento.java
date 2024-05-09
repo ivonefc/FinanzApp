@@ -54,15 +54,22 @@ public class ControladorAgregarMovimiento {
     @PostMapping("/nuevo-movimiento") // La idea es que este método se utilice cuando se manda el form de nuevo movimiento, es decir que nuevo-movimiento sea el action del form
     public ModelAndView ingresarNuevoMovimiento(@ModelAttribute("movimiento") Movimiento movimiento, HttpServletRequest httpServletRequest) {
         ModelMap model = new ModelMap();
+        HttpSession httpSession = httpServletRequest.getSession(false);
+
+        if(httpSession==null){
+            return new ModelAndView("redirect:/login");
+        }
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
 
         try{
             movimiento.setFechayHora(LocalDateTime.now());
-            servicioAgregarMovimiento.nuevoMovimiento(movimiento);
+            servicioAgregarMovimiento.nuevoMovimiento(idUsuario, movimiento);
 
         } catch (Exception e){
             model.put("error", "Error al ingresar un nuevo movimiento");
             return new ModelAndView("redirect:/agregar-movimiento", model); //
         }
-        return new ModelAndView("redirect:/agregar-movimiento");
+        return new ModelAndView("redirect:/movimientos");
     }
 }

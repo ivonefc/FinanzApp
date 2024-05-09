@@ -23,8 +23,10 @@ public class RepositorioAgregarMovimientoImpl implements RepositorioAgregarMovim
 
 
     @Override
-    public void guardarMovimiento(Movimiento movimiento) {
-
-        sessionFactory.getCurrentSession().save(movimiento);
+    public void guardarMovimiento(Long idUsuario, Movimiento movimiento) {
+        Session session = sessionFactory.getCurrentSession();
+        Usuario usuario = session.get(Usuario.class, idUsuario);
+        usuario.getMovimientos().add(movimiento);
+        session.update(usuario);
     }
 }

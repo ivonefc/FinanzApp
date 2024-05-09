@@ -17,8 +17,9 @@ public class ServicioAgregarMovimientoImpl implements ServicioAgregarMovimiento 
         this.repositorioAgregarMovimiento = repositorioAgregarMovimiento;
     }
 
+    @Transactional
     @Override
-    public void nuevoMovimiento(Movimiento movimiento) {
-        repositorioAgregarMovimiento.guardarMovimiento(movimiento);
+    public void nuevoMovimiento(Long idUsuario, Movimiento movimiento) {
+        repositorioAgregarMovimiento.guardarMovimiento(idUsuario, movimiento);
     }
 }

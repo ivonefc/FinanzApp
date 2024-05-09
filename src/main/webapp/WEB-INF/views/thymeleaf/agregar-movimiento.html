@@ -13,16 +13,19 @@
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
 <main  id="main" class="main">
-    <h1>Agregar Movimiento</h1>
+    <h1 id="titulo">Agregar Movimiento</h1>
+
+    <div class="contenedor">
     <form action="#" th:action="@{/nuevo-movimiento}" method="POST" th:object="${agregarMovimiento}">
         <label for="nombre">Nombre: </label>
         <input th:field="*{descripcion}" id="nombre" type="text">
-        <label for="tipoMovimiento">TIPO: </label>
+        <label for="tipoMovimiento">Tipo: </label>
         <select th:field="*{tipo}" id="tipoMovimiento">
             <option value="">Seleccione el tipo de movimiento</option>
             <option value="INGRESO">INGRESO</option>
             <option value="EGRESO">EGRESO</option>
         </select>
+        <label for="categoriaMovimiento">Categoría: </label>
         <select th:field="*{categoria}" id="categoriaMovimiento">
             <option value="">Seleccione la categoría</option>
             <!-- Las opciones de categoría se generarán dinámicamente -->
@@ -31,11 +34,14 @@
         <input th:field="*{monto}" id="monto" type="number">
         <button type="submit">Agregar</button>
     </form>
+    </div>
+
 </main>
 
 <footer th:replace="fragments/footer :: footer"></footer>
 
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
 <script type="text/javascript" th:src="@{/js/agregar-mov.js}"></script>
 </body>
 </html>
