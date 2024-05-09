@@ -1,0 +1,27 @@
+.contenedor{
+    background: #ffffff;
+    text-align: -webkit-center;
+    margin-top: 50px;
+    padding: 20px;
+    width: 540px;
+    margin-left: 31%;
+    border-radius: 2.5em;
+    box-shadow: 4px 3px 22px 2px black;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    width: 300px;
+}
+
+input,
+select{
+    margin-bottom:2em;
+}
+
+button{
+    margin-top: 5px;
+    background-color: hsl(218 98% 22% / 1);
+    color: white;
+}
