@@ -17,7 +17,8 @@
         <div class="card">
             <div class="card-body">
                 <ul class="list-group" id="lista-movimientos">
-
+                <!-- La lista de movimientos se cargarán al seleccionar
+                  una fecha en el calendario-->
                 </ul>
             </div>
         </div>
@@ -26,6 +27,8 @@
                 <input type="date" name="calendario" id="calendario">
             </div>
             <div class="contenedor-grafico">
+                <!-- Este gráfico reflejará los gastos y egresos totales
+                de una determinanda fecha-->
                 <canvas id="myChart"></canvas>
             </div>
         </div>
@@ -142,7 +145,6 @@
     function filtrarMovimientosPorFecha(fechaSeleccionada) {
         return movimientos.filter(movimiento => {
             const {year, monthValue, dayOfMonth} = movimiento.fechayHora
-            console.log(dayOfMonth)
             const fechaArray = fechaSeleccionada.split("-")
             const igualAno = Number(fechaArray[0]) === year
             const igualMes = Number(fechaArray[1]) === monthValue
