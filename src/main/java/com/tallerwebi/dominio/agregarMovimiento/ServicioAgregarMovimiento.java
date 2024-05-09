@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ServicioAgregarMovimiento {
-    void nuevoMovimiento(Movimiento movimiento);
+    void nuevoMovimiento(Long idUsuario, Movimiento movimiento);
 }
