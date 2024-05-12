@@ -7,12 +7,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class ControladorPanel {
-    @GetMapping("/panel")
-    public ModelAndView irAPanel(HttpServletRequest request){
+public class ControladorCuentasCompartidas {
+
+    @GetMapping("/cuentas-compartidas")
+    public ModelAndView irACuentasCompartidas(HttpServletRequest request){
         if (request.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
         }
-        return new ModelAndView("panel");
+        return new ModelAndView("cuentas-compartidas");
     }
 }

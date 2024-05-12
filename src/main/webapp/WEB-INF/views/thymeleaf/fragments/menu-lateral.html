@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<head><meta charset="UTF-8"></head>
+
 <body>
 <aside id="sidebar" class="sidebar" th:fragment="menu-lateral">
 
@@ -35,19 +33,19 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" th:href="@{/metas}">
                 <i class="bi bi-cash-coin"></i><span>Metas</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" th:href="@{/cuentas-compartidas}">
                 <i class="bi bi-bank"></i><span>Cuentas compartidas</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" th:href="@{/ajustes}">
                 <i class="bi bi-gear"></i><span>Ajustes</span>
             </a>
         </li>

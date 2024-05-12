@@ -8,14 +8,5 @@
 }
 
 /*--------------------------------------------------------------
-# Footer
+# Cuentas compartidas
 --------------------------------------------------------------*/
-
-.footer {
-    background-color: var(--azul-dos);
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 0;
-    color: var(--blanco)
-}
-
