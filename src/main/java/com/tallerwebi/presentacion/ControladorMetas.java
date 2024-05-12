@@ -7,12 +7,14 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class ControladorPanel {
-    @GetMapping("/panel")
-    public ModelAndView irAPanel(HttpServletRequest request){
+public class ControladorMetas {
+
+    @GetMapping("/metas")
+    public ModelAndView irAMetas(HttpServletRequest request){
         if (request.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
         }
-        return new ModelAndView("panel");
+        return new ModelAndView("metas");
     }
+
 }
