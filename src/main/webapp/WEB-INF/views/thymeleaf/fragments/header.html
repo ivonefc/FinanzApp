@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-</head>
+<head><meta charset="UTF-8"></head>
+
 <body>
 <header th:fragment="header" id="header" class="header fixed-top d-flex align-items-center">
     <!-- Logo -->
@@ -34,7 +33,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a class="dropdown-item d-flex align-items-center" th:href="@{/mi-perfil}">
                             <i class="bi bi-person"></i>
                             <span>Mi Perfil</span>
                         </a>

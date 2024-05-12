@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head(title='Mi Perfil')"><meta charset="UTF-8"></head>
+
+<body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Mi Perfil (en contrucción...)</h1>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Datos Personales</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" value="Juan">
+                            </div>
+                            <div class="mb-3">
+                                <label for="apellido" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido" value="Pérez">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="genero" class="form-label">Género</label>
+                                <select class="form-select" id="genero" name="genero">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="O">Otro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pais" class="form-label">País</label>
+                                <select class="form-select" id="pais" name="pais">
+                                    <option value="1">Argentina</option>
+                                    <option value="2">Brasil</option>
+                                    <option value="3">Chile</option>
+                                    <option value="4">Colombia</option>
+                                    <option value="5">Ecuador</option>
+                                    <option value="6">México</option>
+                                    <option value="7">Perú</option>
+                                    <option value="8">Uruguay</option>
+                                    <option value="9">Venezuela</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+</body>
+</html>
