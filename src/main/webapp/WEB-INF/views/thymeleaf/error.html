@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head(title='Panel')"></head>
+
+<body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main" th:object="${error}">
+    <h1 th:text="${error}" class="alert alert-danger"></h1>
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+</body>
+
+</html>
