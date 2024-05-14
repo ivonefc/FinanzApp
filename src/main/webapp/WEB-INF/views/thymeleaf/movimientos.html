@@ -44,88 +44,91 @@
 
 <script th:inline="javascript">
 
-    const canvas = document.getElementById('myChart');
-    const movimientos = [[${movimientos}]]
-    const inputCalendarioNodo = document.getElementById("calendario");
-    const listaMovimientosNodo = document.getElementById("lista-movimientos")
+    document.addEventListener("DOMContentLoaded", function () {
 
-    inputCalendarioNodo.addEventListener("change", actualizarVistaMovimientos)
-    document.addEventListener("DOMContentLoaded", inicializarVistaMovimientos)
+        inicializarVistaMovimientos()
 
-    const chart = new Chart(canvas, {
-        type: 'doughnut',
-        data: {
-            labels: ['Ingreso', 'Egreso'],
-            datasets: [{
-                label: 'Monto $',
-                data: [0, 0],
-                borderWidth: 1
-            }]
+        const canvas = document.getElementById('myChart');
+        const movimientos = [[${movimientos}]]
+        const inputCalendarioNodo = document.getElementById("calendario");
+        const listaMovimientosNodo = document.getElementById("lista-movimientos")
+
+        inputCalendarioNodo.addEventListener("change", actualizarVistaMovimientos)
+
+        const chart = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ingreso', 'Egreso'],
+                datasets: [{
+                    label: 'Monto $',
+                    data: [0, 0],
+                    borderWidth: 1
+                }]
+            }
+        })
+
+
+        function actualizarVistaMovimientos(e) {
+            const fechaSeleccionada = e.target.value;
+            const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(fechaSeleccionada)
+
+            listaMovimientosNodo.innerText = ''
+            mostrarMovimientos(movimientosFiltradosPorFecha)
+
+            const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'INGRESO')
+            const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
+
+            const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'EGRESO')
+            const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
+
+            actualizarGrafico(totalIngresos, totalEgresos)
         }
-    })
 
+        function inicializarVistaMovimientos() {
+            const fechaActual = new Date()
+            inputCalendarioNodo.value = fechaActual.toISOString().slice(0, 10)
 
-    function actualizarVistaMovimientos(e) {
-        const fechaSeleccionada = e.target.value;
-        const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(fechaSeleccionada)
+            const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(inputCalendarioNodo.value)
+            mostrarMovimientos(movimientosFiltradosPorFecha)
 
-        listaMovimientosNodo.innerText = ''
-        mostrarMovimientos(movimientosFiltradosPorFecha)
+            const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "INGRESO")
+            const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "EGRESO")
 
-        const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'INGRESO')
-        const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
+            const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
+            const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
+            actualizarGrafico(totalIngresos, totalEgresos)
+        }
 
-        const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, 'EGRESO')
-        const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
+        function actualizarGrafico(totalIngresos, totalEgresos) {
+            chart.data.datasets[0].data = [totalIngresos, totalEgresos]
+            chart.update()
+        }
 
-        actualizarGrafico(totalIngresos, totalEgresos)
-    }
-
-    function inicializarVistaMovimientos() {
-        const fechaActual = new Date()
-        inputCalendarioNodo.value = fechaActual.toISOString().slice(0, 10)
-
-        const movimientosFiltradosPorFecha = filtrarMovimientosPorFecha(inputCalendarioNodo.value)
-        mostrarMovimientos(movimientosFiltradosPorFecha)
-
-        const movimientosDeTipoIngreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "INGRESO")
-        const movimientosDeTipoEgreso = filtrarMovimientosPorTipo(movimientosFiltradosPorFecha, "EGRESO")
-
-        const totalIngresos = calcularMontoTotal(movimientosDeTipoIngreso)
-        const totalEgresos = calcularMontoTotal(movimientosDeTipoEgreso)
-        actualizarGrafico(totalIngresos, totalEgresos)
-    }
-
-    function actualizarGrafico(totalIngresos, totalEgresos) {
-        chart.data.datasets[0].data = [totalIngresos, totalEgresos]
-        chart.update()
-    }
-
-    function calcularMontoTotal(movimientos) {
-        let acumulador = 0
-        movimientos.forEach(movimiento => {
-            acumulador += movimiento.monto
-        })
-        return acumulador
-    }
-
-    function filtrarMovimientosPorTipo(movimientos, tipo) {
-        return movimientos.filter(movimiento => {
-            return movimiento.tipo === tipo
-        })
-    }
-
-    function mostrarMovimientos(movimientos) {
-        if(movimientos.length===0) {
-            const li = document.createElement('li')
-            li.classList = 'list-group-item'
-            li.innerHTML = `<span>No hay movimientos</span>`
-            listaMovimientosNodo.appendChild(li)
-        } else {
+        function calcularMontoTotal(movimientos) {
+            let acumulador = 0
             movimientos.forEach(movimiento => {
+                acumulador += movimiento.monto
+            })
+            return acumulador
+        }
+
+        function filtrarMovimientosPorTipo(movimientos, tipo) {
+            return movimientos.filter(movimiento => {
+                return movimiento.tipo === tipo
+            })
+        }
+
+        function mostrarMovimientos(movimientos) {
+            if(movimientos.length===0) {
                 const li = document.createElement('li')
                 li.classList = 'list-group-item'
-                li.innerHTML = `<span>
+                li.innerHTML = `<span>No hay movimientos</span>`
+                listaMovimientosNodo.appendChild(li)
+            } else {
+                movimientos.forEach(movimiento => {
+                    const li = document.createElement('li')
+                    li.classList = 'list-group-item'
+                    li.innerHTML = `<span>
                                 <i></i>
                                 <span>${movimiento.descripcion}</span><br>
                                 <span>${movimiento.categoria}</span>
@@ -136,21 +139,23 @@
                                 <i class="bi bi-pencil" style="color: hsl(0, 0%, 27%);" id="editar"></i>
                             </a>
                             </span>`
-                listaMovimientosNodo.appendChild(li)
-            })
+                    listaMovimientosNodo.appendChild(li)
+                })
+            }
         }
-    }
 
-    function filtrarMovimientosPorFecha(fechaSeleccionada) {
-        return movimientos.filter(movimiento => {
-            const {year, monthValue, dayOfMonth} = movimiento.fechayHora
-            const fechaArray = fechaSeleccionada.split("-")
-            const igualAno = Number(fechaArray[0]) === year
-            const igualMes = Number(fechaArray[1]) === monthValue
-            const igualDia = Number(fechaArray[2]) === dayOfMonth
-            return igualAno && igualMes && igualDia
-        });
-    }
+        function filtrarMovimientosPorFecha(fechaSeleccionada) {
+            return movimientos.filter(movimiento => {
+                const {year, monthValue, dayOfMonth} = movimiento.fechayHora
+                const fechaArray = fechaSeleccionada.split("-")
+                const igualAno = Number(fechaArray[0]) === year
+                const igualMes = Number(fechaArray[1]) === monthValue
+                const igualDia = Number(fechaArray[2]) === dayOfMonth
+                return igualAno && igualMes && igualDia
+            });
+        }
+
+    })
 </script>
 </body>
 </html>
