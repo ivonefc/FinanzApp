@@ -1,34 +1,30 @@
 <!DOCTYPE HTML>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Taller Web I</title>
-
-    <!-- Boostrap core css -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-    <!-- custom style -->
-    <link rel="stylesheet" th:href="@{/css/main.css}"/>
-
-</head>
+<head th:replace="fragments/head :: head(title='FinazApp')"><meta charset="utf-8"></head>
 
 <body>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">UNLAM</a>
+<!-- Nav -->
+<nav class="navbar navbar-expand-md navbar-custom fixed-top">
+    <a th:href="@{/login}" class="logo d-flex align-items-center">
+        <img th:src="@{/img/logo.png}" alt="logo">
+        <span class="d-none d-lg-block">FinanzApp</span>
+    </a>
 </nav>
 
+<!-- Formulario de login -->
 <main role="main" class="container">
-
     <div class = "container">
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
             <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
-                <h3 class="form-signin-heading">Taller Web I</h3>
+                <h3 class="form-signin-heading">Hola!</h3>
+                <h5>Iniciá sesión o <a id="ir-a-registrarme" href="nuevo-usuario">creá un usuario</a></h5>
                 <hr class="colorgraph"><br>
 
+                <label for="email">Email:</label>
                 <input th:field="*{email}" id="email" type="email" class="form-control" required/>
+                <label for="password">Contraseña:</label>
                 <input th:field="*{password}" type="password" id="password" class="form-control" required/>
 
                 <button id="btn-login" class="btn btn-lg btn-primary btn-block" Type="Submit">Login</button>
@@ -36,12 +32,9 @@
                 <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
                 </p>
             </form>
-            <a id="ir-a-registrarme" href="nuevo-usuario">Registrarme</a>
         </div>
     </div>
 </main>
-<!-- /.container -->
-
 
 <!-- Boostrap core js -->
 <script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>

@@ -1,0 +1,52 @@
+/* Estilo general del contenedor */
+.container {
+    width: 75%;
+    margin: auto;
+    background-color: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: calc(100vh - 60px); /* Ajusta el valor 60px según la altura de tu footer */
+}
+
+/* Estilo del nav */
+.navbar-custom {
+    background-color: var(--azul-uno);
+}
+
+nav a {
+    margin-left: 15px;
+}
+
+/* Estilo de la caja de inicio de sesión */
+#loginbox {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 2.5em;
+    background-color: var(--blanco);
+}
+
+/* Estilo de los campos de entrada del formulario */
+.form-control {
+    border-radius: 0.5em;
+    border: 1px solid var(--azul-dos);
+    color: var(--fuente);
+}
+
+/* Estilo del botón de inicio de sesión */
+#btn-login {
+    background-color: var(--azul-uno);
+    color: var(--blanco);
+    margin-bottom: 0.75em;
+}
+
+/* Estilo del form */
+form{
+    margin: auto;
+}
+
+/* Estilo del header del form */
+h3{
+    margin-top: 0.75em;
+}
