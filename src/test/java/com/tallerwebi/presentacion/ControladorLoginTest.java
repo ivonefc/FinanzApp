@@ -102,4 +102,17 @@ public class ControladorLoginTest {
 		assertThat(modelAndView.getViewName(), equalToIgnoringCase("nuevo-usuario"));
 		assertThat(modelAndView.getModel().get("error").toString(), equalToIgnoringCase("Error al registrar el nuevo usuario"));
 	}
+
+	@Test
+	public void registrarmeSiAlQuererRegistrarIngresaUnMailSinArrobaDeberiaVolverAFormularioYMostrarError () throws UsuarioExistente {
+		// preparacion
+		when(usuarioMock.getEmail()).thenReturn("emailsinarroba.com"); // Correo electrónico sin "@"
+
+		// ejecucion
+		ModelAndView modelAndView = controladorLogin.registrarme(usuarioMock);
+
+		// validacion
+		assertThat(modelAndView.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+		assertThat(modelAndView.getModel().get("error").toString(), equalToIgnoringCase("El correo electrónico debe contener '@'"));
+	}
 }
