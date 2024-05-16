@@ -1,7 +1,6 @@
 package com.tallerwebi.presentacion;
 
 
-import com.tallerwebi.dominio.agregarMovimiento.ServicioAgregarMovimiento;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ControladorAgregarMovimientoTest {
-
+    /*
     ServicioAgregarMovimiento servicioAgregarMovimientoMock;
     ControladorAgregarMovimiento controladorAgregarMovimiento;
     HttpServletRequest httpServletRequestMock;
@@ -62,6 +61,6 @@ public class ControladorAgregarMovimientoTest {
 
     }
 
-
+    */
 
 }

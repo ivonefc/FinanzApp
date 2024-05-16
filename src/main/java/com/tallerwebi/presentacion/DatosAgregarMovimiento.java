@@ -1,8 +1,5 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.movimiento.CategoriaMovimiento;
-import com.tallerwebi.dominio.movimiento.TipoDeMovimiento;
-
 public class DatosAgregarMovimiento {
 
     private String descripcion;
@@ -51,5 +48,15 @@ public class DatosAgregarMovimiento {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "DatosAgregarMovimiento{" +
+                "descripcion='" + descripcion + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", categoria='" + categoria + '\'' +
+                ", monto=" + monto +
+                '}';
     }
 }
