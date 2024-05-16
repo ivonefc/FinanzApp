@@ -1,39 +1,37 @@
 package com.tallerwebi.dominio.movimiento;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tallerwebi.dominio.Usuario;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+
 
 @Entity
+@Table(name = "movimientos")
 public class Movimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_movimiento")
     private Long id;
 
     private String descripcion;
-    @Enumerated(value = EnumType.STRING)
-    private TipoDeMovimiento tipo;
-    @Enumerated(value = EnumType.STRING)
-    private CategoriaMovimiento categoria;
+
     private Double monto;
-    private LocalDateTime fechayHora;
 
-    @ManyToMany(mappedBy = "movimientos")
-    private Set<Usuario> usuarios;
+    private LocalDate fechayHora;
 
-    public Movimiento(String descripcion, TipoDeMovimiento tipo, CategoriaMovimiento categoria, Double monto, LocalDateTime fechayHora) {
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private CategoriaMovimiento categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    @JsonIgnore
+    private Usuario usuario;
+
+    public Movimiento(String descripcion, Double monto, LocalDate fechayHora) {
         this.descripcion = descripcion;
-        this.tipo = tipo;
-        this.categoria = categoria;
         this.monto = monto;
         this.fechayHora = fechayHora;
-        this.usuarios = new HashSet<>();
     }
 
     public Movimiento(){}
@@ -46,22 +44,6 @@ public class Movimiento {
         this.descripcion = descripcion;
     }
 
-    public TipoDeMovimiento getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoDeMovimiento tipo) {
-        this.tipo = tipo;
-    }
-
-    public CategoriaMovimiento getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(CategoriaMovimiento categoria) {
-        this.categoria = categoria;
-    }
-
     public Double getMonto() {
         return monto;
     }
@@ -70,11 +52,11 @@ public class Movimiento {
         this.monto = monto;
     }
 
-    public LocalDateTime getFechayHora() {
+    public LocalDate getFechayHora() {
         return fechayHora;
     }
 
-    public void setFechayHora(LocalDateTime fechayHora) {
+    public void setFechayHora(LocalDate fechayHora) {
         this.fechayHora = fechayHora;
     }
 
@@ -86,16 +68,31 @@ public class Movimiento {
         return id;
     }
 
+    public CategoriaMovimiento getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaMovimiento categoria) {
+        this.categoria = categoria;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     @Override
     public String toString() {
         return "Movimiento{" +
                 "id=" + id +
                 ", descripcion='" + descripcion + '\'' +
-                ", tipo=" + tipo +
-                ", categoria=" + categoria +
                 ", monto=" + monto +
                 ", fechayHora=" + fechayHora +
-                ", usuarios=" + usuarios +
+                ", categoria=" + categoria +
+                ", usuario=" + usuario +
                 '}';
     }
 }

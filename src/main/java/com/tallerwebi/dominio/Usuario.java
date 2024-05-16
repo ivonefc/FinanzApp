@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 
@@ -24,9 +25,11 @@ public class Usuario {
 
     private Boolean activo = false;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Set<Movimiento> movimientos;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Set<Notificacion> notificaciones;
 
@@ -107,6 +110,7 @@ public class Usuario {
                 ", rol='" + rol + '\'' +
                 ", activo=" + activo +
                 ", movimientos=" + movimientos +
+                ", notificaciones=" + notificaciones +
                 '}';
     }
 }

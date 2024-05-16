@@ -29,15 +29,15 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Tipo</label>
-            <select class="form-select" id="tipos" th:field="*{tipo}">
-                <option  th:selected="${movimiento.getTipo().toString().equals('INGRESO')}" value="INGRESO">INGRESO</option>
-                <option th:selected="${movimiento.getTipo().toString().equals('EGRESO')}" value="EGRESO">EGRESO</option>
+            <select class="form-select" id="tipos" th:field="*{categoria.tipo.nombre}">
+                <option  th:selected="${movimiento.categoria.getTipo().nombre.equals('INGRESO')}" value="INGRESO">INGRESO</option>
+                <option th:selected="${movimiento.categoria.getTipo().nombre.equals('EGRESO')}" value="EGRESO">EGRESO</option>
             </select>
         </div>
         <div class="mb-3">
             <label class="form-label">Categoria</label>
             <div>
-            <select th:field="*{categoria}" class="form-select" id="categorias">
+            <select th:field="*{categoria.nombre}" class="form-select" id="categorias">
 
             </select>
             </div>
@@ -67,7 +67,7 @@
 
     selectTipos.addEventListener("change", cambiarTipo)
 
-    cargarCategorias(movimiento.tipo)
+    cargarCategorias(movimiento.categoria.tipo.nombre)
 
     function cargarCategorias(tipo){
         selectCategorias.innerHTML=""
@@ -85,7 +85,7 @@
             option.text = categoria
             selectCategorias.add(option)
         })
-        selectCategorias.value = movimiento.categoria
+        selectCategorias.value = movimiento.categoria.nombre
     }
 
     function cambiarTipo(e){

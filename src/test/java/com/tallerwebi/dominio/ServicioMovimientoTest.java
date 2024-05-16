@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
@@ -32,7 +33,7 @@ public class ServicioMovimientoTest {
      }
 
      @Test
-    public void queAlSolicitarAlServicioObtenerMovimientosDevuelvaUnaListaDeMovimientos(){
+    public void queAlSolicitarAlServicioObtenerMovimientosDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
          //preparacion
          Movimiento movimientoMock1 = mock(Movimiento.class);
          Movimiento movimientoMock2 = mock(Movimiento.class);
@@ -49,7 +50,7 @@ public class ServicioMovimientoTest {
      }
 
      @Test
-    public void queAlSolicitarAlServicioUnaListaDeMovimientosDevuelvaUnaListaVacia(){
+    public void queAlSolicitarAlServicioUnaListaDeMovimientosDevuelvaUnaListaVacia() throws ExcepcionBaseDeDatos {
          //preparacion
          when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenReturn(Collections.emptyList());
 

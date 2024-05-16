@@ -1,13 +1,15 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.movimiento.Movimiento;
+import com.tallerwebi.dominio.movimiento.ServicioCategoria;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpSession;
+
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,18 +26,20 @@ import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 public class ControladorMovimientoTest {
     ControladorMovimiento controladorMovimiento;
     ServicioMovimiento servicioMovimientoMock;
+    ServicioCategoria servicioCategoriaMock;
     HttpServletRequest httpServletRequestMock;
     HttpSession httpSessionMock;
 
     @BeforeEach
     public void init(){
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock);
+        servicioCategoriaMock = mock(ServicioCategoria.class);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioCategoriaMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
     }
     @Test
-    public void queAlClickearLaOpcionVerMovimientosEnElMenuDirijaALaVistaMovimientosYMuestreLosMovimientos(){
+    public void queAlClickearLaOpcionVerMovimientosEnElMenuDirijaALaVistaMovimientosYMuestreLosMovimientos() throws ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock1 = mock(Movimiento.class);
         Movimiento movimientoMock2 = mock(Movimiento.class);
@@ -55,7 +59,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIraBarraMovimientosYNoExistaUsuarioLoguadoMeRedirijaAlLoguin(){
+    public void queAlQuererIraBarraMovimientosYNoExistaUsuarioLoguadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 

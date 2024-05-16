@@ -10,11 +10,10 @@ public class TipoMovimiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipo")
+    @OneToMany(mappedBy = "tipo")
     private Set<CategoriaMovimiento> categorias;
 
-    public TipoMovimiento(Long id, String nombre) {
-        this.id = id;
+    public TipoMovimiento(String nombre) {
         this.nombre = nombre;
     }
 
@@ -35,5 +34,14 @@ public class TipoMovimiento {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "TipoMovimiento{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", categorias=" + categorias +
+                '}';
     }
 }
