@@ -1,6 +1,8 @@
 package com.tallerwebi.dominio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tallerwebi.dominio.movimiento.Movimiento;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,23 +10,28 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "usuarios")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
     private Long id;
+
     private String email;
+
     private String password;
+
     private String rol;
+
     private Boolean activo = false;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "usuarios_movimientos",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_movimiento")
-    )
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Set<Movimiento> movimientos;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private Set<Notificacion> notificaciones;
 
     public Usuario(String email, String password, String rol, Boolean activo) {
         this.email = email;
@@ -32,6 +39,7 @@ public class Usuario {
         this.rol = rol;
         this.activo = activo;
         this.movimientos = new HashSet<>();
+        this.notificaciones = new HashSet<>();
     }
 
     public Usuario(){}
@@ -85,6 +93,14 @@ public class Usuario {
         this.movimientos = movimientos;
     }
 
+    public Set<Notificacion> getNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(Set<Notificacion> notificaciones) {
+        this.notificaciones = notificaciones;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -94,6 +110,7 @@ public class Usuario {
                 ", rol='" + rol + '\'' +
                 ", activo=" + activo +
                 ", movimientos=" + movimientos +
+                ", notificaciones=" + notificaciones +
                 '}';
     }
 }

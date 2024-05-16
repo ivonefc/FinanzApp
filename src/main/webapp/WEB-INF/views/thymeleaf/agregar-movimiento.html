@@ -16,7 +16,7 @@
     <h1 id="titulo">Agregar Movimiento</h1>
 
     <div class="contenedor">
-    <form action="#" th:action="@{/nuevo-movimiento}" method="POST" th:object="${agregarMovimiento}">
+    <form action="#" th:action="@{/movimientos/nuevo-movimiento}" method="POST" th:object="${agregarMovimiento}">
         <label for="nombre">Nombre: </label>
         <input th:field="*{descripcion}" id="nombre" type="text">
         <label for="tipoMovimiento">Tipo: </label>
