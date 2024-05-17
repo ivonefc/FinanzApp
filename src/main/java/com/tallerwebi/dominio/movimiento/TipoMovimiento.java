@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio.movimiento;
 
 import javax.persistence.*;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "tipos_movimiento")
@@ -10,8 +10,6 @@ public class TipoMovimiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    @OneToMany(mappedBy = "tipo")
-    private Set<CategoriaMovimiento> categorias;
 
     public TipoMovimiento(String nombre) {
         this.nombre = nombre;
@@ -41,7 +39,6 @@ public class TipoMovimiento {
         return "TipoMovimiento{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", categorias=" + categorias +
                 '}';
     }
 }
