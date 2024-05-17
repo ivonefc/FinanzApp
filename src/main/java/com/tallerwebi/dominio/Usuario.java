@@ -1,12 +1,6 @@
 package com.tallerwebi.dominio;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tallerwebi.dominio.movimiento.Movimiento;
-import com.tallerwebi.dominio.notificacion.Notificacion;
-
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -25,21 +19,11 @@ public class Usuario {
 
     private Boolean activo = false;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private Set<Movimiento> movimientos;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private Set<Notificacion> notificaciones;
-
     public Usuario(String email, String password, String rol, Boolean activo) {
         this.email = email;
         this.password = password;
         this.rol = rol;
         this.activo = activo;
-        this.movimientos = new HashSet<>();
-        this.notificaciones = new HashSet<>();
     }
 
     public Usuario(){}
@@ -85,22 +69,6 @@ public class Usuario {
         activo = true;
     }
 
-    public Set<Movimiento> getMovimientos() {
-        return movimientos;
-    }
-
-    public void setMovimientos(Set<Movimiento> movimientos) {
-        this.movimientos = movimientos;
-    }
-
-    public Set<Notificacion> getNotificaciones() {
-        return notificaciones;
-    }
-
-    public void setNotificaciones(Set<Notificacion> notificaciones) {
-        this.notificaciones = notificaciones;
-    }
-
     @Override
     public String toString() {
         return "Usuario{" +
@@ -109,8 +77,6 @@ public class Usuario {
                 ", password='" + password + '\'' +
                 ", rol='" + rol + '\'' +
                 ", activo=" + activo +
-                ", movimientos=" + movimientos +
-                ", notificaciones=" + notificaciones +
                 '}';
     }
 }

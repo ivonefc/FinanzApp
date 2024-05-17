@@ -15,7 +15,7 @@ public class Notificacion {
 
     private String descripcion;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 

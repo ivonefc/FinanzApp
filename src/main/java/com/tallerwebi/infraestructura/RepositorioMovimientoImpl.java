@@ -29,16 +29,21 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         this.sessionFactory = sessionFactory;
     }
 
+
     @Override
     public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{
         try{
             Session session = sessionFactory.getCurrentSession();
-            Usuario usuario =  session.get(Usuario.class, idUsuario);
-            return new ArrayList<>(usuario.getMovimientos());
+            return session.createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario", Movimiento.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
+
+
+
 
     @Override
     public Optional<Movimiento> obtenerMovimientoPorId(Long idUsuario, Long id) {
@@ -64,12 +69,11 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         Session session = sessionFactory.getCurrentSession();
         Usuario usuario = session.get(Usuario.class, idUsuario);
         CategoriaMovimiento categoriaMovimiento = session.get(CategoriaMovimiento.class, categoria.getId());
-        usuario.getMovimientos().add(movimiento);
-        categoriaMovimiento.getMovimientos().add(movimiento);
-        movimiento.setUsuario(usuario);
         movimiento.setCategoria(categoriaMovimiento);
-        session.update(usuario);
+        movimiento.setUsuario(usuario);
+        session.save(movimiento);
     }
+
 
     @Override
     public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) {

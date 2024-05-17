@@ -27,7 +27,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
@@ -41,7 +40,7 @@ public class RepositorioMovimientoTest {
 
     @BeforeEach
     public void init() {
-        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
         sessionFactoryMock = mock(SessionFactory.class);
     }
 
@@ -50,19 +49,20 @@ public class RepositorioMovimientoTest {
     @Rollback
     public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoDevuelvaUnaListaDeMovimientos(){
         //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
         CategoriaMovimiento categoria1 = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
         CategoriaMovimiento categoria2 = new CategoriaMovimiento("INDUMENTARIA", new TipoMovimiento("EGRESO"));
-        Movimiento movimiento1 = new Movimiento("Regalo para mama", 20000.0, LocalDate.now());
+        Movimiento movimiento1 = new Movimiento("Sueldo", 20000.0, LocalDate.now());
         Movimiento movimiento2 = new Movimiento("Compra de ropa", 20000.0, LocalDate.now());
         Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
 
-        Set<Movimiento> movimientoSet = new HashSet<>();
-        movimientoSet.add(movimiento1);
-        movimientoSet.add(movimiento2);
+        movimiento1.setUsuario(usuario);
+        movimiento2.setUsuario(usuario);
+        movimiento1.setCategoria(categoria1);
+        movimiento2.setCategoria(categoria2);
 
-        usuario.setMovimientos(movimientoSet);
-        Session session = sessionFactory.getCurrentSession();
-        session.save(usuario);
+        guardarMovimiento(movimiento1);
+        guardarMovimiento(movimiento2);
 
         //ejecucion
         List<Movimiento> movimientos = null;
@@ -80,17 +80,24 @@ public class RepositorioMovimientoTest {
         assertThat(movimientos, hasSize(2));
     }
 
+    private void guardarMovimiento(Movimiento movimiento) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(movimiento);
+    }
+
+
     @Test
     @Transactional
     @Rollback
     public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoLanceUnaExcepcionDeBDD(){
         //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> {
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.obtenerMovimientos(1L);
-        });
+        }, "Base de datos no disponible");
 
     }
 }
