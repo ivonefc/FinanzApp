@@ -1,15 +1,15 @@
 
 .flex-movimientos{
     display: flex;
+    column-gap: 20px;
     flex-direction: row-reverse;
-    justify-content: space-evenly;
 }
 
 @media (max-width: 768px) {
     .flex-movimientos{
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
-        padding-bottom: 80px;
+        row-gap: 20px;
     }
 }
 
@@ -19,18 +19,32 @@
 .tipo-egreso{
     color: red;
 }
-.card{
-    width: 50%;
-}
 
+
+/*
 @media (max-width: 768px) {
     .card{
         width: 80%;
     }
 }
 
-.list-group-item{
+
+ */
+
+
+.item{
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
+.contenedor-grafico-calendario{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.contenedor-grafico-calendario div{
+    width: 100%;
+}
+
+
