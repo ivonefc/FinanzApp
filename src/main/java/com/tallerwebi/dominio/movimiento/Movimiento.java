@@ -1,6 +1,6 @@
 package com.tallerwebi.dominio.movimiento;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.tallerwebi.dominio.Usuario;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,13 +19,12 @@ public class Movimiento {
 
     private LocalDate fechayHora;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_categoria")
     private CategoriaMovimiento categoria;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
-    @JsonIgnore
     private Usuario usuario;
 
     public Movimiento(String descripcion, Double monto, LocalDate fechayHora) {

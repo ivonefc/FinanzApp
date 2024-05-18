@@ -1,10 +1,8 @@
 package com.tallerwebi.dominio.movimiento;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "categorias_movimiento")
@@ -15,17 +13,13 @@ public class CategoriaMovimiento {
 
     private String nombre;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_tipo")
     private TipoMovimiento tipo;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "categoria")
-    private Set<Movimiento> movimientos;
 
     public CategoriaMovimiento(String nombre) {
         this.nombre = nombre;
-        this.movimientos = new HashSet<>();
     }
 
     public CategoriaMovimiento() {
@@ -42,14 +36,6 @@ public class CategoriaMovimiento {
 
     public void setTipo(TipoMovimiento tipo) {
         this.tipo = tipo;
-    }
-
-    public Set<Movimiento> getMovimientos() {
-        return movimientos;
-    }
-
-    public void setMovimientos(Set<Movimiento> movimientos) {
-        this.movimientos = movimientos;
     }
 
     public void setId(Long id) {
@@ -74,7 +60,6 @@ public class CategoriaMovimiento {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", tipo=" + tipo +
-                ", movimientos=" + movimientos +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const nodoInputCalendario = document.getElementById("calendario")
     const nodoUl = document.getElementById("lista-movimientos")
     const canvas = document.getElementById('myChart')
+    const nodoDivGrafico = document.getElementById("contenedor-grafico")
 
     const chart = new Chart(canvas, {
         type: 'doughnut',
@@ -26,18 +27,24 @@ document.addEventListener("DOMContentLoaded", function (){
         try{
             const respuesta =  await fetch(ruta)
             const movimientos = await respuesta.json()
-            console.log(movimientos)
+            if(movimientos.length === 0){
+                nodoUl.innerHTML = `<p>No hay movimientos disponibles.</p>`
+                nodoDivGrafico.style.display = 'none';
+                return
+            }
 
+            nodoDivGrafico.style.display = 'block';
              const movimientosString = movimientos.map(movimiento =>{
-                return `<li class="list-group-item">
-                            <span>
-                            <span>
-                                <span>${movimiento.descripcion}</span><br>
-                                <span>${movimiento.categoria.nombre}</span>
-                            </span>
-                               <span>${movimiento.monto}</span>
-                            </span>
-                            <a href="/spring/movimientos/editar/${movimiento.id}"><i class="bi bi-pencil"></i></a>
+                 const {descripcion, categoria: { tipo, nombre }, monto, id} = movimiento
+                return `<li class="list-group-item item">
+                                <span>
+                                    <span>${descripcion}</span><br>
+                                    <span>${nombre}</span>
+                                </span>
+                                <span>
+                                    <span class="${tipo.nombre==='INGRESO'?'tipo-ingreso':'tipo-egreso'}" >  ${tipo.nombre === 'INGRESO' ? `+ $${monto}` : `- $${monto}` }</span>
+                                    <a href="/spring/movimientos/editar/${id}"><i class="bi bi-pencil"></i></a>
+                                </span>
                     </li>`})
                  .join("")
             nodoUl.innerHTML = movimientosString
