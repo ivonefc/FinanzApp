@@ -1,7 +1,26 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head(title='Movimientos')"></head>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Movimientos</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Bootstrap css / Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Mi CSS-->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/movimientos.css}">
+</head>
 
 <body>
 <!-- Header -->
@@ -11,38 +30,45 @@
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
 <main id="main" class="main">
-    <h1>Movimientos</h1>
     <div class="flex-movimientos">
-        <div class="card">
+        <div class="card w-100">
+            <h1 class="pt-3 text-center">Movimientos</h1>
             <div class="card-body" th:if="${not #lists.isEmpty(movimientos)}">
                 <ul class="list-group" id="lista-movimientos">
-                    <li th:each="movimiento : ${movimientos}" class="list-group-item">
+                    <li th:each="movimiento : ${movimientos}" class="list-group-item item">
                         <!-- Accede a las propiedades de cada movimiento -->
                         <span>
-                            <span>
-                                <span th:text="${movimiento.descripcion}"></span><br>
-                                <span th:text="${movimiento.categoria.getNombre()}"></span>
-                            </span>
-                            <span th:text="${movimiento.monto}"></span>
+                            <span th:text="${movimiento.descripcion}"></span><br>
+                            <span th:text="${movimiento.categoria.getNombre()}"></span><br>
+                            <small th:text="${movimiento.fechayHora}"></small>
                         </span>
-                        <!-- etc. -->
-                        <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil"></i></a>
+                        <span>
+                            <span th:text="${movimiento.categoria.tipo.nombre eq 'INGRESO' ? '+ $' + movimiento.monto : '- $' + movimiento.monto}" th:class="${movimiento.categoria.tipo.nombre eq 'INGRESO'} ? 'tipo-ingreso' : 'tipo-egreso'"></span>
+                            <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil"></i></a>
+                            <!-- etc. -->
+                        </span>
                     </li>
-
                 </ul>
             </div>
             <div th:if="${#lists.isEmpty(movimientos)}">
                 <p>No hay movimientos disponibles.</p>
             </div>
         </div>
-        <div class="calendario-grafico">
-            <div class="contenedor-calendario">
-                <input type="date" name="calendario" id="calendario">
+        <div class="contenedor-grafico-calendario">
+            <div class="card w-100">
+                <div class="card-body">
+                    <h5 class="card-title">Podés ver tus movimientos por fecha.</h5>
+                    <input type="date" name="calendario" id="calendario">
+                </div>
             </div>
-            <div class="contenedor-grafico">
+
+            <div id="contenedor-grafico" style="display: none;" class="card w-100">
                 <!-- Este gráfico reflejará los gastos y egresos totales
-                de una determinanda fecha-->
-                <canvas id="myChart"></canvas>
+                   de una determinanda fecha-->
+                <div class="card-body">
+                    <h6 class="card-title">Total de ingresos y egresos en ese día</h6>
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
