@@ -17,4 +17,6 @@ public interface RepositorioMovimiento {
     void guardarMovimiento(Long idUsuario, Movimiento movimiento, CategoriaMovimiento categoriaMovimiento);
 
     List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
+
+    void eliminarMovimiento(Long idUsuario, Movimiento movimiento);
 }

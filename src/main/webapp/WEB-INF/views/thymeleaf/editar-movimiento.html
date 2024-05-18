@@ -46,9 +46,11 @@
             <label class="form-label">Monto</label>
             <input th:field="*{monto}" type="text" class="form-control" th:value="${movimiento.monto}">
         </div>
-        <div class="botones">
+        <input type="hidden" name="idMovimiento" th:value="${movimiento.id}"/>
+        <div class="botones-editar">
             <button type="submit" class="btn btn-primary">Guardar</button>
-            <a href="/spring/movimientos" class="btn btn-warning" style="color:white">Cancelar</a>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="/spring/movimientos" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
         </div>
     </fieldset>
 </form>

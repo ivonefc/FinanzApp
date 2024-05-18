@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExceptionSinDatos;
 import com.tallerwebi.dominio.movimiento.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,22 +39,22 @@ public class ControladorMovimiento {
     public ModelAndView obtenerMovimientos(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
         ModelMap model = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-            List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
-            model.put("movimientos", movimientos);
-            return new ModelAndView("movimientos", model);
+        List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
+        model.put("movimientos", movimientos);
+        return new ModelAndView("movimientos", model);
     }
 
     @GetMapping("/movimientos/{fecha}")
     @ResponseBody
     public List<Movimiento> obtenerMovimientosPorFecha(@PathVariable String fecha, HttpServletRequest httpServletRequest){
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return null;
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         LocalDate fechaLD = LocalDate.parse(fecha);
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorFecha(idUsuario, fechaLD);
@@ -64,9 +65,9 @@ public class ControladorMovimiento {
     public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Optional<Movimiento> movimiento = servicioMovimiento.obtenerMovimientoPorId(idUsuario, id);
         modelo.put("movimiento", movimiento.get());
@@ -75,15 +76,55 @@ public class ControladorMovimiento {
 
 
     @PostMapping ("/movimientos/editar")
-    public ModelAndView editarMovimiento(@ModelAttribute("movimiento") Movimiento movimiento, HttpServletRequest httpServletRequest) {
+    public ModelAndView editarMovimiento(@ModelAttribute("movimiento") Movimiento movimiento, HttpServletRequest httpServletRequest) throws ExceptionSinDatos{
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if(httpSession == null){
+        if(httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
+        if(movimiento == null)
+            throw new ExceptionSinDatos("Error al editar el movimiento");
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         CategoriaMovimiento categoriaMovimiento = servicioCategoria.obtenerCategoriaPorNombre(movimiento.getCategoria().getNombre());
         movimiento.setCategoria(categoriaMovimiento);
-        servicioMovimiento.editarMovimiento(idUsuario, movimiento);
+
+        try {
+            servicioMovimiento.editarMovimiento(idUsuario, movimiento);
+        } catch (ExcepcionBaseDeDatos e) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "Error en la base de datos");
+            return modelAndView;
+        } catch (ExceptionSinDatos e) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "Error al editar el movimiento");
+            return modelAndView;
+        }
+        return new ModelAndView("redirect:/movimientos");
+    }
+
+    //FUNCION ELIMINAR MOVIMIENTO
+    @PostMapping("/movimientos/editar/{idMovimiento}")
+    public ModelAndView eliminarMovimiento(@PathVariable Long idMovimiento, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if(httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+
+        Optional<Movimiento> optionalMovimiento = servicioMovimiento.obtenerMovimientoPorId(idUsuario, idMovimiento);
+        if (optionalMovimiento.isEmpty()) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "No se encontró el movimiento con el ID proporcionado");
+            return modelAndView;
+        }
+
+        try {
+            servicioMovimiento.eliminarMovimiento(idUsuario, optionalMovimiento.get());
+        } catch (ExcepcionBaseDeDatos e) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "Error en la base de datos");
+            return modelAndView;
+        }
         return new ModelAndView("redirect:/movimientos");
     }
 
@@ -92,21 +133,23 @@ public class ControladorMovimiento {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
 
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
 
         modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
         return new ModelAndView("agregar-movimiento", modelo);
     }
 
     @PostMapping("/movimientos/nuevo-movimiento") // La idea es que este método se utilice cuando se manda el form de nuevo movimiento, es decir que nuevo-movimiento sea el action del form
-    public ModelAndView ingresarNuevoMovimiento(@ModelAttribute("movimiento") DatosAgregarMovimiento datosAgregarMovimiento, HttpServletRequest httpServletRequest) {
+    public ModelAndView ingresarNuevoMovimiento(@ModelAttribute("movimiento") DatosAgregarMovimiento datosAgregarMovimiento, HttpServletRequest httpServletRequest) throws ExceptionSinDatos{
         HttpSession httpSession = httpServletRequest.getSession(false);
 
-        if(httpSession==null){
+        if(httpSession==null)
             return new ModelAndView("redirect:/login");
-        }
+
+
+        if(datosAgregarMovimiento == null)
+            throw new ExceptionSinDatos("Error al ingresar el movimiento");
 
         System.out.println(datosAgregarMovimiento);
 
@@ -115,9 +158,17 @@ public class ControladorMovimiento {
         Double monto = datosAgregarMovimiento.getMonto();
         CategoriaMovimiento categoriaMovimiento = servicioCategoria.obtenerCategoriaPorNombre(datosAgregarMovimiento.getCategoria());
         Movimiento movimiento = new Movimiento(descripcion, monto, LocalDate.now());
-
-        servicioMovimiento.nuevoMovimiento(idUsuario, movimiento, categoriaMovimiento);
-
+        try {
+            servicioMovimiento.nuevoMovimiento(idUsuario, movimiento, categoriaMovimiento);
+        } catch (ExcepcionBaseDeDatos e) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "Error en la base de datos");
+            return modelAndView;
+        } catch (ExceptionSinDatos e) {
+            ModelAndView modelAndView = new ModelAndView("error");
+            modelAndView.addObject("error", "Error al ingresar el movimiento");
+            return modelAndView;
+        }
         return new ModelAndView("redirect:/movimientos");
     }
 }

@@ -72,6 +72,16 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
     }
 
     @Override
+    public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
+        Session session = sessionFactory.getCurrentSession();
+        Usuario usuario = session.get(Usuario.class, idUsuario);
+        CategoriaMovimiento categoriaMovimiento = movimiento.getCategoria();
+        usuario.getMovimientos().remove(movimiento);
+        categoriaMovimiento.getMovimientos().remove(movimiento);
+        session.delete(movimiento);
+    }
+
+    @Override
     public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("FROM Movimiento m WHERE m.usuario.id = :idUsuario AND m.fechayHora = :fecha", Movimiento.class)

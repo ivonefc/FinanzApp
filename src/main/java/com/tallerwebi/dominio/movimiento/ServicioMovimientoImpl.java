@@ -43,6 +43,12 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
+    public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
+        repositorioMovimiento.eliminarMovimiento(idUsuario, movimiento);
+    }
+
+    @Transactional
+    @Override
     public void nuevoMovimiento(Long idUsuario, Movimiento movimiento, CategoriaMovimiento categoriaMovimiento) {
         repositorioMovimiento.guardarMovimiento(idUsuario, movimiento, categoriaMovimiento);
     }
