@@ -47,7 +47,7 @@ public class RepositorioMovimientoTest {
     @Test
     @Transactional
     @Rollback
-    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoDevuelvaUnaListaDeMovimientos(){
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
         //preparacion
         repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
         CategoriaMovimiento categoria1 = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
@@ -55,9 +55,13 @@ public class RepositorioMovimientoTest {
         Movimiento movimiento1 = new Movimiento("Sueldo", 20000.0, LocalDate.now());
         Movimiento movimiento2 = new Movimiento("Compra de ropa", 20000.0, LocalDate.now());
         Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria1);
+        guardarCategoria(categoria2);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
 
-        movimiento1.setUsuario(usuario);
-        movimiento2.setUsuario(usuario);
+        movimiento1.setUsuario(usuarioObtenido);
+        movimiento2.setUsuario(usuarioObtenido);
         movimiento1.setCategoria(categoria1);
         movimiento2.setCategoria(categoria2);
 
@@ -65,12 +69,8 @@ public class RepositorioMovimientoTest {
         guardarMovimiento(movimiento2);
 
         //ejecucion
-        List<Movimiento> movimientos = null;
-        try {
-            movimientos =  repositorioMovimiento.obtenerMovimientos(1L);
-        }catch (Exception ex){
-            Assertions.fail();
-        }
+        List<Movimiento> movimientos =  repositorioMovimiento.obtenerMovimientos(1L);
+
 
 
         //validacion
@@ -78,6 +78,19 @@ public class RepositorioMovimientoTest {
         assertThat(movimientos, not(empty()));
         assertThat(movimientos, containsInAnyOrder(movimiento1, movimiento2));
         assertThat(movimientos, hasSize(2));
+    }
+
+    private void guardarCategoria(CategoriaMovimiento categoria) {
+        sessionFactory.getCurrentSession().save(categoria);
+    }
+
+    private Usuario obtenerUsuarioPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Usuario.class, id);
+    }
+
+    private void guardarUsuario(Usuario usuario) {
+        sessionFactory.getCurrentSession().save(usuario);
     }
 
     private void guardarMovimiento(Movimiento movimiento) {

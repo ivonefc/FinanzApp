@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
 import org.hibernate.Session;
@@ -35,17 +36,26 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
     }
 
     @Override
-    public Movimiento obtenerMovimientoPorId(Long id) {
+    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM Movimiento M WHERE M.id = :idMovimiento", Movimiento.class)
+        Movimiento movimiento = session.createQuery("FROM Movimiento M WHERE M.id = :idMovimiento", Movimiento.class)
                 .setParameter("idMovimiento", id)
                 .uniqueResult();
+        if(movimiento==null){
+            throw new ExcepcionMovimientoNoEncontrado("No se encontro el movimiento");
+        }
+        return movimiento;
     }
 
     @Override
-    public void actualizarMovimiento(Movimiento movimiento) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(movimiento);
+    public void actualizarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos {
+        try{
+            Session session = sessionFactory.getCurrentSession();
+            session.update(movimiento);
+        }catch (Exception he){
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+
     }
 
     @Override
@@ -61,7 +71,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
 
 
     @Override
-    public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
+    public void eliminarMovimiento(Movimiento movimiento) {
         Session session = sessionFactory.getCurrentSession();
         session.delete(movimiento);
     }

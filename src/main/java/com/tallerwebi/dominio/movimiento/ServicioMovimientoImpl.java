@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.RepositorioUsuario;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.presentacion.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,14 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public Movimiento obtenerMovimientoPorId(Long id) {
+    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado {
         return repositorioMovimiento.obtenerMovimientoPorId(id);
 
     }
 
     @Transactional
     @Override
-    public void actualizarMovimiento(DatosEditarMovimiento datosEditarMovimiento) throws ExcepcionCamposInvalidos {
+    public void actualizarMovimiento(DatosEditarMovimiento datosEditarMovimiento) throws ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         datosEditarMovimiento.validarCampos();
         String categoria = datosEditarMovimiento.getCategoria();
         String descripcion = datosEditarMovimiento.getDescripcion();
@@ -62,8 +63,9 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
-        repositorioMovimiento.eliminarMovimiento(idUsuario, movimiento);
+    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado {
+        Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
+        repositorioMovimiento.eliminarMovimiento(movimiento);
     }
 
     @Override

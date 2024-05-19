@@ -50,11 +50,13 @@
         <input type="hidden" name="idMovimiento" th:value="${movimiento.id}"/>
         <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">Guardar</button>
-            <button type="submit" class="btn btn-danger">Eliminar</button>
             <a href="/spring/movimientos" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
         </div>
     </fieldset>
 </form>
+    <form th:object="${movimiento}" th:action="@{/movimientos/eliminar/{id}(id=${movimiento.id})}" method="POST">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
 </div>
 </main>
 <!-- Footer -->

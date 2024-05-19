@@ -19,11 +19,11 @@ public class Movimiento {
 
     private LocalDate fechayHora;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_categoria")
     private CategoriaMovimiento categoria;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 

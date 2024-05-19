@@ -1,44 +1,54 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ExceptionSinDatos;
-import com.tallerwebi.dominio.movimiento.*;
-import org.hamcrest.Matcher;
+import com.tallerwebi.dominio.movimiento.CategoriaMovimiento;
+import com.tallerwebi.dominio.movimiento.Movimiento;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.movimiento.TipoMovimiento;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.function.Executable;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-
 public class ControladorMovimientoTest {
     ControladorMovimiento controladorMovimiento;
     ServicioMovimiento servicioMovimientoMock;
-    ServicioCategoria servicioCategoriaMock;
     HttpServletRequest httpServletRequestMock;
     HttpSession httpSessionMock;
+    DatosEditarMovimiento datosEditarMovimientoMock;
+    DatosAgregarMovimiento datosAgregarMovimientoMock;
 
     @BeforeEach
     public void init(){
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        servicioCategoriaMock = mock(ServicioCategoria.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioCategoriaMock);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
+        datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
+        datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
     }
 
     @Test
@@ -106,25 +116,33 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() {
+    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
-        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong(), anyLong())).thenReturn(java.util.Optional.of(movimientoMock));
+        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
-        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(anyLong());
+        when(movimientoMock.getDescripcion()).thenReturn("descripcion");
+        when(movimientoMock.getMonto()).thenReturn(22.0);
+        when(movimientoMock.getCategoria()).thenReturn(new CategoriaMovimiento("categoria", new TipoMovimiento("tipo")));
+        when(movimientoMock.getId()).thenReturn(1L);
+        when(movimientoMock.getFechayHora()).thenReturn(LocalDate.now());
+
+        // Configuración de método estático
+        Mockito.mockStatic(DatosEditarMovimiento.class);
+        when(DatosEditarMovimiento.contruirDesdeMovimiento(movimientoMock)).thenReturn(datosEditarMovimientoMock);
+
 
         //ejecucion
         ModelAndView modelAndView = controladorMovimiento.irAFormularioEditarMovimiento(httpServletRequestMock, 1L);
-        Movimiento movimientoActual = (Movimiento) modelAndView.getModel().get("movimiento");
+        DatosEditarMovimiento movimientoActual = (DatosEditarMovimiento) modelAndView.getModel().get("movimiento");
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("editar-movimiento"));
-        assertThat(movimientoActual, Matchers.is(movimientoMock));
-        verify(httpSessionMock, times(1)).getAttribute("idUsuario");
+        assertThat(movimientoActual, Matchers.is(datosEditarMovimientoMock));
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
+    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -137,7 +155,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererEditarUnMovimientoSePuedaEditarMovimiento() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererEditarUnMovimientoSePuedaEditarMovimiento() throws ExcepcionMovimientoNoEncontrado, ExcepcionCamposInvalidos, ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         CategoriaMovimiento categoriaMock = mock(CategoriaMovimiento.class);
@@ -145,18 +163,17 @@ public class ControladorMovimientoTest {
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
         when(movimientoMock.getCategoria()).thenReturn(categoriaMock);
         when(categoriaMock.getNombre()).thenReturn("Categoria Test");
-        when(servicioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(categoriaMock);
 
         //ejecucion
-        ModelAndView modelAndView = controladorMovimiento.editarMovimiento(movimientoMock, httpServletRequestMock);
+        ModelAndView modelAndView = controladorMovimiento.editarMovimiento(datosEditarMovimientoMock, httpServletRequestMock);
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/movimientos"));
-        verify(servicioMovimientoMock, times(1)).editarMovimiento(anyLong(), any(Movimiento.class));
+        verify(servicioMovimientoMock, times(1)).actualizarMovimiento(datosEditarMovimientoMock);
     }
 
     @Test
-    public void queAlQuererEditarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEditarMovimiento() throws ExceptionSinDatos {
+    public void queAlQuererEditarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEditarMovimiento() throws ExceptionSinDatos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -169,39 +186,49 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererEditarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaEditarMovimiento() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererEditarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaEditarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-
+        doThrow(ExcepcionCamposInvalidos.class).when(servicioMovimientoMock).actualizarMovimiento(datosEditarMovimientoMock);
+        Map<String, String> errores = new HashMap<>();
+        errores.put("descripcion", "El campo es requerido");
+        errores.put("tipo", "El campo es requerido");
+        errores.put("categoria", "El campo es requerido");
+        errores.put("monto", "El campo es requerido");
+        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
+        doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosEditarMovimientoMock);
         //ejecucion
-        ExceptionSinDatos exception = assertThrows(ExceptionSinDatos.class, () -> {
-            controladorMovimiento.editarMovimiento(null, httpServletRequestMock);
-        });
+
+        ModelAndView modelAndView = controladorMovimiento.editarMovimiento(datosEditarMovimientoMock, httpServletRequestMock);
 
         //validacion
-        assertEquals("Error al editar el movimiento", exception.getMessage());
-        verify(servicioMovimientoMock, times(0)).editarMovimiento(anyLong(), any(Movimiento.class));
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("editar-movimiento"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), IsMapWithSize.aMapWithSize(4));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("descripcion", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("tipo", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("monto", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("categoria", "El campo es requerido"));
+
+        verify(servicioMovimientoMock, times(1)).actualizarMovimiento(datosEditarMovimientoMock);
     }
 
     @Test
-    public void queAlQuererEditarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererEditarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         CategoriaMovimiento categoriaMock = mock(CategoriaMovimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(movimientoMock.getCategoria()).thenReturn(categoriaMock);
-        when(categoriaMock.getNombre()).thenReturn("Categoria Test");
-        when(servicioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(categoriaMock);
-        doThrow(ExcepcionBaseDeDatos.class).when(servicioMovimientoMock).editarMovimiento(anyLong(), any(Movimiento.class));
-
-        //ejecucion
-        ModelAndView modelAndView = controladorMovimiento.editarMovimiento(movimientoMock, httpServletRequestMock);
+        ExcepcionBaseDeDatos excepcion = new ExcepcionBaseDeDatos("Base de datos no disponible");
+        doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosEditarMovimientoMock);
+        ExcepcionBaseDeDatos exceptionObtenida = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            controladorMovimiento.editarMovimiento(datosEditarMovimientoMock, httpServletRequestMock);
+        });
 
         //validacion
-        assertEquals("error", modelAndView.getViewName());
-        assertEquals("Error en la base de datos", modelAndView.getModel().get("error"));
+        assertEquals("Base de datos no disponible", exceptionObtenida.getMessage());
+        verify(servicioMovimientoMock, times(1)).actualizarMovimiento(datosEditarMovimientoMock);
     }
 
     @Test
@@ -232,15 +259,10 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererAgregarUnMovimientoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
-        Movimiento movimientoMock = mock(Movimiento.class);
-        CategoriaMovimiento categoriaMock = mock(CategoriaMovimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(movimientoMock.getCategoria()).thenReturn(categoriaMock);
-        when(categoriaMock.getNombre()).thenReturn("Categoria Test");
-        when(servicioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(categoriaMock);
         DatosAgregarMovimiento datosAgregarMovimiento = new DatosAgregarMovimiento("descripcion", "tipo", "categoria", 100.0);
 
         //ejecucion
@@ -248,11 +270,11 @@ public class ControladorMovimientoTest {
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/movimientos"));
-        verify(servicioMovimientoMock, times(1)).nuevoMovimiento(anyLong(), any(Movimiento.class), any(CategoriaMovimiento.class));
+        verify(servicioMovimientoMock, times(1)).nuevoMovimiento(anyLong(), any());
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaAgregarMovimiento() throws ExceptionSinDatos {
+    public void queAlQuererAgregarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos {
         //preparacion
         DatosAgregarMovimiento datosAgregarMovimiento = new DatosAgregarMovimiento("descripcion", "tipo", "categoria", 100.0);
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
@@ -266,61 +288,62 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererAgregarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
-        Movimiento movimientoMock = mock(Movimiento.class);
-        CategoriaMovimiento categoriaMock = mock(CategoriaMovimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(movimientoMock.getCategoria()).thenReturn(categoriaMock);
-        when(categoriaMock.getNombre()).thenReturn("Categoria Test");
-        when(servicioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(categoriaMock);
-        doThrow(ExcepcionBaseDeDatos.class).when(servicioMovimientoMock).nuevoMovimiento(anyLong(), any(Movimiento.class), any(CategoriaMovimiento.class));
+        doThrow(ExcepcionBaseDeDatos.class).when(servicioMovimientoMock).nuevoMovimiento(anyLong(), any());
         DatosAgregarMovimiento datosAgregarMovimiento = new DatosAgregarMovimiento("descripcion", "tipo", "categoria", 100.0);
 
-        //ejecucion
-        ModelAndView modelAndView = controladorMovimiento.ingresarNuevoMovimiento(datosAgregarMovimiento, httpServletRequestMock);
-
-        //validacion
-        assertEquals("error", modelAndView.getViewName());
-        assertEquals("Error en la base de datos", modelAndView.getModel().get("error"));
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> controladorMovimiento.ingresarNuevoMovimiento(datosAgregarMovimiento, httpServletRequestMock));
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExceptionSinDatos {
+    public void queAlQuererAgregarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        Map<String, String> errores = new HashMap<>();
+        errores.put("descripcion", "El campo es requerido");
+        errores.put("tipo", "El campo es requerido");
+        errores.put("categoria", "El campo es requerido");
+        errores.put("monto", "El campo es requerido");
+        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
+        doThrow(excepcion).when(servicioMovimientoMock).nuevoMovimiento(anyLong(), ArgumentMatchers.any(DatosAgregarMovimiento.class));
 
         //ejecucion
-        ExceptionSinDatos exception = assertThrows(ExceptionSinDatos.class, () -> {
-            controladorMovimiento.ingresarNuevoMovimiento(null, httpServletRequestMock);
-        });
+        ModelAndView modelAndView = controladorMovimiento.ingresarNuevoMovimiento(new DatosAgregarMovimiento(), httpServletRequestMock);
 
         //validacion
-        assertEquals("Error al ingresar el movimiento", exception.getMessage());
-        verify(servicioMovimientoMock, times(0)).nuevoMovimiento(anyLong(), any(Movimiento.class), any(CategoriaMovimiento.class));
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-movimiento"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), IsMapWithSize.aMapWithSize(4));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("descripcion", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("tipo", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("monto", "El campo es requerido"));
+        assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("categoria", "El campo es requerido"));
+        verify(servicioMovimientoMock, times(1)).nuevoMovimiento(anyLong(), ArgumentMatchers.any(DatosAgregarMovimiento.class));
     }
 
     //TESTE PARA ELIMINAR MOVIMIENTO
     @Test
-    public void queAlQuererEliminarUnMovimientoSePuedaEliminarMovimiento() throws ExcepcionBaseDeDatos{
+    public void queAlQuererEliminarUnMovimientoSePuedaEliminarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong(), anyLong())).thenReturn(Optional.of(movimientoMock));
+        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
 
         //ejecucion
         ModelAndView modelAndView = controladorMovimiento.eliminarMovimiento(movimientoMock.getId(), httpServletRequestMock);
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/movimientos"));
-        verify(servicioMovimientoMock, times(1)).eliminarMovimiento(anyLong(), any(Movimiento.class));
+        verify(servicioMovimientoMock, times(1)).eliminarMovimiento(anyLong());
     }
 
     @Test
-    public void queAlQuererEliminarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEliminarMovimiento() throws ExcepcionBaseDeDatos {
+    public void queAlQuererEliminarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEliminarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
@@ -334,21 +357,20 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererEliminarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos{
+    public void queAlQuererEliminarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong(), anyLong())).thenReturn(Optional.of(movimientoMock));
-        doThrow(ExcepcionBaseDeDatos.class).when(servicioMovimientoMock).eliminarMovimiento(anyLong(), any(Movimiento.class));
+        when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
+        ExcepcionBaseDeDatos excepcion = new ExcepcionBaseDeDatos("Base de datos no disponible");
+        doThrow(excepcion).when(servicioMovimientoMock).eliminarMovimiento(anyLong());
 
-        //ejecucion
-        ModelAndView modelAndView = controladorMovimiento.eliminarMovimiento(movimientoMock.getId(), httpServletRequestMock);
-
-        //validacion
-        assertEquals("error", modelAndView.getViewName());
-        assertEquals("Error en la base de datos", modelAndView.getModel().get("error"));
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos excepcionBaseDeDatos = assertThrows(ExcepcionBaseDeDatos.class, ()->{
+            controladorMovimiento.eliminarMovimiento(1L, httpServletRequestMock);
+        });
+        assertThat(excepcionBaseDeDatos.getMessage(), equalToIgnoringCase("Base de datos no disponible"));
     }
-
-
 }
+
