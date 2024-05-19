@@ -1,24 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Editar Movimiento</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-    <!-- Bootstrap css / Bootstrap Icons -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
-
-    <!-- Mi CSS-->
-    <link th:href="@{/css/main.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+<head th:replace="fragments/head :: head(title='Movimientos')">
 </head>
 
 <body>
@@ -28,12 +11,12 @@
 
 <!-- Menu Lateral -->
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
-<main id="main" class="main d-flex justify-content-center">
-<div class="card w-75 mb-3">
-    <div class="card-body">
+<main id="main" class="main">
+<div>
 <form th:object="${movimiento}" class="formulario-editar" th:action="@{/movimientos/editar}" method="POST">
     <fieldset>
         <legend>Editar movimiento</legend>
+      
         <input th:field="*{fechayHora}" class="form-control" th:value="${fechayHora}" type="hidden">
         <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
 
@@ -64,13 +47,14 @@
             <input th:field="*{monto}" type="text" class="form-control" th:value="${monto}">
             <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
         </div>
+        <input type="hidden" name="idMovimiento" th:value="${movimiento.id}"/>
         <div class="d-flex justify-content-between">
-            <a href="/spring/movimientos" class="btn btn-warning" style="color:white">Cancelar</a>
             <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="/spring/movimientos" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
         </div>
     </fieldset>
 </form>
-    </div>
 </div>
 </main>
 <!-- Footer -->

@@ -16,4 +16,6 @@ public interface RepositorioMovimiento {
     void guardarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
+
+    void eliminarMovimiento(Long idUsuario, Movimiento movimiento);
 }
