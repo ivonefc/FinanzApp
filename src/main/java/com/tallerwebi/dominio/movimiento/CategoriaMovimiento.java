@@ -17,11 +17,6 @@ public class CategoriaMovimiento {
     @JoinColumn(name = "id_tipo")
     private TipoMovimiento tipo;
 
-
-    public CategoriaMovimiento(String nombre) {
-        this.nombre = nombre;
-    }
-
     public CategoriaMovimiento() {
     }
 

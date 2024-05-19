@@ -27,10 +27,24 @@ public class Movimiento {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    public Movimiento(CategoriaMovimiento categoria, String descripcion, Double monto) {
+        this.categoria = categoria;
+        this.descripcion = descripcion;
+        this.monto = monto;
+    }
+
     public Movimiento(String descripcion, Double monto, LocalDate fechayHora) {
         this.descripcion = descripcion;
         this.monto = monto;
         this.fechayHora = fechayHora;
+    }
+
+    public Movimiento(String descripcion, Double monto, LocalDate fechayHora, CategoriaMovimiento categoria, Usuario usuario) {
+        this.descripcion = descripcion;
+        this.monto = monto;
+        this.fechayHora = fechayHora;
+        this.categoria = categoria;
+        this.usuario = usuario;
     }
 
     public Movimiento(){}

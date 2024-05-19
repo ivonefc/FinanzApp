@@ -5,16 +5,15 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface RepositorioMovimiento {
     List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos;
 
-    Optional<Movimiento> obtenerMovimientoPorId(Long idUsuario, Long id);
+    Movimiento obtenerMovimientoPorId(Long id);
 
-    void editarMovimiento(Long idUsuario, Movimiento movimiento);
+    void actualizarMovimiento(Movimiento movimiento);
 
-    void guardarMovimiento(Long idUsuario, Movimiento movimiento, CategoriaMovimiento categoriaMovimiento);
+    void guardarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
 }

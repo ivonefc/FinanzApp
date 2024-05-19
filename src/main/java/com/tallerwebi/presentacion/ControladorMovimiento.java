@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.movimiento.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,21 +18,17 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Controller
 public class ControladorMovimiento {
 
     private ServicioMovimiento servicioMovimiento;
-    private ServicioCategoria servicioCategoria;
 
     @Autowired
-    public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioCategoria servicioCategoria) {
+    public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
-        this.servicioCategoria = servicioCategoria;
     }
 
     @GetMapping("/movimientos")
@@ -67,23 +64,26 @@ public class ControladorMovimiento {
         if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        Optional<Movimiento> movimiento = servicioMovimiento.obtenerMovimientoPorId(idUsuario, id);
-        modelo.put("movimiento", movimiento.get());
+        Movimiento movimiento = servicioMovimiento.obtenerMovimientoPorId(id);
+        DatosEditarMovimiento datosEditarMovimiento = DatosEditarMovimiento.contruirDesdeMovimiento(movimiento);
+        modelo.put("movimiento", datosEditarMovimiento);
         return new ModelAndView("editar-movimiento", modelo);
     }
 
 
     @PostMapping ("/movimientos/editar")
-    public ModelAndView editarMovimiento(@ModelAttribute("movimiento") Movimiento movimiento, HttpServletRequest httpServletRequest) {
+    public ModelAndView editarMovimiento(@ModelAttribute("movimiento") DatosEditarMovimiento datosEditarMovimiento, HttpServletRequest httpServletRequest) {
         HttpSession httpSession = httpServletRequest.getSession(false);
+        ModelMap modelo = new ModelMap();
         if(httpSession == null){
             return new ModelAndView("redirect:/login");
         }
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        CategoriaMovimiento categoriaMovimiento = servicioCategoria.obtenerCategoriaPorNombre(movimiento.getCategoria().getNombre());
-        movimiento.setCategoria(categoriaMovimiento);
-        servicioMovimiento.editarMovimiento(idUsuario, movimiento);
+        try {
+            servicioMovimiento.actualizarMovimiento(datosEditarMovimiento);
+        } catch (ExcepcionCamposInvalidos e) {
+            modelo.put("errores", e.getErrores());
+            return new ModelAndView("editar-movimiento", modelo);
+        }
         return new ModelAndView("redirect:/movimientos");
     }
 
@@ -103,20 +103,21 @@ public class ControladorMovimiento {
     @PostMapping("/movimientos/nuevo-movimiento") // La idea es que este método se utilice cuando se manda el form de nuevo movimiento, es decir que nuevo-movimiento sea el action del form
     public ModelAndView ingresarNuevoMovimiento(@ModelAttribute("movimiento") DatosAgregarMovimiento datosAgregarMovimiento, HttpServletRequest httpServletRequest) {
         HttpSession httpSession = httpServletRequest.getSession(false);
-
+        ModelMap modelo = new ModelMap();
         if(httpSession==null){
             return new ModelAndView("redirect:/login");
         }
-
-        System.out.println(datosAgregarMovimiento);
-
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        String descripcion = datosAgregarMovimiento.getDescripcion();
-        Double monto = datosAgregarMovimiento.getMonto();
-        CategoriaMovimiento categoriaMovimiento = servicioCategoria.obtenerCategoriaPorNombre(datosAgregarMovimiento.getCategoria());
-        Movimiento movimiento = new Movimiento(descripcion, monto, LocalDate.now());
-
-        servicioMovimiento.nuevoMovimiento(idUsuario, movimiento, categoriaMovimiento);
+        try {
+            servicioMovimiento.nuevoMovimiento(idUsuario, datosAgregarMovimiento);
+        } catch (ExcepcionBaseDeDatos e) {
+            modelo.put("error", e.getMessage());
+            return new ModelAndView("error", modelo);
+        } catch (ExcepcionCamposInvalidos e) {
+            modelo.put("errores", e.getErrores());
+            modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
+            return new ModelAndView("agregar-movimiento", modelo);
+        }
 
         return new ModelAndView("redirect:/movimientos");
     }
