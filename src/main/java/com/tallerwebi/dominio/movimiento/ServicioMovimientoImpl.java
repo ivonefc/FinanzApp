@@ -31,18 +31,15 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         this.repositorioUsuario = repositorioUsuario;
     }
 
-
     @Override
     public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{
         return repositorioMovimiento.obtenerMovimientos(idUsuario);
     }
 
-
     @Transactional
     @Override
     public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado {
         return repositorioMovimiento.obtenerMovimientoPorId(id);
-
     }
 
     @Transactional
@@ -77,11 +74,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
        datosAgregarMovimiento.validarCampos();
-       //
+
        String descripcion = datosAgregarMovimiento.getDescripcion();
        Double monto = datosAgregarMovimiento.getMonto();
        String categoria = datosAgregarMovimiento.getCategoria();
-       //
+
        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
        Movimiento movimiento = new Movimiento(

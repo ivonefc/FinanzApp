@@ -55,7 +55,6 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
-
     }
 
     @Override
@@ -66,9 +65,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
-
     }
-
 
     @Override
     public void eliminarMovimiento(Movimiento movimiento) {
@@ -83,7 +80,5 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
                 .setParameter("idUsuario", idUsuario)
                 .setParameter("fecha", fecha)
                 .getResultList();
-
-
     }
 }
