@@ -10,12 +10,13 @@
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
-
 .footer {
-    background-color: var(--azul-dos);
-    padding: 10px;
+    padding: 20px 0;
+    font-size: 14px;
+    transition: all 0.3s;
+    border-top: 1px solid #cddfff;
     text-align: center;
-    margin-bottom: 0;
-    color: var(--blanco)
+    color: #012970;
 }
+
 
