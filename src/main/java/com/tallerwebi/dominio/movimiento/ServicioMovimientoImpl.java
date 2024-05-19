@@ -60,7 +60,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         repositorioMovimiento.actualizarMovimiento(movimiento);
     }
 
-
+    @Transactional
+    @Override
+    public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
+        repositorioMovimiento.eliminarMovimiento(idUsuario, movimiento);
+    }
 
     @Override
     public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) {
