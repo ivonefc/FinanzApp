@@ -1,22 +1,22 @@
 package com.tallerwebi.dominio.movimiento;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface RepositorioMovimiento {
     List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos;
 
-    Optional<Movimiento> obtenerMovimientoPorId(Long idUsuario, Long id);
+    Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado;
 
-    void editarMovimiento(Long idUsuario, Movimiento movimiento);
+    void actualizarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
 
-    void guardarMovimiento(Long idUsuario, Movimiento movimiento, CategoriaMovimiento categoriaMovimiento);
+    void guardarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
 
-    void eliminarMovimiento(Long idUsuario, Movimiento movimiento);
+    void eliminarMovimiento(Movimiento movimiento);
 }

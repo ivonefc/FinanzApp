@@ -1,10 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.movimiento.Movimiento;
-import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
-import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
-import com.tallerwebi.dominio.movimiento.ServicioMovimientoImpl;
+import com.tallerwebi.dominio.movimiento.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,12 +20,16 @@ import static org.mockito.Mockito.when;
 public class ServicioMovimientoTest {
     ServicioMovimiento servicioMovimiento;
     RepositorioMovimiento repositorioMovimientoMock;
+    RepositorioCategoria repositorioCategoriaMock;
+    RepositorioUsuario repositorioUsuarioMock;
     HttpServletRequest httpServletRequestMock;
 
      @BeforeEach
     public void init(){
          repositorioMovimientoMock = mock(RepositorioMovimiento.class);
-         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock);
+         repositorioCategoriaMock = mock(RepositorioCategoria.class);
+         repositorioUsuarioMock = mock(RepositorioUsuario.class);
+         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
          httpServletRequestMock = mock(HttpServletRequest.class);
      }
 

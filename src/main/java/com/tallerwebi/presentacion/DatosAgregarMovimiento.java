@@ -1,5 +1,10 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class DatosAgregarMovimiento {
 
     private String descripcion;
@@ -16,6 +21,26 @@ public class DatosAgregarMovimiento {
 
     public DatosAgregarMovimiento(){
 
+    }
+
+    public void validarCampos() throws ExcepcionCamposInvalidos {
+        Map<String, String> errores = new HashMap<>();
+
+        if(this.descripcion.isEmpty()){
+            errores.put("descripcion", "El campo es requerido");
+        }
+        if(this.monto == null){
+            errores.put("monto", "El campo es requerido");
+        }
+        if(this.categoria.isEmpty()){
+            errores.put("categoria", "El campo es requerido");
+        }
+        if(this.tipo.isEmpty()){
+            errores.put("tipo", "El campo es requerido");
+        }
+        if(!errores.isEmpty()){
+            throw new ExcepcionCamposInvalidos(errores);
+        }
     }
 
     public Double getMonto() {
