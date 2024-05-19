@@ -1,9 +1,7 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.movimiento.Movimiento;
-import com.tallerwebi.dominio.movimiento.ServicioCategoria;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
@@ -26,15 +24,13 @@ import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 public class ControladorMovimientoTest {
     ControladorMovimiento controladorMovimiento;
     ServicioMovimiento servicioMovimientoMock;
-    ServicioCategoria servicioCategoriaMock;
     HttpServletRequest httpServletRequestMock;
     HttpSession httpSessionMock;
 
     @BeforeEach
     public void init(){
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        servicioCategoriaMock = mock(ServicioCategoria.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioCategoriaMock);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
     }
@@ -59,7 +55,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIraBarraMovimientosYNoExistaUsuarioLoguadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
+    public void queAlQuererIraBarraMovimientosYNoExistaUsuarioLoguadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -73,3 +69,4 @@ public class ControladorMovimientoTest {
     }
 
 }
+
