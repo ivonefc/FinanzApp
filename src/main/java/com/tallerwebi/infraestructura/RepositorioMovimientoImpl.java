@@ -29,7 +29,6 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         this.sessionFactory = sessionFactory;
     }
 
-
     @Override
     public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{
         try{
@@ -41,9 +40,6 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
-
-
-
 
     @Override
     public Optional<Movimiento> obtenerMovimientoPorId(Long idUsuario, Long id) {
@@ -78,10 +74,6 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
     @Override
     public void eliminarMovimiento(Long idUsuario, Movimiento movimiento) {
         Session session = sessionFactory.getCurrentSession();
-        Usuario usuario = session.get(Usuario.class, idUsuario);
-        CategoriaMovimiento categoriaMovimiento = movimiento.getCategoria();
-        usuario.getMovimientos().remove(movimiento);
-        categoriaMovimiento.getMovimientos().remove(movimiento);
         session.delete(movimiento);
     }
 
