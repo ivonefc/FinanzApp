@@ -10,13 +10,13 @@ import java.util.List;
 public interface RepositorioMovimiento {
     List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos;
 
-    Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado;
+    Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos;
 
-    void actualizarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
+    void actualizarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado;
 
     void guardarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos;
 
-    List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
+    List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos;
 
-    void eliminarMovimiento(Movimiento movimiento);
+    void eliminarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado;
 }

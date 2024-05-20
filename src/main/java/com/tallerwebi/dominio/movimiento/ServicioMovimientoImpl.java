@@ -31,18 +31,15 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         this.repositorioUsuario = repositorioUsuario;
     }
 
-
     @Override
     public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{
         return repositorioMovimiento.obtenerMovimientos(idUsuario);
     }
 
-
     @Transactional
     @Override
-    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado {
+    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientoPorId(id);
-
     }
 
     @Transactional
@@ -63,13 +60,13 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado {
+    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
         repositorioMovimiento.eliminarMovimiento(movimiento);
     }
 
     @Override
-    public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) {
+    public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientosPorFecha(idUsuario, fecha);
     }
 
@@ -77,11 +74,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
        datosAgregarMovimiento.validarCampos();
-       //
+
        String descripcion = datosAgregarMovimiento.getDescripcion();
        Double monto = datosAgregarMovimiento.getMonto();
        String categoria = datosAgregarMovimiento.getCategoria();
-       //
+
        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
        Movimiento movimiento = new Movimiento(

@@ -43,7 +43,7 @@ public class ControladorMovimiento {
 
     @GetMapping("/movimientos/{fecha}")
     @ResponseBody
-    public List<Movimiento> obtenerMovimientosPorFecha(@PathVariable String fecha, HttpServletRequest httpServletRequest) {
+    public List<Movimiento> obtenerMovimientosPorFecha(@PathVariable String fecha, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return null;
@@ -55,26 +55,25 @@ public class ControladorMovimiento {
     }
 
     @GetMapping("/movimientos/editar/{id}")
-    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado {
+    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Movimiento movimiento = servicioMovimiento.obtenerMovimientoPorId(id);
         DatosEditarMovimiento datosEditarMovimiento = DatosEditarMovimiento.contruirDesdeMovimiento(movimiento);
         modelo.put("movimiento", datosEditarMovimiento);
         return new ModelAndView("editar-movimiento", modelo);
     }
 
-
     @PostMapping("/movimientos/editar")
     public ModelAndView editarMovimiento(@ModelAttribute("movimiento") DatosEditarMovimiento datosEditarMovimiento, HttpServletRequest httpServletRequest) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         try {
             servicioMovimiento.actualizarMovimiento(datosEditarMovimiento);
         } catch (ExcepcionCamposInvalidos e) {
@@ -84,13 +83,12 @@ public class ControladorMovimiento {
         return new ModelAndView("redirect:/movimientos");
     }
 
-    //FUNCION ELIMINAR MOVIMIENTO
     @PostMapping("/movimientos/eliminar/{id}")
     public ModelAndView eliminarMovimiento(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         servicioMovimiento.eliminarMovimiento(id);
         return new ModelAndView("redirect:/movimientos");
     }
@@ -112,9 +110,9 @@ public class ControladorMovimiento {
     public ModelAndView ingresarNuevoMovimiento(@ModelAttribute("movimiento") DatosAgregarMovimiento datosAgregarMovimiento, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         try {
             servicioMovimiento.nuevoMovimiento(idUsuario, datosAgregarMovimiento);

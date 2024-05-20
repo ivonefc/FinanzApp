@@ -2,6 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.CategoriaMovimiento;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
@@ -10,11 +11,10 @@ import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,19 +35,18 @@ public class RepositorioMovimientoTest {
     private SessionFactory sessionFactory;
 
     private SessionFactory sessionFactoryMock;
-
     private RepositorioMovimiento repositorioMovimiento;
 
     @BeforeEach
     public void init() {
-
         sessionFactoryMock = mock(SessionFactory.class);
     }
 
     @Test
     @Transactional
     @Rollback
-    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos { //BUSCA POR ID DE USUARIO
         //preparacion
         repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
         CategoriaMovimiento categoria1 = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
@@ -71,7 +70,284 @@ public class RepositorioMovimientoTest {
         //ejecucion
         List<Movimiento> movimientos =  repositorioMovimiento.obtenerMovimientos(1L);
 
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, not(empty()));
+        assertThat(movimientos, containsInAnyOrder(movimiento1, movimiento2));
+        assertThat(movimientos, hasSize(2));
+    }
 
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.obtenerMovimientos(1L);
+        }, "Base de datos no disponible");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioUnMovimientoPorIdDevuelvaUnMovimiento() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado { //BUSCA POR ID DE MOVIMIENTO
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUPERMERCADO", new TipoMovimiento("INGRESO"));
+        Movimiento movimiento = new Movimiento("Compras", 20000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        movimiento.setUsuario(usuarioObtenido);
+        movimiento.setCategoria(categoria);
+
+        guardarMovimiento(movimiento);
+
+        //ejecucion
+        Movimiento movimientoObtenido = repositorioMovimiento.obtenerMovimientoPorId(1L); //ID DEL MOVIMIENTO
+
+        //validacion
+        assertThat(movimientoObtenido, notNullValue());
+        assertThat(movimientoObtenido, is(movimiento));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioUnMovimientoPorIdLanceUnaExcepcionDeMovimientoNoEncontrado(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+            repositorioMovimiento.obtenerMovimientoPorId(1L);
+        }, "No se encontro el movimiento");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioUnMovimientoPorIdLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.obtenerMovimientoPorId(1L);
+        }, "Base de datos no disponible");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlActualizarUnMovimientoSeActualiceCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUPERMERCADO", new TipoMovimiento("INGRESO"));
+        CategoriaMovimiento categoria2 = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
+        Movimiento movimiento = new Movimiento("Compras", 20000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria);
+        guardarCategoria(categoria2);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        // ACTUALIZA CATEGORIA EN EL MOVIMIENTO
+        movimiento.setUsuario(usuarioObtenido);
+        movimiento.setCategoria(categoria);
+
+        guardarMovimiento(movimiento);
+
+        //ejecucion
+        Movimiento movimientoObtenido = repositorioMovimiento.obtenerMovimientoPorId(1L); //ID DEL MOVIMIENTO
+        movimientoObtenido.setCategoria(categoria2);
+        repositorioMovimiento.actualizarMovimiento(movimientoObtenido);
+
+        //validacion
+        Movimiento movimientoActualizado = repositorioMovimiento.obtenerMovimientoPorId(1L);
+        assertThat(movimientoActualizado, notNullValue());
+        assertThat(movimientoActualizado, is(movimientoObtenido));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlActualizarUnMovimientoLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.actualizarMovimiento(new Movimiento());
+        }, "Base de datos no disponible");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlActualizarUnMovimientoLanceUnaExcepcionDeMovimientoNoEncontrado(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+            repositorioMovimiento.actualizarMovimiento(null);
+        }, "No se encontro el movimiento");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlGuardarUnMovimientoSeGuardeCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUPERMERCADO", new TipoMovimiento("INGRESO"));
+        Movimiento movimiento = new Movimiento("Compras", 20000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        movimiento.setUsuario(usuarioObtenido);
+        movimiento.setCategoria(categoria);
+
+        //ejecucion
+        repositorioMovimiento.guardarMovimiento(movimiento);
+
+        //validacion
+        Movimiento movimientoObtenido = repositorioMovimiento.obtenerMovimientoPorId(1L);
+        assertThat(movimientoObtenido, notNullValue());
+        assertThat(movimientoObtenido, is(movimiento));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlGuardarUnMovimientoLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.guardarMovimiento(new Movimiento());
+        }, "Base de datos no disponible");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlEliminarUnMovimientoSeElimineCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado{
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUPERMERCADO", new TipoMovimiento("INGRESO"));
+        Movimiento movimiento = new Movimiento("Compras", 20000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        movimiento.setUsuario(usuarioObtenido);
+        movimiento.setCategoria(categoria);
+
+        guardarMovimiento(movimiento);
+
+        // VERIFICACION DE EXISTENCIA DEL MOVIMIENTO
+        Movimiento movimientoExistente = repositorioMovimiento.obtenerMovimientoPorId(1L);
+        assertThat(movimientoExistente, notNullValue());
+
+        // OBTENCION DEL TOTAL DE MOVIMIENTOS ANTES DE LA ELIMINACIO
+        int totalMovimientosAntes = repositorioMovimiento.obtenerMovimientos(1L).size();
+
+        //ejecucion
+        repositorioMovimiento.eliminarMovimiento(movimiento);
+
+        //validacion
+        assertThat(repositorioMovimiento.obtenerMovimientos(1L), empty());
+        assertThat(repositorioMovimiento.obtenerMovimientosPorFecha(1L, LocalDate.now()), empty());
+
+        // VERIFICACION DE DISMINUCION
+        int totalMovimientosDespues = repositorioMovimiento.obtenerMovimientos(1L).size();
+        assertThat(totalMovimientosDespues, is(totalMovimientosAntes - 1));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlEliminarUnMovimientoLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        Movimiento movimiento = new Movimiento();
+        movimiento.setId(1L);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.eliminarMovimiento(movimiento);
+        }, "Base de datos no disponible");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlQuererEliminarUnMovimientoQueNoExisteNoSePuedaEliminarYLanceUnaExcepcionDeMovimientoNoEncontrado(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+            repositorioMovimiento.eliminarMovimiento(new Movimiento());
+        }, "No se encontro el movimiento");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoPorFechaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria1 = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
+        CategoriaMovimiento categoria2 = new CategoriaMovimiento("INDUMENTARIA", new TipoMovimiento("EGRESO"));
+        Movimiento movimiento1 = new Movimiento("Sueldo", 100000.0, LocalDate.now());
+        Movimiento movimiento2 = new Movimiento("Compra de ropa", 60000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria1);
+        guardarCategoria(categoria2);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        movimiento1.setUsuario(usuarioObtenido);
+        movimiento2.setUsuario(usuarioObtenido);
+        movimiento1.setCategoria(categoria1);
+        movimiento2.setCategoria(categoria2);
+
+        guardarMovimiento(movimiento1);
+        guardarMovimiento(movimiento2);
+
+        //ejecucion
+        List<Movimiento> movimientos =  repositorioMovimiento.obtenerMovimientosPorFecha(1L, LocalDate.now());
 
         //validacion
         assertThat(movimientos, notNullValue());
@@ -80,6 +356,22 @@ public class RepositorioMovimientoTest {
         assertThat(movimientos, hasSize(2));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoPorFechaLanceUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.obtenerMovimientosPorFecha(1L, LocalDate.now());
+        }, "Base de datos no disponible");
+    }
+
+    // METODOS PRIVADOS
     private void guardarCategoria(CategoriaMovimiento categoria) {
         sessionFactory.getCurrentSession().save(categoria);
     }
@@ -96,21 +388,5 @@ public class RepositorioMovimientoTest {
     private void guardarMovimiento(Movimiento movimiento) {
         Session session = sessionFactory.getCurrentSession();
         session.save(movimiento);
-    }
-
-
-    @Test
-    @Transactional
-    @Rollback
-    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioEspecificoLanceUnaExcepcionDeBDD(){
-        //preparacion
-        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
-        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
-
-        //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
-            repositorioMovimiento.obtenerMovimientos(1L);
-        }, "Base de datos no disponible");
-
     }
 }

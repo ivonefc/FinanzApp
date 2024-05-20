@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface ServicioMovimiento {
     List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos;
-    Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado;
+    Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos;
     void actualizarMovimiento(DatosEditarMovimiento datosEditarMovimiento) throws ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos;
     void eliminarMovimiento(Long id) throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado;
-    List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha);
+    List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos;
     void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos;
 }

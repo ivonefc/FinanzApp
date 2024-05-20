@@ -3,7 +3,6 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.ExceptionSinDatos;
 import com.tallerwebi.dominio.movimiento.CategoriaMovimiento;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
@@ -13,7 +12,6 @@ import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
@@ -85,7 +83,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorFechaYExistaUsuarioLogueadoRetorneLosMovimientos() {
+    public void queAlQuererObtenerMovimientosPorFechaYExistaUsuarioLogueadoRetorneLosMovimientos() throws ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock1 = mock(Movimiento.class);
         Movimiento movimientoMock2 = mock(Movimiento.class);
@@ -103,7 +101,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorFechaYNoExistaUsuarioLogueadoRetorneNull() {
+    public void queAlQuererObtenerMovimientosPorFechaYNoExistaUsuarioLogueadoRetorneNull() throws ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -116,7 +114,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado {
+    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
@@ -142,7 +140,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado {
+    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -173,7 +171,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererEditarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEditarMovimiento() throws ExceptionSinDatos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+    public void queAlQuererEditarUnMovimientoYNoExistaUsuarioLogueadoNoSePuedaEditarMovimiento() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -198,8 +196,8 @@ public class ControladorMovimientoTest {
         errores.put("monto", "El campo es requerido");
         ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
         doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosEditarMovimientoMock);
-        //ejecucion
 
+        //ejecucion
         ModelAndView modelAndView = controladorMovimiento.editarMovimiento(datosEditarMovimientoMock, httpServletRequestMock);
 
         //validacion
@@ -209,7 +207,6 @@ public class ControladorMovimientoTest {
         assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("tipo", "El campo es requerido"));
         assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("monto", "El campo es requerido"));
         assertThat((Map<String, String>)modelAndView.getModel().get("errores"), hasEntry("categoria", "El campo es requerido"));
-
         verify(servicioMovimientoMock, times(1)).actualizarMovimiento(datosEditarMovimientoMock);
     }
 
@@ -222,6 +219,8 @@ public class ControladorMovimientoTest {
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionBaseDeDatos excepcion = new ExcepcionBaseDeDatos("Base de datos no disponible");
         doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosEditarMovimientoMock);
+
+        //ejecucion
         ExcepcionBaseDeDatos exceptionObtenida = assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMovimiento.editarMovimiento(datosEditarMovimientoMock, httpServletRequestMock);
         });
@@ -242,7 +241,6 @@ public class ControladorMovimientoTest {
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-movimiento"));
-//        verify(httpSessionMock, times(1)).getAttribute("idUsuario");
     }
 
     @Test
@@ -325,7 +323,6 @@ public class ControladorMovimientoTest {
         verify(servicioMovimientoMock, times(1)).nuevoMovimiento(anyLong(), ArgumentMatchers.any(DatosAgregarMovimiento.class));
     }
 
-    //TESTE PARA ELIMINAR MOVIMIENTO
     @Test
     public void queAlQuererEliminarUnMovimientoSePuedaEliminarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         //preparacion
