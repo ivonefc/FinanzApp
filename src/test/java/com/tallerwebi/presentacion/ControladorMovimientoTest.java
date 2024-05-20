@@ -83,7 +83,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorFechaYExistaUsuarioLogueadoRetorneLosMovimientos() {
+    public void queAlQuererObtenerMovimientosPorFechaYExistaUsuarioLogueadoRetorneLosMovimientos() throws ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock1 = mock(Movimiento.class);
         Movimiento movimientoMock2 = mock(Movimiento.class);
@@ -101,7 +101,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorFechaYNoExistaUsuarioLogueadoRetorneNull() {
+    public void queAlQuererObtenerMovimientosPorFechaYNoExistaUsuarioLogueadoRetorneNull() throws ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -114,7 +114,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado {
+    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
@@ -140,7 +140,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado {
+    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 

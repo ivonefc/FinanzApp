@@ -43,7 +43,7 @@ public class ControladorMovimiento {
 
     @GetMapping("/movimientos/{fecha}")
     @ResponseBody
-    public List<Movimiento> obtenerMovimientosPorFecha(@PathVariable String fecha, HttpServletRequest httpServletRequest) {
+    public List<Movimiento> obtenerMovimientosPorFecha(@PathVariable String fecha, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return null;
@@ -55,7 +55,7 @@ public class ControladorMovimiento {
     }
 
     @GetMapping("/movimientos/editar/{id}")
-    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado {
+    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)

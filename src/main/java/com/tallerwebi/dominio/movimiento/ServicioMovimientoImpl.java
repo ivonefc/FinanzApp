@@ -38,7 +38,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado {
+    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientoPorId(id);
     }
 
@@ -60,13 +60,13 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado {
+    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
         repositorioMovimiento.eliminarMovimiento(movimiento);
     }
 
     @Override
-    public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) {
+    public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientosPorFecha(idUsuario, fecha);
     }
 
