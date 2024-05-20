@@ -2,7 +2,10 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,35 +35,32 @@ public class ControladorLogin {
     }
 
     @RequestMapping(path = "/validar-login", method = RequestMethod.POST)
-    public ModelAndView validarLogin(@ModelAttribute("datosLogin") DatosLogin datosLogin, HttpServletRequest request) {
+    public ModelAndView validarLogin(@ModelAttribute("datosLogin") DatosLogin datosLogin, HttpServletRequest request) throws ExcepcionBaseDeDatos{
         ModelMap model = new ModelMap();
 
-        Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
-        if (usuarioBuscado != null) {
-            request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
-            return new ModelAndView("redirect:/panel");
-        } else {
-            model.put("error", "Usuario o clave incorrecta");
+        Usuario usuarioBuscado = null;
+        try {
+            usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
+        } catch (UsuarioInexistente e) {
+            model.put("error", e.getMessage());
+            return new ModelAndView("login", model);
         }
-        return new ModelAndView("login", model);
+        request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
+        return new ModelAndView("redirect:/panel");
     }
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
-    public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
+    public ModelAndView registrarme(@ModelAttribute("usuario") DatosRegistroUsuario datosRegistroUsuario) throws ExcepcionBaseDeDatos{
         ModelMap model = new ModelMap();
-        if (usuario.getEmail().contains("@")) { // Validación de email
-            try{
-                servicioLogin.registrar(usuario);
-            } catch (UsuarioExistente e){
-                model.put("error", "El usuario ya existe");
-                return new ModelAndView("nuevo-usuario", model);
-            } catch (Exception e){
-                model.put("error", "Error al registrar el nuevo usuario");
-                return new ModelAndView("nuevo-usuario", model);
-            }
+
+        try {
+            servicioLogin.registrar(datosRegistroUsuario);
             return new ModelAndView("redirect:/login");
-        } else {
-            model.put("error", "El correo electrónico debe contener '@'");
+        } catch (UsuarioExistente e) {
+            model.put("error", e.getMessage());
+            return new ModelAndView("nuevo-usuario", model);
+        } catch (ExcepcionCamposInvalidos e) {
+            model.put("errores", e.getErrores());
             return new ModelAndView("nuevo-usuario", model);
         }
     }
@@ -68,7 +68,7 @@ public class ControladorLogin {
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();
-        model.put("usuario", new Usuario());
+        model.put("usuario", new DatosRegistroUsuario());
         return new ModelAndView("nuevo-usuario", model);
     }
 

@@ -1,11 +1,18 @@
 package com.tallerwebi.dominio.excepcion;
 
 public class ExcepcionBaseDeDatos extends Exception{
-     public ExcepcionBaseDeDatos(String mensaje) {
+    private static final String mensaje = "Base de datos no disponible";
+     public ExcepcionBaseDeDatos() {
          super(mensaje);
      }
+    public ExcepcionBaseDeDatos(String mensaje) {
+        super(mensaje);
+    }
 
-    public ExcepcionBaseDeDatos(String message, Throwable cause) {
-        super(message, cause);
+    public ExcepcionBaseDeDatos(Throwable cause) {
+        super(mensaje, cause);
+    }
+    public ExcepcionBaseDeDatos(String mensaje, Throwable cause) {
+        super(mensaje, cause);
     }
 }

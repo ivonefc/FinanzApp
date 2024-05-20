@@ -2,9 +2,11 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.RepositorioUsuario;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +21,21 @@ public class  RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public Usuario buscarUsuario(String email, String password) {
-
-        final Session session = sessionFactory.getCurrentSession();
-        return (Usuario) session.createCriteria(Usuario.class)
-                .add(Restrictions.eq("email", email))
-                .add(Restrictions.eq("password", password))
-                .uniqueResult();
+    public Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+        Usuario usuario = null;
+        try {
+            final Session session = sessionFactory.getCurrentSession();
+            usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email and u.password = :password")
+                    .setParameter("email", email)
+                    .setParameter("password", password)
+                    .uniqueResult();
+            if (usuario == null) {
+                throw new UsuarioInexistente();
+            }
+        }catch (HibernateException e){
+            throw new ExcepcionBaseDeDatos(e);
+        }
+        return usuario;
     }
 
     @Override
@@ -34,10 +44,19 @@ public class  RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public Usuario buscar(String email) {
-        return (Usuario) sessionFactory.getCurrentSession().createCriteria(Usuario.class)
-                .add(Restrictions.eq("email", email))
-                .uniqueResult();
+    public Usuario buscarUsuarioPorEmail(String email) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+        try{
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
+                    .setParameter("email", email)
+                    .uniqueResult();
+            if(usuario == null){
+                throw new UsuarioInexistente();
+            }
+            return usuario;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
+        }
     }
 
     @Override

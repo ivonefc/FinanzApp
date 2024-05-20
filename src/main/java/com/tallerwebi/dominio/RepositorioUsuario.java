@@ -1,11 +1,15 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+
 public interface RepositorioUsuario {
 
-    Usuario buscarUsuario(String email, String password);
+    Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos;
     void guardar(Usuario usuario);
-    Usuario buscar(String email);
+    Usuario buscarUsuarioPorEmail(String email) throws UsuarioInexistente, ExcepcionBaseDeDatos;
     void modificar(Usuario usuario);
     Usuario obtenerUsuarioPorId(Long id);
 }
+
 

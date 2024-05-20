@@ -4,13 +4,9 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.movimiento.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.HttpServletRequest;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -22,7 +18,6 @@ public class ServicioMovimientoTest {
     RepositorioMovimiento repositorioMovimientoMock;
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
-    HttpServletRequest httpServletRequestMock;
 
      @BeforeEach
     public void init(){
@@ -30,7 +25,6 @@ public class ServicioMovimientoTest {
          repositorioCategoriaMock = mock(RepositorioCategoria.class);
          repositorioUsuarioMock = mock(RepositorioUsuario.class);
          servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
-         httpServletRequestMock = mock(HttpServletRequest.class);
      }
 
      @Test
