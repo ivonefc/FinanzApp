@@ -11,6 +11,8 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nombre;
+
     private String email;
 
     private String password;
@@ -25,6 +27,16 @@ public class Usuario {
         this.rol = rol;
         this.activo = activo;
     }
+
+    public Usuario(String nombre, String email, String password, String rol, Boolean activo) {
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.rol = rol;
+        this.activo = activo;
+    }
+
+
 
     public Usuario(){}
 
