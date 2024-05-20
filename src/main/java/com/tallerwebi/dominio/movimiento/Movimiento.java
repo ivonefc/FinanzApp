@@ -1,7 +1,8 @@
 package com.tallerwebi.dominio.movimiento;
 
 
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
+import com.tallerwebi.dominio.usuario.Usuario;
 import javax.persistence.*;
 import java.time.LocalDate;
 

@@ -4,8 +4,8 @@ package com.tallerwebi.dominio.movimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.presentacion.DatosAgregarMovimiento;
-import com.tallerwebi.presentacion.DatosEditarMovimiento;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
+import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import java.time.LocalDate;
 import java.util.List;
 
