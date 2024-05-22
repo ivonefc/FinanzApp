@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.meta;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,5 +64,20 @@ public class ControladorMeta {
         }
         return new ModelAndView("redirect:/metas");
     }
+
+    @GetMapping("/metas/editar/{id}")
+    public ModelAndView irAEditarMetas(HttpServletRequest request, @ModelAttribute("id") Long id) throws ExcepcionBaseDeDatos {
+        ModelMap modelo = new ModelMap();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Meta meta = servicioMeta.obtenerMetaPorId(id);
+        DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
+        modelo.put("meta", meta);
+        return new ModelAndView("editar-meta", modelo);
+    }
+
 
 }

@@ -47,4 +47,21 @@ public class RepositorioMetaImpl implements RepositorioMeta {
             throw new ExcepcionBaseDeDatos();
         }
     }
+
+    @Override
+    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Meta meta = session.createQuery("FROM Meta M WHERE M.id = :idMeta", Meta.class)
+                    .setParameter("idMeta", idMeta)
+                    .uniqueResult();
+            if(meta == null) {
+                throw new ExcepcionBaseDeDatos();
+            }
+            return meta;
+
+        }catch (HibernateException e){
+            throw new ExcepcionBaseDeDatos();
+        }
+    }
 }

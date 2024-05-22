@@ -36,4 +36,11 @@ public class ServicioMetaImpl implements ServicioMeta{
         Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto());
         repositorioMeta.guardar(meta);
     }
+
+    @Override
+    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos {
+        return repositorioMeta.obtenerMetaPorId(idMeta);
+    }
+
+
 }

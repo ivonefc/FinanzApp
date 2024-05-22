@@ -7,4 +7,5 @@ import com.tallerwebi.presentacion.meta.DatosMeta;
 
 public interface ServicioMeta {
     void guardarMeta(Long idUsuario, DatosMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente;
+    Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos;
 }

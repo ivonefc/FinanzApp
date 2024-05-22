@@ -9,4 +9,6 @@ public interface RepositorioMeta {
     void guardar(Meta meta) throws ExcepcionBaseDeDatos;
 
     void existeMetaConUsuarioYCategoria(Usuario usuario, CategoriaMovimiento categoria) throws ExcepcionCategoriaConMetaExistente, ExcepcionBaseDeDatos;
+
+    Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos;
 }
