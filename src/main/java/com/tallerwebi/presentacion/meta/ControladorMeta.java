@@ -52,6 +52,7 @@ public class ControladorMeta {
         ModelMap modelo = new ModelMap();
         try {
             servicioMeta.guardarMeta(idUsuario, datosMeta);
+            return new ModelAndView("redirect:/metas");
         } catch (ExcepcionCamposInvalidos e) {
             modelo.put("errores", e.getErrores());
             modelo.put("meta", new DatosMeta());
@@ -61,7 +62,6 @@ public class ControladorMeta {
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
         }
-        return new ModelAndView("redirect:/metas");
     }
 
 }
