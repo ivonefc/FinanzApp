@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Agregar metas</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Bootstrap css / Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Mi CSS-->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+</head>
+
+<body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main d-flex justify-content-center">
+    <div class="card w-75 mb-3">
+        <div class="card-body">
+            <legend>Agregar meta</legend>
+            <form action="#" th:action="@{/metas/guardar}" method="POST" th:object="${meta}">
+                <fieldset>
+                    <div class="mb-3">
+                        <label for="categoriaMovimiento" class="form-label">Categoría: </label>
+                        <select th:field="*{categoria}" id="categoriaMovimiento" class="form-select">
+                            <option value="">Seleccione la categoría</option>
+                            <option value="RESTAURANTE">RESTAURANTE</option>
+                            <option value="ENTRETENIMIENTO">ENTRETENIMIENTO</option>
+                            <option value="INDUMENTARIA">INDUMENTARIA</option>
+                            <option value="TRANSPORTE">TRANSPORTE</option>
+                            <option value="PAGO_DE_SERVICIOS">PAGO_DE_SERVICIOS</option>
+                            <option value="SUPERMERCADO">SUPERMERCADO</option>
+                            <option value="SALUD_BELLEZA">SALUD_BELLEZA</option>
+                        </select>
+                        <p th:if="${errores != null && errores.get('categoria') != null}" class="alert alert-danger" th:text="${errores.get('categoria')}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="monto" class="form-label">Monto: </label>
+                        <input th:field="*{monto}" id="monto" type="number" class="form-control">
+                        <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/spring/metas" class="btn btn-warning" style="color:white">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                    <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
+                    </p>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

@@ -1,12 +1,14 @@
 package com.tallerwebi.dominio.movimiento;
 
-import com.tallerwebi.dominio.RepositorioUsuario;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
+import com.tallerwebi.dominio.categoria.RepositorioCategoria;
+import com.tallerwebi.dominio.usuario.RepositorioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.presentacion.DatosAgregarMovimiento;
-import com.tallerwebi.presentacion.DatosEditarMovimiento;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
+import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

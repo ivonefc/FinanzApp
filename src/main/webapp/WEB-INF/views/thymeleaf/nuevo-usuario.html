@@ -1,6 +1,26 @@
 <!DOCTYPE HTML>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head(title='FinazApp')"><meta charset="utf-8"></head>
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Nuevo usuario</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Bootstrap css / Bootstrap Icons -->
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+  <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+  <!-- Mi CSS-->
+  <link th:href="@{/css/main.css}" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/nuevo-usuario.css}">
+</head>
 
 <body>
 
@@ -20,21 +40,29 @@
         <h3 class="form-signin-heading">Nuevo Usuario</h3>
         <h5>Ingrese sus datos</h5>
         <hr class="colorgraph"><br>
-
-        <label for="email">Email:</label>
-        <input th:field="*{email}" id="email" class="form-control" required/>
-        <label for="password">Contraseña:</label>
-        <input th:field="*{password}" type="password" id="password" class="form-control" required/>
-
+        <div>
+          <label for="email">Nombre:</label>
+          <input th:field="*{nombre}" id="nombre" class="form-control"/>
+          <p th:if="${errores != null && errores.get('nombre') != null}" class="alert alert-danger" th:text="${errores.get('nombre')}"></p>
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input th:field="*{email}" id="email" class="form-control"/>
+          <p th:if="${errores != null && errores.get('email') != null}" class="alert alert-danger" th:text="${errores.get('email')}"></p>
+        </div>
+        <div>
+          <label for="password">Contraseña:</label>
+          <input th:field="*{password}" type="password" id="password" class="form-control"/>
+          <p th:if="${errores != null && errores.get('password') != null}" class="alert alert-danger" th:text="${errores.get('password')}"></p>
+        </div>
 <!--        Agregar los campos nombre y apellido -->
 <!--        <label for="nombre">Nombre:</label>-->
 <!--        <input th:field="*{nombre}" id="nombre" class="form-control" required/>-->
 <!--        <label for="apellido">Apellido:</label>-->
 <!--        <input th:field="*{apellido}" id="apellido" class="form-control" required/>-->
 
-
         <button id="btn-registrarme" class="btn btn-lg btn-primary btn-block" Type="Submit">Registrarme</button>
-        <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
+        <p th:if="${error != null}" class="alert alert-danger" th:text="${error}">
         </p>
       </form>
 

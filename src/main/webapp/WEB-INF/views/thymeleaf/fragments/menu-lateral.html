@@ -33,14 +33,26 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/metas}">
-                <i class="bi bi-cash-coin"></i><span>Metas</span>
+            <a class="nav-link collapsed" data-bs-target="#metas-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-cash-coin"></i><span>Metas</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
+            <ul id="metas-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a th:href="@{/metas}">
+                        <i class="bi bi-circle"></i><span>Seguimiento de metas</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/metas/agregar}">
+                        <i class="bi bi-circle"></i><span>Agregar meta</span>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/cuentas-compartidas}">
-                <i class="bi bi-bank"></i><span>Cuentas compartidas</span>
+            <a class="nav-link collapsed" th:href="@{/movimientos-compartidos}">
+                <i class="bi bi-bank"></i><span>Movimientos compartidos</span>
             </a>
         </li>
 
