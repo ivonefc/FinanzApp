@@ -75,6 +75,20 @@ public class ControladorMetaTest {
     }
 
     @Test
+    public void crearMetaQueAlQuererAgregarUnaMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
+
+        doNothing().when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
+
+        ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
+
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/metas"));
+        verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
+    }
+
+    @Test
     public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         doNothing().when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
@@ -161,4 +175,7 @@ public class ControladorMetaTest {
         assertThat(modelAndView.getModel().get("error").toString(), equalToIgnoringCase("La categoria que seleccionaste ya tiene una meta establecida."));
         verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
     }
+
+
+
 }
