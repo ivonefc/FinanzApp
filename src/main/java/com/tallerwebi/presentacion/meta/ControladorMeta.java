@@ -64,4 +64,48 @@ public class ControladorMeta {
         }
     }
 
+//    @PostMapping("/metas/eliminar")
+//    public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
+//        HttpSession httpSession = request.getSession(false);
+//        if(httpSession == null){
+//            return new ModelAndView("redirect:/login");
+//        }
+//        Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
+//        ModelMap modelo = new ModelMap();
+//        try {
+//            servicioMeta.eliminarMeta(idUsuario, datosMeta);
+//        } catch (ExcepcionCamposInvalidos e) {
+//            modelo.put("errores", e.getErrores());
+//            modelo.put("meta", new DatosMeta());
+//            return new ModelAndView("agregar-meta", modelo);
+//        } catch (ExcepcionCategoriaConMetaExistente e) {
+//            modelo.put("error", e.getMessage());
+//            modelo.put("meta", new DatosMeta());
+//            return new ModelAndView("agregar-meta", modelo);
+//        }
+//        return new ModelAndView("redirect:/metas");
+//    }
+//
+//    @PostMapping("/metas/modificar")
+//    public ModelAndView modificarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
+//        HttpSession httpSession = request.getSession(false);
+//        if(httpSession == null){
+//            return new ModelAndView("redirect:/login");
+//        }
+//        Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
+//        ModelMap modelo = new ModelMap();
+//        try {
+//            servicioMeta.modificarMeta(idUsuario, datosMeta);
+//        } catch (ExcepcionCamposInvalidos e) {
+//            modelo.put("errores", e.getErrores());
+//            modelo.put("meta", new DatosMeta());
+//            return new ModelAndView("agregar-meta", modelo);
+//        } catch (ExcepcionCategoriaConMetaExistente e) {
+//            modelo.put("error", e.getMessage());
+//            modelo.put("meta", new DatosMeta());
+//            return new ModelAndView("agregar-meta", modelo);
+//        }
+//        return new ModelAndView("redirect:/metas");
+//    }
+
 }
