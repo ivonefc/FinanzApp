@@ -9,7 +9,7 @@ public interface RepositorioUsuario {
     void guardar(Usuario usuario);
     Usuario buscarUsuarioPorEmail(String email) throws UsuarioInexistente, ExcepcionBaseDeDatos;
     void modificar(Usuario usuario);
-    Usuario obtenerUsuarioPorId(Long id);
+    Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos;
 }
 
 

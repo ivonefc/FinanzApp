@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 @Service("servicioMovimiento")
@@ -34,13 +35,13 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     }
 
     @Override
-    public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{
+    public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{ //ID DE USUARIO
         return repositorioMovimiento.obtenerMovimientos(idUsuario);
     }
 
     @Transactional
     @Override
-    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+    public Movimiento obtenerMovimientoPorId(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos { //ID DE MOVIMIENTO
         return repositorioMovimiento.obtenerMovimientoPorId(id);
     }
 
@@ -53,7 +54,14 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         Double monto = datosEditarMovimiento.getMonto();
         Long id = datosEditarMovimiento.getId();
         CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
+        if (categoriaMovimiento == null) {
+            Map<String, String> errores = new HashMap<>();
+            errores.put("categoria", "La categoría no existe");
+            throw new ExcepcionCamposInvalidos(errores);
+        }
         Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
+        if (movimiento == null)
+            throw new ExcepcionMovimientoNoEncontrado("El movimiento no existe");
         movimiento.setCategoria(categoriaMovimiento);
         movimiento.setDescripcion(descripcion);
         movimiento.setMonto(monto);
@@ -64,6 +72,8 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
+        if (movimiento == null)
+            throw new ExcepcionMovimientoNoEncontrado("No se encontró ningún movimiento con el ID proporcionado");
         repositorioMovimiento.eliminarMovimiento(movimiento);
     }
 
@@ -72,7 +82,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         return repositorioMovimiento.obtenerMovimientosPorFecha(idUsuario, fecha);
     }
 
-   @Transactional
+    @Transactional
     @Override
     public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
        datosAgregarMovimiento.validarCampos();
