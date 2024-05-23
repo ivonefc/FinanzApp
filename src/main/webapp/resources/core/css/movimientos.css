@@ -43,8 +43,8 @@
     display: flex;
     flex-direction: column;
     row-gap: 20px;
-    margin-top:65px;
 }
+
 .contenedor-grafico-calendario div{
     width: 100%;
 }
