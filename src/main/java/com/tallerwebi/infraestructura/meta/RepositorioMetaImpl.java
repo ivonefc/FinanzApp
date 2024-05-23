@@ -28,7 +28,6 @@ public class RepositorioMetaImpl implements RepositorioMeta {
         }catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
-
     }
 
     @Override
