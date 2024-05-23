@@ -37,18 +37,6 @@ public class ControladorPanel {
         return new ModelAndView("panel");
     }
 
-
-    /*@GetMapping("/panel/montosPorCategoria")
-    @ResponseBody
-    public Map<String, Double> obtenerMontosPorCategoria(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null)
-            return null;
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        Map<String, Double> montos = servicioPanel.obtenerMontosPorCategoria(idUsuario);
-        return montos;
-    }*/
-
     @GetMapping("/panel/egresos")
     @ResponseBody
     public List<Movimiento> obtenerEgresos(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
@@ -70,4 +58,15 @@ public class ControladorPanel {
         List<Movimiento> ingresos = servicioPanel.obtenerMovimientosIngresosPorUsuario(idUsuario);
         return ingresos;
     }
+
+    /*@GetMapping("/panel/montosPorCategoria")
+    @ResponseBody
+    public Map<String, Double> obtenerMontosPorCategoria(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null)
+            return null;
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Map<String, Double> montos = servicioPanel.obtenerMontosPorCategoria(idUsuario);
+        return montos;
+    }*/
 }
