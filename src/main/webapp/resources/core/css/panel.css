@@ -1,0 +1,21 @@
+.contenedor-graficos {
+    display: flex;
+    margin-top: 10px;
+}
+
+.meses{
+    text-align: center;
+}
+
+.lineas {
+    height: 357px;
+    width: 814px;
+}
+
+.contenedor-monto-total{
+    width: 250px;
+}
+
+.contenedor-grafico-categorias{
+    margin-left: 10px;
+}
