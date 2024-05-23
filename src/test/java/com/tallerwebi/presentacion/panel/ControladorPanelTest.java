@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion.panel;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import org.junit.jupiter.api.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,7 +25,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel(){
+    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel() throws ExcepcionBaseDeDatos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -36,7 +37,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
