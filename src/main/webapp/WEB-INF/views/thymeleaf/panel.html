@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="head(title)">
+<head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title th:text="${title}">FinanzApp</title>
+  <title>Panel</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -34,24 +34,26 @@
   <div class="pagetitle">
     <h1>Bienvenido!</h1>
   </div>
-  <div class="contenedor-monto-total">
-    <div class="card w100">
-      <div class="card-body">
-        <h5>Saldo disponible:</h5>
-        <div id="saldoTotal">Cargando...</div>
-      </div>
-    </div>
-  </div>
-  <div class="contenedor-graficos">
-    <div class="contenedor-grafico-ingresos-egresos">
-      <div class="card w100">
-        <div class="card-body lineas">
-          <canvas id="myChartlineas"></canvas>
+  <div class="container">
+    <div  class="contenedor-total-grafico">
+      <div class="contenedor-monto-total">
+        <div class="card">
+          <div class="card-body">
+            <h5>Saldo disponible:</h5>
+            <div id="saldoTotal">Cargando...</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="contenedor-grafico-categorias">
-      <div class="card w100">
+      <div class="contenedor-grafico-ingresos-egresos">
+        <div class="card">
+          <div class="card-body lineas">
+            <canvas id="myChartlineas"></canvas>
+          </div>
+        </div>
+      </div>
+  </div>
+    <div class="contenedor-grafico-categorias card">
+      <div class="card-body">
         <select class="meses" id="mesesSelect">
           <option value="0">Enero</option>
           <option value="1">Febrero</option>
@@ -73,13 +75,13 @@
       </div>
     </div>
   </div>
-
 </main>
 
 <!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
 <!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:src="@{/js/panel.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>

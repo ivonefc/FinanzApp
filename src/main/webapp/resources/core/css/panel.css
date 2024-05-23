@@ -1,12 +1,45 @@
-.contenedor-graficos {
+.container{
     display: flex;
-    margin-top: 10px;
+    width: 100%;
+    column-gap: 20px;
+    row-gap: 20px;
+}
+
+.container .contenedor-total-grafico{
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+    row-gap: 20px;
+}
+
+.container .contenedor-grafico-categorias{
+    width: 35%;
+}
+
+@media (max-width: 768px){
+    .container .contenedor-grafico-categorias{
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px){
+    .container .contenedor-total-grafico{
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container{
+        flex-direction: column;
+    }
 }
 
 .meses{
     text-align: center;
 }
 
+
+/*
 .lineas {
     height: 357px;
     width: 814px;
@@ -19,3 +52,5 @@
 .contenedor-grafico-categorias{
     margin-left: 10px;
 }
+
+ */
