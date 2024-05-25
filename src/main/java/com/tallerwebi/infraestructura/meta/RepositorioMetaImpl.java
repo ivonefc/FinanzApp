@@ -3,6 +3,7 @@ package com.tallerwebi.infraestructura.meta;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -43,6 +44,18 @@ public class RepositorioMetaImpl implements RepositorioMeta {
                 throw new ExcepcionCategoriaConMetaExistente();
             }
         }catch (HibernateException e){
+            throw new ExcepcionBaseDeDatos();
+        }
+    }
+
+    @Override
+    public Meta obtenerMetaPorId(Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente{  // BUSCA META POR ID
+        try {
+            Meta meta = sessionFactory.getCurrentSession().get(Meta.class, id);
+            if (meta == null)
+                throw new ExcepcionMetaNoExistente();
+            return meta;
+        } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
     }

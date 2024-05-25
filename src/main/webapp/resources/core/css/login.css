@@ -7,7 +7,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: calc(100vh - 60px); /* Ajusta el valor 60px según la altura de tu footer */
+    min-height: calc(100vh - 60px);
 }
 
 /* Estilo del nav */
@@ -39,14 +39,22 @@ nav a {
     background-color: var(--azul-uno);
     color: var(--blanco);
     margin-bottom: 0.75em;
+    margin-top: 0.75em; //
 }
 
 /* Estilo del form */
 form{
     margin: auto;
+    padding-bottom: 10px; //
 }
 
 /* Estilo del header del form */
 h3{
     margin-top: 0.75em;
+}
+
+/* Estilo del label */
+label{
+    color: var(--fuente);
+    padding-top: 1em; //
 }
