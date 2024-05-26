@@ -22,6 +22,13 @@ public class ServicioPanelImpl implements ServicioPanel{
     @Autowired
     private ServicioMovimiento servicioMovimiento;
 
+    public ServicioPanelImpl(ServicioMovimiento servicioMovimiento) {
+        this.servicioMovimiento = servicioMovimiento;
+    }
+
+    public ServicioPanelImpl() {
+    }
+
 
     /*public Map<String, Double> obtenerMontosPorCategoria(Long idUsuario) throws ExcepcionBaseDeDatos {
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
@@ -38,6 +45,8 @@ public class ServicioPanelImpl implements ServicioPanel{
 
     public List<Movimiento> obtenerMovimientosEgresosPorUsuario(Long idUsuario) throws ExcepcionBaseDeDatos {
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
+
+
 
         List<Movimiento> movimientosEgresos = movimientos.stream()
                 .filter(movimiento -> "EGRESO".equals(movimiento.getCategoria().getTipo().getNombre()))
