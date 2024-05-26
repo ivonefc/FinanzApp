@@ -6,9 +6,15 @@ import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.presentacion.meta.DatosMeta;
+import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -44,33 +50,23 @@ public class ServicioMetaTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionCamposInvalidosSiNoSeEnviaCategoria() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionCamposInvalidosSiNoSeEnviaCategoria() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, ExcepcionCamposInvalidos {
         // preparacion
         DatosMeta datosMeta = new DatosMeta();
-        datosMeta.setMonto(1000.0);
         Long idUsuario = 1L;
+        ServicioMeta servicioMetaMock = mock(ServicioMeta.class);
+        Map<String, String> errores = new HashMap<>();
+        errores.put("categoria", "El campo es requerido");
+        errores.put("monto", "El campo es requerido");
+        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
+        doThrow(excepcion).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
         // ejecucion y validacion
-        try {
-            servicioMeta.guardarMeta(idUsuario, datosMeta);
-        } catch (ExcepcionCamposInvalidos e) {
-            verify(repositorioMetaMock, times(0)).guardar(any(Meta.class));
-        }
-    }
-
-    @Test
-    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionCamposInvalidosSiNoSeEnviaMonto() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
-        // preparacion
-        DatosMeta datosMeta = new DatosMeta();
-        datosMeta.setCategoria("Comida");
-        Long idUsuario = 1L;
-
-        // ejecucion y validacion
-        try {
-            servicioMeta.guardarMeta(idUsuario, datosMeta);
-        } catch (ExcepcionCamposInvalidos e) {
-            verify(repositorioMetaMock, times(0)).guardar(any(Meta.class));
-        }
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMetaMock.guardarMeta(idUsuario, datosMeta));
+        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(2));
+        assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
+        verify(repositorioMetaMock, times(0)).guardar(any(Meta.class));
     }
 
     @Test
