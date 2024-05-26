@@ -19,10 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
@@ -111,6 +108,21 @@ public class ControladorMovimientoTest {
         //validacion
         assertThat(movimientos, Matchers.nullValue());
         verify(httpSessionMock, times(0)).getAttribute("idUsuario");
+    }
+
+    @Test
+    public void queAlQuererObtenerMovimientosPorFechaYNoTengaMovimientosDevuelvaListaVaciaYMensaje() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMovimientoMock.obtenerMovimientosPorFecha(anyLong(), any())).thenReturn(Collections.emptyList());
+
+        //ejecucion
+        List<Movimiento> movimientos = controladorMovimiento.obtenerMovimientosPorFecha("2021-06-01", httpServletRequestMock);
+
+        //validacion
+        assertThat(movimientos, IsIterableWithSize.iterableWithSize(0));
+        verify(httpSessionMock, times(1)).getAttribute("idUsuario");
     }
 
     @Test
@@ -213,8 +225,6 @@ public class ControladorMovimientoTest {
     @Test
     public void queAlQuererEditarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         //preparacion
-        Movimiento movimientoMock = mock(Movimiento.class);
-        CategoriaMovimiento categoriaMock = mock(CategoriaMovimiento.class);
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionBaseDeDatos excepcion = new ExcepcionBaseDeDatos("Base de datos no disponible");

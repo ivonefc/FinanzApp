@@ -371,6 +371,22 @@ public class RepositorioMovimientoTest {
         }, "Base de datos no disponible");
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioLosMovimientosDeUnUsuarioPorFechaDevuelvaListaVaciaAlNoTenerMovimientos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
+        //ejecucion
+        List<Movimiento> movimientos =  repositorioMovimiento.obtenerMovimientosPorFecha(1L, LocalDate.now());
+
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, empty());
+    }
+
     // METODOS PRIVADOS
     private void guardarCategoria(CategoriaMovimiento categoria) {
         sessionFactory.getCurrentSession().save(categoria);
