@@ -18,7 +18,7 @@ INSERT INTO categorias_movimiento(id, nombre, id_tipo) VALUES(null, 'SUPERMERCAD
 INSERT INTO categorias_movimiento(id, nombre, id_tipo) VALUES(null, 'SALUD_BELLEZA', 2);
 
 
-INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Ropa', '2024-05-15', 30000, 7, 1);
+INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Ropa', '2023-05-15', 30000, 7, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Cobro', '2024-05-15', 100000, 1, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Mercaderia', '2024-05-15', 20000, 10, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Gas', '2024-02-15', 30000, 9, 1);
