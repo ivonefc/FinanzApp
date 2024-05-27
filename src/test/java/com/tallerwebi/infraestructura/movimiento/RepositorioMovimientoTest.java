@@ -1,17 +1,19 @@
 package com.tallerwebi.infraestructura.movimiento;
 
-import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
+import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -21,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -387,9 +389,62 @@ public class RepositorioMovimientoTest {
         assertThat(movimientos, empty());
     }
 
+    //TESTEANDO EL METODO obtenerCantidadDePaginas()
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarCantidadDeMovimientosDeUnUsuarioDevuelvaLaCantidadDeMovimientos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+        guardarCategoria(categoria);
+        CategoriaMovimiento categoriaObtenida = obtenerCategoriaPorId(1L);
+
+        generarMovimientos(20, usuarioObtenido, categoriaObtenida);
+
+        //ejecucion
+        Long cantidadDePaginas = repositorioMovimiento.obtenerCantidadDeMovimientosPorId(usuarioObtenido.getId());
+
+        //validacion
+        assertThat(cantidadDePaginas, equalTo(20L));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queAlSolicitarCantidadDeMovimientosDeUnUsuarioSinMovimientosDevuelvaCero() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+
+        //ejecucion
+        Long cantidadDePaginas = repositorioMovimiento.obtenerCantidadDeMovimientosPorId(usuarioObtenido.getId());
+
+        //validacion
+        assertThat(cantidadDePaginas, equalTo(0L));
+    }
     // METODOS PRIVADOS
     private void guardarCategoria(CategoriaMovimiento categoria) {
         sessionFactory.getCurrentSession().save(categoria);
+    }
+
+    private CategoriaMovimiento obtenerCategoriaPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(CategoriaMovimiento.class, id);
+    }
+
+    private void generarMovimientos(int cantidadDeMovimientos, Usuario usuario, CategoriaMovimiento categoria) {
+        for (int i = 0; i < cantidadDeMovimientos; i++) {
+            Movimiento movimiento = new Movimiento("Descripcion: "+ i, i + 0.0, LocalDate.now(), categoria, usuario);
+            sessionFactory.getCurrentSession().save(movimiento);
+        }
     }
 
     private Usuario obtenerUsuarioPorId(Long id) {

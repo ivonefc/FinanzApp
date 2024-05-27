@@ -19,4 +19,5 @@ public interface RepositorioMovimiento {
     List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos;
 
     void eliminarMovimiento(Movimiento movimiento) throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado;
+    Long obtenerCantidadDeMovimientosPorId(Long idUsuario) throws ExcepcionBaseDeDatos;
 }

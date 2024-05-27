@@ -105,4 +105,16 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
         }
     }
+
+    //Método para obtener la cantidad de páginas según la cantidad de movimientos y la cantidad que
+    // se quiere mostrar en cada página de la paginación.
+
+    @Override
+    public Long obtenerCantidadDeMovimientosPorId(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(m) FROM Movimiento m Where m.usuario.id = :idUsuario", Long.class)
+                .setParameter("idUsuario", idUsuario)
+                .uniqueResult();
+    }
+
 }
