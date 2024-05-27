@@ -3,22 +3,44 @@ document.addEventListener("DOMContentLoaded", async function () {
     const canvas = document.getElementById('myChart');
     const nodoDivGraficoCategorias = document.getElementById("contenedor-grafico-categorias");
     const nodoDivGraficoIngresosEgresos = document.getElementById("contenedor-grafico-ingresos-egresos");
-    const selectMeses = document.getElementById('mesesSelect');
-    const nodo = document.getElementById("movimientosVacios")
+    const mesesSelect = document.getElementById('mesesSelect');
+    const aniosSelect = document.getElementById('aniosSelect');
+    const nodo = document.getElementById("movimientosVacios");
+    let chartLineas;
+    let chartDona;
 
     // Seleccionar el mes actual (de 0 a 11) y actualizar el gráfico
     const mesActual = new Date().getMonth();
     mesesSelect.selectedIndex = mesActual;
-    actualizarGraficoPorMes(mesActual+1);
+    actualizarGraficoDona(mesActual+1);
 
     // Escuchar el cambio en el select de meses
     mesesSelect.addEventListener('change', async function () {
         const mesSeleccionado = parseInt(mesesSelect.value);
-        await actualizarGraficoPorMes(mesSeleccionado+1);
+        await actualizarGraficoDona(mesSeleccionado+1);
     });
 
+    // Seleccionar el año actual y actualizar el gráfico
+    const anioActual = new Date().getFullYear();
+    aniosSelect.selectedIndex = anioActual;
+    for(let i = 0; i < aniosSelect.options.length; i++) {
+            if(aniosSelect.options[i].value == anioActual) {
+                aniosSelect.selectedIndex = i;
+                break;
+            }
+    }
+    actualizarGraficoLinea();
+
+    // Escuchar el cambio en el select de años
+    aniosSelect.addEventListener('change', async function () {
+        const anioSeleccionado = parseInt(aniosSelect.value);
+        await actualizarGraficoLinea();
+    });
+
+
+
     //ACTUALIZAR GRAFICO
-    async function actualizarGraficoPorMes(mesSeleccionado) {
+    async function actualizarGraficoDona(mesSeleccionado) {
         try {
             const montosMap = await obtenerMontosPorCategoriaPorMes(mesSeleccionado);
 
@@ -47,12 +69,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             };
 
             // Destruir gráfico anterior si existe
-            if (window.chart) {
-                window.chart.destroy();
+            if (chartDona) {
+                chartDona.destroy();
             }
 
             // Crear nuevo gráfico
-            window.chart = new Chart(canvas, {
+            chartDona = new Chart(canvas, {
                 type: 'doughnut',
                 data: data,
                 options: {
@@ -74,70 +96,78 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
     }
+
+    //GRAFICO LINEAS
+    async function actualizarGraficoLinea(){
+            try {
+                    const canvasLineas = document.getElementById('myChartlineas');
+                    const ingresosPorMes = [];
+                    const egresosPorMes = [];
+
+                    for(mes= 1; mes<=12; mes++){
+                        movimientos = await obtenerMontosPorTipoDeCategoriaPorMes(mes);
+                        const ingresos = movimientos.get("ingresos");
+                        const egresos = movimientos.get("egresos");
+                        let sumaIngresos = 0;
+                        let sumaEgresos = 0;
+                        for(ingreso of ingresos) {
+                            if(ingreso.fechayHora[0]==aniosSelect.value){
+                                sumaIngresos += ingreso.monto;
+
+                            }
+
+                        }
+                        for(egreso of egresos) {
+                            if(egreso.fechayHora[0]==aniosSelect.value){
+                                sumaEgresos += egreso.monto;
+                             }
+
+                        }
+                        ingresosPorMes.push(sumaIngresos);
+                        egresosPorMes.push(sumaEgresos);
+                    }
+                    if (!canvasLineas) {
+                        console.error('No se encontró el canvas con el ID canvasiye en el DOM');
+                        return;
+                    }
+
+
+                    const labels = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                    const dataLineas = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Ingresos $',
+                            data: ingresosPorMes,
+                            fill: false,
+                            borderColor: 'rgb(41, 224, 110)',
+                            backgroundColor: 'rgb(41, 224, 110)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Egresos $',
+                            data: egresosPorMes,
+                            fill: false,
+                            borderColor: 'rgb(255, 65, 53)',
+                            backgroundColor: 'rgb(255, 65, 53)',
+                            tension: 0.1
+                        }]
+                    };
+                    if (chartLineas) {
+                        chartLineas.destroy();
+                    }
+                    chartLineas = new Chart(canvasLineas, {
+                        type: 'line',
+                        data: dataLineas
+                    });
+
+                    const mov = obtenerIngresos();
+                    const fyh = mov.fechayHora;
+                } catch (error) {
+                             console.error('Error fetching or processing data:', error);
+                }
+        }
 });
 
-
-//GRAFICO LINEAS
-document.addEventListener("DOMContentLoaded", async function () {
-    try {
-        const canvasLineas = document.getElementById('myChartlineas');
-        const ingresosPorMes = [];
-        const egresosPorMes = [];
-
-        for(mes= 1; mes<=12; mes++){
-            movimientos = await obtenerMontosPorTipoDeCategoriaPorMes(mes);
-            const ingresos = movimientos.get("ingresos");
-            const egresos = movimientos.get("egresos");
-            let sumaIngresos = 0;
-            let sumaEgresos = 0;
-            for(ingreso of ingresos) {
-                sumaIngresos += ingreso.monto;
-            }
-            for(egreso of egresos) {
-                sumaEgresos += egreso.monto;
-            }
-            ingresosPorMes.push(sumaIngresos);
-            egresosPorMes.push(sumaEgresos);
-        }
-        if (!canvasLineas) {
-            console.error('No se encontró el canvas con el ID canvasiye en el DOM');
-            return;
-        }
-
-
-        const labels = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const dataLineas = {
-            labels: labels,
-            datasets: [{
-                label: 'Ingresos $',
-                data: ingresosPorMes,
-                fill: false,
-                borderColor: 'rgb(41, 224, 110)',
-                backgroundColor: 'rgb(41, 224, 110)',
-                tension: 0.1
-            },
-            {
-                label: 'Egresos $',
-                data: egresosPorMes,
-                fill: false,
-                borderColor: 'rgb(255, 65, 53)',
-                backgroundColor: 'rgb(255, 65, 53)',
-                tension: 0.1
-            }]
-        };
-
-        const chartLineas = new Chart(canvasLineas, {
-            type: 'line',
-            data: dataLineas
-        });
-
-        const mov = obtenerIngresos();
-        const fyh = mov.fechayHora;
-    } catch (error) {
-                 console.error('Error fetching or processing data:', error);
-    }
-
-});
 
 
 
@@ -199,6 +229,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
       }
 
+
+//FUNCIONES PARA OBTENER MONTOS
 async function obtenerMontosPorCategoriaPorMes(mesSeleccionado) {
     try {
         const egresos = await obtenerEgresos();
@@ -254,4 +286,21 @@ async function obtenerMontosPorTipoDeCategoriaPorMes(mesSeleccionado) {
     } catch (error) {
         console.error('Error al calcular los egresos por mes:', error);
     }
+
+
 }
+
+
+
+
+/*
+    // Seleccionar el año actual y actualizar el gráfico
+        const añoActual = new Date().getYear();
+        añosSelect.selectedIndex = añoActual;
+        actualizarGraficoPorAño(añoActual);
+
+    // Escuchar el cambio en el select de años
+        añosSelect.addEventListener('change', async function () {
+            const añoSeleccionado = parseInt(añosSelect.value);
+            await actualizarGraficoPorAño(añoSeleccionado);
+        });*/
