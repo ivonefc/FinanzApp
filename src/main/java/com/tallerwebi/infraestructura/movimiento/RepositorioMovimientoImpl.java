@@ -106,15 +106,32 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         }
     }
 
-    //Método para obtener la cantidad de páginas según la cantidad de movimientos y la cantidad que
-    // se quiere mostrar en cada página de la paginación.
+    //Método para obtener la cantidad de movimientos para utilizar para la paginación
 
     @Override
     public Long obtenerCantidadDeMovimientosPorId(Long idUsuario) throws ExcepcionBaseDeDatos {
-        return sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(m) FROM Movimiento m Where m.usuario.id = :idUsuario", Long.class)
-                .setParameter("idUsuario", idUsuario)
-                .uniqueResult();
+        try {
+            return sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(m) FROM Movimiento m Where m.usuario.id = :idUsuario", Long.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .uniqueResult();
+        }catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+    }
+
+    @Override
+    public List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos {
+        try{
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario", Movimiento.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setFirstResult((pagina - 1) * tamanioDePagina)
+                    .setMaxResults(tamanioDePagina)
+                    .getResultList();
+        }catch (HibernateException he){
+            throw new ExcepcionBaseDeDatos(he);
+        }
     }
 
 }

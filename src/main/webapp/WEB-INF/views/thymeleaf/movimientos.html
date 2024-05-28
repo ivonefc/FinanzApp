@@ -48,6 +48,11 @@
                             <!-- etc. -->
                         </span>
                     </li>
+                    <div class="d-flex gap-3">
+                        <span th:each="numeroPagina : ${#numbers.sequence(1, cantidadDePaginas)}">
+                            <a th:href="@{/movimientos(pagina=${numeroPagina})}" th:text="${numeroPagina}"></a>
+                        </span>
+                    </div>
                 </ul>
             </div>
             <div th:if="${#lists.isEmpty(movimientos)}">

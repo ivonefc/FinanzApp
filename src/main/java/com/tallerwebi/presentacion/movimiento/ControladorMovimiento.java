@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.movimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PaginaInexistente;
 import com.tallerwebi.dominio.movimiento.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ public class ControladorMovimiento {
         this.servicioMovimiento = servicioMovimiento;
     }
 
+    /*
     @GetMapping("/movimientos")
     public ModelAndView obtenerMovimientos(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         ModelMap model = new ModelMap();
@@ -38,6 +40,26 @@ public class ControladorMovimiento {
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
         model.put("movimientos", movimientos);
+        return new ModelAndView("movimientos", model);
+    }
+     */
+
+    @GetMapping("/movimientos")
+    public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {
+        ModelMap model = new ModelMap();
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        int tamanioDePagina = 10;
+        List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
+        model.put("movimientos", movimientos);
+        int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(idUsuario, tamanioDePagina);
+        if (pagina > cantidadDePaginas) {
+            throw new PaginaInexistente();
+        }
+        model.put("cantidadDePaginas", cantidadDePaginas);
         return new ModelAndView("movimientos", model);
     }
 

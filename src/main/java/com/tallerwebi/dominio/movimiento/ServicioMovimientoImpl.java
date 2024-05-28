@@ -2,17 +2,17 @@ package com.tallerwebi.dominio.movimiento;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
-import com.tallerwebi.dominio.usuario.RepositorioUsuario;
-import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.usuario.RepositorioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +34,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         this.repositorioUsuario = repositorioUsuario;
     }
 
+    @Transactional
     @Override
     public List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos{ //ID DE USUARIO
         return repositorioMovimiento.obtenerMovimientos(idUsuario);
@@ -77,6 +78,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         repositorioMovimiento.eliminarMovimiento(movimiento);
     }
 
+    @Transactional
     @Override
     public List<Movimiento> obtenerMovimientosPorFecha(Long idUsuario, LocalDate fecha) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientosPorFecha(idUsuario, fecha);
@@ -101,5 +103,17 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
                usuario
        );
        repositorioMovimiento.guardarMovimiento(movimiento);
+    }
+
+    @Transactional
+    @Override
+    public int calcularCantidadDePaginas(Long idUsuario, int tamanioDePaginas) throws ExcepcionBaseDeDatos{
+        Long cantidadDeMovimientos = repositorioMovimiento.obtenerCantidadDeMovimientosPorId(idUsuario);
+        return  (int) Math.ceil((double) cantidadDeMovimientos /tamanioDePaginas);
+    }
+
+    @Override
+    public List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
     }
 }
