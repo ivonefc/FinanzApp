@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion.excepcion;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PaginaInexistente;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,8 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
 public class ControladorDeExcepciones {
-    @ExceptionHandler({ExcepcionBaseDeDatos.class, ExcepcionMovimientoNoEncontrado.class})
-    public ModelAndView excepcionUsuarioInexistente(Exception ex){
+    @ExceptionHandler({ExcepcionBaseDeDatos.class, ExcepcionMovimientoNoEncontrado.class, PaginaInexistente.class})
+    public ModelAndView excepcion(Exception ex){
         ModelMap modelo = new ModelMap();
         modelo.put("error", ex.getMessage());
         return new ModelAndView("error", modelo);

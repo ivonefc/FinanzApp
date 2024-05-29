@@ -1,30 +1,30 @@
 package com.tallerwebi.dominio.movimiento;
 
-import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
-import com.tallerwebi.presentacion.movimiento.*;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
+import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
+import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 public class ServicioMovimientoTest {
@@ -33,6 +33,9 @@ public class ServicioMovimientoTest {
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
     HttpServletRequest httpServletRequestMock;
+    HttpSession httpSessionMock;
+    Usuario usuarioMock;
+    CategoriaMovimiento categoriaMock;
 
      @BeforeEach
     public void init(){
@@ -41,46 +44,9 @@ public class ServicioMovimientoTest {
          repositorioUsuarioMock = mock(RepositorioUsuario.class);
          servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
          httpServletRequestMock = mock(HttpServletRequest.class);
-    }
-
-    @Test
-    public void queAlSolicitarAlServicioObtenerMovimientosDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos { //ID DE USUARIO
-         //preparacion
-         Movimiento movimientoMock1 = mock(Movimiento.class);
-         Movimiento movimientoMock2 = mock(Movimiento.class);
-         when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenReturn(Arrays.asList(movimientoMock1, movimientoMock2));
-
-         //ejecucion
-         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(1L);
-
-         //validacion
-         assertThat(movimientos, notNullValue());
-         assertThat(movimientos, not(empty()));
-         assertThat(movimientos, containsInAnyOrder(movimientoMock1, movimientoMock2));
-         assertThat(movimientos, hasSize(2));
-    }
-
-    @Test
-    public void queAlSolicitarAlServicioUnaListaDeMovimientosDevuelvaUnaListaVacia() throws ExcepcionBaseDeDatos {
-         //preparacion
-         when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenReturn(Collections.emptyList());
-
-         //ejecucion
-         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(1L);
-
-         //validacion
-         assertThat(movimientos, notNullValue());
-         assertThat(movimientos, empty());
-         assertThat(movimientos, hasSize(0));
-    }
-
-    @Test
-    public void queAlSolicitarAlServicioObtenerMovimientosLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
-         //preparacion
-         when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
-
-         //ejecucion y validacion
-        assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMovimiento.obtenerMovimientos(1L));
+         httpSessionMock = mock(HttpSession.class);
+         usuarioMock = mock(Usuario.class);
+         categoriaMock = mock(CategoriaMovimiento.class);
     }
 
     @Test
@@ -169,14 +135,29 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioActualizarMovimientoLanceExcepcionCamposInvalidos()  {
-         //preparacion
-         DatosEditarMovimiento datosEditarMovimiento = mock(DatosEditarMovimiento.class);
-         when(datosEditarMovimiento.getId()).thenReturn(1L);
-         when(datosEditarMovimiento.getCategoria()).thenReturn(null);
+    public void queAlSolicitarAlServicioActualizarYNoSeIngreseNingunDatoNoSePuedaActualizar() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado {
+        //preparacion
+        DatosEditarMovimiento datosActualizarMock = mock(DatosEditarMovimiento.class);
+        when(datosActualizarMock.getDescripcion()).thenReturn(null);
+        when(datosActualizarMock.getTipo()).thenReturn("");
+        when(datosActualizarMock.getCategoria()).thenReturn(null);
+        when(datosActualizarMock.getMonto()).thenReturn(null);
+        ServicioMovimiento servicioMovimientoMock = mock(ServicioMovimiento.class);
+        Map<String, String> errores = new HashMap<>();
+        errores.put("descripcion", "El campo es requerido");
+        errores.put("tipo", "El campo es requerido");
+        errores.put("categoria", "El campo es requerido");
+        errores.put("monto", "El campo es requerido");
+        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
+        doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosActualizarMock);
 
-         //ejecucion y validacion
-         assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimiento.actualizarMovimiento(datosEditarMovimiento));
+        //ejecucion y validacion
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoMock.actualizarMovimiento(datosActualizarMock));
+        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(4));
+        assertThat(thrown.getErrores(), hasEntry("descripcion", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("tipo", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
     }
 
     @Test
@@ -195,7 +176,9 @@ public class ServicioMovimientoTest {
     @Test
     public void queAlSolicitarAlServicioEliminarUnMovimientoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
         //preparacion
-        when(repositorioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+        Movimiento movimientoMock = mock(Movimiento.class);
+        when(repositorioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
+        doThrow(ExcepcionBaseDeDatos.class).when(repositorioMovimientoMock).eliminarMovimiento(movimientoMock);
 
         //ejecucion y validacion
         assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMovimiento.eliminarMovimiento(1L));
@@ -257,7 +240,6 @@ public class ServicioMovimientoTest {
         when(datosAgregarMovimiento.getDescripcion()).thenReturn("descripcion");
         when(datosAgregarMovimiento.getMonto()).thenReturn(1.0);
         when(datosAgregarMovimiento.getCategoria()).thenReturn("categoria");
-        Usuario usuarioMock = mock(Usuario.class);
         when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
         CategoriaMovimiento categoriaMovimientoMock = mock(CategoriaMovimiento.class);
         when(repositorioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(categoriaMovimientoMock);
@@ -283,14 +265,99 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionCamposInvalidos() throws ExcepcionCamposInvalidos {
+    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionCamposInvalidos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos {
         //preparacion
-        DatosAgregarMovimiento datosAgregarMovimiento = mock(DatosAgregarMovimiento.class);
-        when(datosAgregarMovimiento.getDescripcion()).thenReturn("");
-        doThrow(new ExcepcionCamposInvalidos(new HashMap<>())).when(datosAgregarMovimiento).validarCampos();
+        DatosAgregarMovimiento datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
+        when(datosAgregarMovimientoMock.getDescripcion()).thenReturn(null);
+        when(datosAgregarMovimientoMock.getMonto()).thenReturn(null);
+        when(datosAgregarMovimientoMock.getCategoria()).thenReturn("");
+        ServicioMovimiento servicioMovimientoMock = mock(ServicioMovimiento.class);
+        Map<String, String> errores = new HashMap<>();
+        errores.put("descripcion", "El campo es requerido");
+        errores.put("monto", "El campo es requerido");
+        errores.put("categoria", "El campo es requerido");
+        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
+        doThrow(excepcion).when(servicioMovimientoMock).nuevoMovimiento(anyLong(), eq(datosAgregarMovimientoMock));
 
         //ejecucion y validacion
-        assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimiento.nuevoMovimiento(1L, datosAgregarMovimiento));
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoMock.nuevoMovimiento(1L, datosAgregarMovimientoMock));
+        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(3));
+        assertThat(thrown.getErrores(), hasEntry("descripcion", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
     }
 
+    //Testeando el método calcularCantidadDePaginas para la paginación.
+    @Test
+    public void queAlSolicitarLaCantidadDePaginasDevuelvaLaDivisionEnteraEntreLaCantidadDeMovimientosYElTamanioDePagina() throws ExcepcionBaseDeDatos{
+        //preparacion
+        when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(20L);
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
+        //ejecucion
+        int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(1L,5);
+
+        //validacion
+        assertThat(cantidadDePaginas, equalTo(4));
+    }
+
+    @Test
+    public void queAlSolicitarLaCantidadDePaginasCuandoLaCantidadDeMovimientosSeaCeroDevuelvaCero() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(0L);
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
+        //ejecucion
+        int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(1L,5);
+
+        //validacion
+        assertThat(cantidadDePaginas, equalTo(0));
+    }
+
+    //Testeando método obtenerMovimientosPorPagina() (paginación)
+    @Test
+    public void queAlSolicitarMovimientosDeUnaPaginaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+         //preparación
+        List<Movimiento> movimientos = generarMovimientos(10);
+        when(repositorioMovimientoMock.obtenerMovimientosPorPagina(anyLong(), anyInt(), anyInt())).thenReturn(movimientos);
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
+
+
+        //ejecución
+        List <Movimiento> movimientosObtenidos = servicioMovimiento.obtenerMovimientosPorPagina(1L, 1, 10);
+
+        //validacion
+        assertThat(movimientosObtenidos, not(empty()));
+        assertThat(movimientosObtenidos, hasSize(10));
+    }
+    @Test
+    public void queAlSolicitarAlServicioUnaListaDeMovimientosPorPaginaDevuelvaUnaListaVacia() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoMock.obtenerMovimientosPorPagina(anyLong(), anyInt(), anyInt())).thenReturn(Collections.emptyList());
+
+        //ejecucion
+        List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorPagina(1L, 1, 5);
+
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, empty());
+        assertThat(movimientos, hasSize(0));
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerMovimientosPorPaginaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoMock.obtenerMovimientosPorPagina(anyLong(), anyInt(), anyInt())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMovimiento.obtenerMovimientosPorPagina(1L, 1, 5));
+    }
+
+    //METODOS PRIVADOS
+
+    private List<Movimiento> generarMovimientos(int cantidadDeMovimientos) {
+         List<Movimiento> movimientos = new ArrayList<>();
+         for(int i = 0; i < cantidadDeMovimientos; i++) {
+             movimientos.add(new Movimiento("Descripcion" + i, i + 0.0, LocalDate.now(), categoriaMock, usuarioMock));
+         }
+         return movimientos;
+    }
 }

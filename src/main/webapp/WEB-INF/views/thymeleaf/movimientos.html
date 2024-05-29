@@ -31,7 +31,7 @@
 
 <main id="main" class="main">
     <div class="flex-movimientos">
-        <div class="card w-100">
+        <div class="card w-100" id="movimientoTarjeta">
             <h1 class="pt-3 text-center">Movimientos</h1>
             <div class="card-body" th:if="${not #lists.isEmpty(movimientos)}">
                 <ul class="list-group" id="lista-movimientos">
@@ -48,6 +48,11 @@
                             <!-- etc. -->
                         </span>
                     </li>
+                    <div class="d-flex gap-3">
+                        <span th:each="numeroPagina : ${#numbers.sequence(1, cantidadDePaginas)}">
+                            <a th:href="@{/movimientos(pagina=${numeroPagina})}" th:text="${numeroPagina}"></a>
+                        </span>
+                    </div>
                 </ul>
             </div>
             <div th:if="${#lists.isEmpty(movimientos)}">

@@ -37,16 +37,14 @@ public class ControladorLogin {
     @RequestMapping(path = "/validar-login", method = RequestMethod.POST)
     public ModelAndView validarLogin(@ModelAttribute("datosLogin") DatosLogin datosLogin, HttpServletRequest request) throws ExcepcionBaseDeDatos{
         ModelMap model = new ModelMap();
-
-        Usuario usuarioBuscado = null;
         try {
-            usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
+            Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
+            request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
+            return new ModelAndView("redirect:/panel");
         } catch (UsuarioInexistente e) {
             model.put("error", e.getMessage());
             return new ModelAndView("login", model);
         }
-        request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
-        return new ModelAndView("redirect:/panel");
     }
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)

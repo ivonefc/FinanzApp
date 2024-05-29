@@ -3,6 +3,7 @@ package com.tallerwebi.infraestructura.meta;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -28,7 +29,6 @@ public class RepositorioMetaImpl implements RepositorioMeta {
         }catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
-
     }
 
     @Override
@@ -49,18 +49,13 @@ public class RepositorioMetaImpl implements RepositorioMeta {
     }
 
     @Override
-    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos {
+    public Meta obtenerMetaPorId(Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente{  // BUSCA META POR ID
         try {
-            Session session = sessionFactory.getCurrentSession();
-            Meta meta = session.createQuery("FROM Meta M WHERE M.id = :idMeta", Meta.class)
-                    .setParameter("idMeta", idMeta)
-                    .uniqueResult();
-            if(meta == null) {
-                throw new ExcepcionBaseDeDatos();
-            }
+            Meta meta = sessionFactory.getCurrentSession().get(Meta.class, id);
+            if (meta == null)
+                throw new ExcepcionMetaNoExistente();
             return meta;
-
-        }catch (HibernateException e){
+        } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
     }

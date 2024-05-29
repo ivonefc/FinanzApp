@@ -15,6 +15,8 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 
@@ -161,4 +163,21 @@ public class ControladorMetaTest {
         assertThat(modelAndView.getModel().get("error").toString(), equalToIgnoringCase("La categoria que seleccionaste ya tiene una meta establecida."));
         verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
     }
+
+    @Test
+    public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
+        doThrow(excepcionBaseDeDatos).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
+        DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
+
+        ExcepcionBaseDeDatos thrownException = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            controladorMeta.crearMeta(datosMeta, requestMock);
+        });
+
+        assertEquals(excepcionBaseDeDatos.getMessage(), thrownException.getMessage());
+        verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
+    }
+
 }
