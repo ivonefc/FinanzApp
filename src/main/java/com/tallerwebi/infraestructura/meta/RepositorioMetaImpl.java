@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -63,28 +64,33 @@ public class RepositorioMetaImpl implements RepositorioMeta {
     }
 
     @Override
-    public void eliminarMeta(Usuario usuario, DatosMeta datosMeta) throws ExcepcionBaseDeDatos {
+    public void eliminarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        if (meta == null || meta.getId() == null)
+            throw new ExcepcionMetaNoExistente();
+
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.createQuery("DELETE FROM Meta m WHERE m.usuario = :usuario AND m.categoriaMovimiento.nombre = :categoria")
-                    .setParameter("usuario", usuario)
-                    .setParameter("categoria", datosMeta.getCategoria())
-                    .executeUpdate();
+            Meta metaExistente = session.get(Meta.class, meta.getId());
+
+            if (metaExistente == null)
+                throw new ExcepcionMetaNoExistente();
+
+            session.delete(meta);
         } catch (HibernateException e) {
-            throw new ExcepcionBaseDeDatos();
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }
     }
 
     @Override
-    public void actualizarMeta(Long id, DatosEditarMeta datosEditarMeta) throws ExcepcionBaseDeDatos {
+    public void actualizarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
+
         try {
             Session session = sessionFactory.getCurrentSession();
-            Meta meta = session.get(Meta.class, id);
-            meta.setMontoMeta(datosEditarMeta.getMontoMeta());
-            meta.setCategoriaMovimiento(datosEditarMeta.getCategoriaMovimiento());
             session.update(meta);
         } catch (HibernateException e) {
-            throw new ExcepcionBaseDeDatos();
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 }

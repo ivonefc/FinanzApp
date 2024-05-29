@@ -13,6 +13,8 @@ import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -39,23 +41,42 @@ public class ServicioMetaImpl implements ServicioMeta{
         repositorioMeta.guardar(meta);
     }
 
+    @Transactional
     @Override
     public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         return repositorioMeta.obtenerMetaPorId(idMeta);
     }
 
+    @Transactional
     @Override
-    public void eliminarMeta(Long idUsuario, DatosMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente, ExcepcionBaseDeDatos {
-        datosMeta.validarCampos();
-        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
-        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(datosMeta.getCategoria());
-        repositorioMeta.eliminarMeta(usuario, datosMeta);
+    public void actualizarMeta(DatosEditarMeta datosEditarMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        datosEditarMeta.validarCampos();
+        Double monto = datosEditarMeta.getMontoMeta();
+
+        CategoriaMovimiento categoria = datosEditarMeta.getCategoriaMovimiento();
+        if (categoria == null) {
+            Map<String, String> errores = new HashMap<>();
+            errores.put("categoria", "La categoría no existe");
+            throw new ExcepcionCamposInvalidos(errores);
+        }
+
+        Meta meta = repositorioMeta.obtenerMetaPorId(datosEditarMeta.getId());
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
+
+        meta.setCategoriaMovimiento(categoria);
+        meta.setMontoMeta(monto);
+        repositorioMeta.actualizarMeta(meta);
     }
 
+    @Transactional
     @Override
-    public void actualizarMeta(DatosEditarMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void eliminarMeta(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        Meta meta = repositorioMeta.obtenerMetaPorId(idMeta);
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
 
-        repositorioMeta.actualizarMeta(datosMeta.getId(), datosMeta);
+        repositorioMeta.eliminarMeta(meta);
     }
 
 

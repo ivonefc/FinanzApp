@@ -80,44 +80,33 @@ public class ControladorMeta {
         Meta meta = servicioMeta.obtenerMetaPorId(id);
         DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
         modelo.put("meta",datosEditarMeta);
-        return new
-
-        ModelAndView("editar-meta",modelo);
-
+        return new ModelAndView("editar-meta",modelo);
     }
 
     @PostMapping("/metas/editar")
-    public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionCamposInvalidos, ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+    public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
 
-        if (httpSession == null){
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
-        servicioMeta.actualizarMeta(datosEditarMeta);
 
+        try {
+            servicioMeta.actualizarMeta(datosEditarMeta);
+        } catch (ExcepcionCamposInvalidos e) {
+            modelo.put("errores", e.getErrores());
+            return new ModelAndView("editar-meta", modelo);
+        }
         return new ModelAndView("redirect:/metas");
     }
 
-    @PostMapping("/metas/eliminar")
-    public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente {
-        HttpSession httpSession = request.getSession(false);
-        if(httpSession == null){
+    @PostMapping("/metas/eliminar/{id}")
+    public ModelAndView eliminarMeta(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if(httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
-        Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
-        ModelMap modelo = new ModelMap();
-        try {
-            servicioMeta.eliminarMeta(idUsuario, datosMeta);
-        } catch (ExcepcionCamposInvalidos e) {
-            modelo.put("errores", e.getErrores());
-            modelo.put("meta", new DatosMeta());
-            return new ModelAndView("agregar-meta", modelo);
-        } catch (ExcepcionCategoriaConMetaExistente | ExcepcionBaseDeDatos e) {
-            modelo.put("error", e.getMessage());
-            modelo.put("meta", new DatosMeta());
-            return new ModelAndView("agregar-meta", modelo);
-        }
+
+        servicioMeta.eliminarMeta(id);
         return new ModelAndView("redirect:/metas");
     }
 }
