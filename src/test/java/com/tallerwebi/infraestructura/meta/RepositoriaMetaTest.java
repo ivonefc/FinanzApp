@@ -6,8 +6,10 @@ import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
+import com.tallerwebi.dominio.tipo.TipoMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
@@ -23,6 +26,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -58,7 +65,7 @@ public class RepositoriaMetaTest {
             Meta argument = (Meta) invocation.getArguments()[0];
             argument.setId(1L);
             return null;
-        }).when(repositorioMetaSpy).guardar(any(Meta.class));
+        }).when(repositorioMetaSpy).guardar(ArgumentMatchers.any(Meta.class));
 
         Session sessionMock = mock(Session.class);
         when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
@@ -210,5 +217,74 @@ public class RepositoriaMetaTest {
         // ejecucion y verificacion
         Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.obtenerMetaPorId(1L));
     }
+
+    //Testeando el método obtener metas
+    @Test
+    @Transactional
+    @Rollback
+    public void obtenerMetasQueAlSolicitarObtenerMetasDeUnUsuarioDevuelvaUnaListaDeMetas() throws ExcepcionBaseDeDatos {
+        //preparación
+        repositorioMeta = new RepositorioMetaImpl(sessionFactory);
+        Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        CategoriaMovimiento categoria1 = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
+        CategoriaMovimiento categoria2 = new CategoriaMovimiento("INDUMENTARIA", new TipoMovimiento("EGRESO"));
+        guardarCategoria(categoria1);
+        guardarCategoria(categoria2);
+        Meta meta1 = new Meta(usuario, categoria1, 200.000);
+        Meta meta2 = new Meta(usuario, categoria2, 100.000);
+        guardarMeta(meta1);
+        guardarMeta(meta2);
+
+        //ejecución
+        List<Meta> metas = repositorioMeta.obtenerMetas(usuario.getId());
+
+        //validación
+        assertThat(metas, notNullValue());
+        assertThat(metas, not(empty()));
+        assertThat(metas, containsInAnyOrder(meta1, meta2));
+        assertThat(metas, hasSize(2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void obtenerMetasQueAlSolicitarObtenerMetasDeUnUsuarioSinMetasEstablecidasDevuelvaUnaListaVacia() throws ExcepcionBaseDeDatos {
+        //preparación
+        repositorioMeta = new RepositorioMetaImpl(sessionFactory);
+        Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+
+        //ejecución
+        List<Meta> metas = repositorioMeta.obtenerMetas(usuario.getId());
+
+        //validación
+        assertThat(metas, notNullValue());
+        assertThat(metas, empty());
+        assertThat(metas, hasSize(0));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void obtenerMetasQueAlSolicitarObtenerMetasDeUnUsuarioLanceUnaExcepcionDeBDDSiEstaNoEstaDisponible() throws ExcepcionBaseDeDatos {
+        //preparación
+        repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecución y validación
+        Assertions.assertThrows(ExcepcionBaseDeDatos.class, ()->{
+            repositorioMeta.obtenerMetas(1L);
+        }, "Base de datos no disponible");
+    }
+
+    //Metodos privados
+
+    private void guardarMeta(Meta meta) {sessionFactory.getCurrentSession().save(meta);}
+
+    private void guardarCategoria(CategoriaMovimiento categoria) {sessionFactory.getCurrentSession().save(categoria);}
+
+    private void guardarUsuario(Usuario usuario) {sessionFactory.getCurrentSession().save(usuario);}
+
 
 }

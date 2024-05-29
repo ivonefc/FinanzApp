@@ -11,6 +11,7 @@ import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Service
@@ -35,5 +36,10 @@ public class ServicioMetaImpl implements ServicioMeta{
         repositorioMeta.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento);
         Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto());
         repositorioMeta.guardar(meta);
+    }
+
+    @Override
+    public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMeta.obtenerMetas(idUsuario);
     }
 }

@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.meta;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class ControladorMeta {
@@ -25,10 +27,15 @@ public class ControladorMeta {
     }
 
     @GetMapping("/metas")
-    public ModelAndView irAMetas(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+    public ModelAndView irAMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos {
+        ModelMap modelo = new ModelMap();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
+        modelo.put("metas", metas);
         return new ModelAndView("metas");
     }
 

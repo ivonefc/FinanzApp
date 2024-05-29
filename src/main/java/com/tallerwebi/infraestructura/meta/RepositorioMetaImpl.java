@@ -13,6 +13,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class RepositorioMetaImpl implements RepositorioMeta {
     private SessionFactory sessionFactory;
@@ -58,5 +60,18 @@ public class RepositorioMetaImpl implements RepositorioMeta {
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
+    }
+
+    @Override
+    public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        try{
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM Meta m WHERE m.usuario.id = :idusuario", Meta.class)
+                    .setParameter("idusuario", idUsuario)
+                    .getResultList();
+        }catch (HibernateException he){
+            throw new ExcepcionBaseDeDatos();
+        }
+
     }
 }
