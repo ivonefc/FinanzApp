@@ -32,6 +32,14 @@ public class ControladorMeta {
         return new ModelAndView("metas");
     }
 
+    @GetMapping("/meta/panel")
+    public ModelAndView volverAPanel(HttpServletRequest request){
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("redirect:/panel");
+    }
+
     @GetMapping("/metas/agregar")
     public ModelAndView irAAgregarMetas(HttpServletRequest request){
         ModelMap modelo = new ModelMap();

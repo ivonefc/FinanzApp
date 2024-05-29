@@ -17,4 +17,12 @@ public class ControladorMiPerfil {
         return new ModelAndView("mi-perfil");
     }
 
+    @GetMapping("/perfil/panel")
+    public ModelAndView volverAPanel(HttpServletRequest request){
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("redirect:/panel");
+    }
+
 }
