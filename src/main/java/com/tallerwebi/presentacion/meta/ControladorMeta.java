@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.meta;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,66 +64,59 @@ public class ControladorMeta {
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
         }
-        return new ModelAndView("redirect:/metas");
     }
 
-//    @PostMapping("/metas/eliminar")
-//    public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
-//        HttpSession httpSession = request.getSession(false);
-//        if(httpSession == null){
-//            return new ModelAndView("redirect:/login");
-//        }
-//        Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
-//        ModelMap modelo = new ModelMap();
-//        try {
-//            servicioMeta.eliminarMeta(idUsuario, datosMeta);
-//        } catch (ExcepcionCamposInvalidos e) {
-//            modelo.put("errores", e.getErrores());
-//            modelo.put("meta", new DatosMeta());
-//            return new ModelAndView("agregar-meta", modelo);
-//        } catch (ExcepcionCategoriaConMetaExistente e) {
-//            modelo.put("error", e.getMessage());
-//            modelo.put("meta", new DatosMeta());
-//            return new ModelAndView("agregar-meta", modelo);
-//        }
-//        return new ModelAndView("redirect:/metas");
-//    }
-//
-//    @PostMapping("/metas/modificar")
-//    public ModelAndView modificarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
-//        HttpSession httpSession = request.getSession(false);
-//        if(httpSession == null){
-//            return new ModelAndView("redirect:/login");
-//        }
-//        Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
-//        ModelMap modelo = new ModelMap();
-//        try {
-//            servicioMeta.modificarMeta(idUsuario, datosMeta);
-//        } catch (ExcepcionCamposInvalidos e) {
-//            modelo.put("errores", e.getErrores());
-//            modelo.put("meta", new DatosMeta());
-//            return new ModelAndView("agregar-meta", modelo);
-//        } catch (ExcepcionCategoriaConMetaExistente e) {
-//            modelo.put("error", e.getMessage());
-//            modelo.put("meta", new DatosMeta());
-//            return new ModelAndView("agregar-meta", modelo);
-//        }
-//        return new ModelAndView("redirect:/metas");
-//    }
-
     @GetMapping("/metas/editar/{id}")
-    public ModelAndView irAEditarMetas(HttpServletRequest request, @ModelAttribute("id") Long id) throws ExcepcionBaseDeDatos {
+    public ModelAndView irAEditarMetas(HttpServletRequest request, @ModelAttribute("id") Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        //obtenerModelo y Sesión iniciada
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
+
+        //Verificacion de sesion
         if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
+
+        //Obtener idUsuario
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        Meta meta = servicioMeta.obtenerMetaPorId(id);
-        DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
-        modelo.put("meta", meta);
-        return new ModelAndView("editar-meta", modelo);
+
+        try{
+            Meta meta = servicioMeta.obtenerMetaPorId(id);
+
+            DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
+            modelo.put("meta", meta);
+            return new ModelAndView("editar-meta", modelo);
+
+        } catch (ExcepcionBaseDeDatos e){
+        modelo.put("error", e.getMessage());
+        return new ModelAndView("redirect:/metas", modelo);
+
+        }catch (ExcepcionMetaNoExistente e){
+            modelo.put("error", e.getMessage());
+            return new ModelAndView("redirect:/metas", modelo);
+        }
+
     }
 
-
+        @PostMapping("/metas/eliminar")
+        public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente {
+            HttpSession httpSession = request.getSession(false);
+            if(httpSession == null){
+                return new ModelAndView("redirect:/login");
+            }
+            Long idUsuario = (Long)httpSession.getAttribute("idUsuario");
+            ModelMap modelo = new ModelMap();
+            try {
+                servicioMeta.eliminarMeta(idUsuario, datosMeta);
+            } catch (ExcepcionCamposInvalidos e) {
+                modelo.put("errores", e.getErrores());
+                modelo.put("meta", new DatosMeta());
+                return new ModelAndView("agregar-meta", modelo);
+            } catch (ExcepcionCategoriaConMetaExistente | ExcepcionBaseDeDatos e) {
+                modelo.put("error", e.getMessage());
+                modelo.put("meta", new DatosMeta());
+                return new ModelAndView("agregar-meta", modelo);
+            }
+            return new ModelAndView("redirect:/metas");
+        }
 }

@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -55,6 +56,19 @@ public class RepositorioMetaImpl implements RepositorioMeta {
             if (meta == null)
                 throw new ExcepcionMetaNoExistente();
             return meta;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos();
+        }
+    }
+
+    @Override
+    public void eliminarMeta(Usuario usuario, DatosMeta datosMeta) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.createQuery("DELETE FROM Meta m WHERE m.usuario = :usuario AND m.categoriaMovimiento.nombre = :categoria")
+                    .setParameter("usuario", usuario)
+                    .setParameter("categoria", datosMeta.getCategoria())
+                    .executeUpdate();
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }

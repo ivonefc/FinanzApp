@@ -45,6 +45,11 @@
                     </div>
                 </fieldset>
             </form>
+            <form th:action="@{/metas/eliminar}" method="post">
+                <input type="hidden" th:field="*{id}" th:value="${meta.id}"/>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         </div>
     </div>
 </main>

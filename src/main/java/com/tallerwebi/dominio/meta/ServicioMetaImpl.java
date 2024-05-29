@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosMeta;
@@ -38,8 +39,16 @@ public class ServicioMetaImpl implements ServicioMeta{
     }
 
     @Override
-    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos {
+    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         return repositorioMeta.obtenerMetaPorId(idMeta);
+    }
+
+    @Override
+    public void eliminarMeta(Long idUsuario, DatosMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente, ExcepcionBaseDeDatos {
+        datosMeta.validarCampos();
+        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
+        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(datosMeta.getCategoria());
+        repositorioMeta.eliminarMeta(usuario, datosMeta);
     }
 
 
