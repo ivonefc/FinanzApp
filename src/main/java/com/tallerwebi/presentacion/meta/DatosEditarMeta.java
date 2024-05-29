@@ -26,4 +26,8 @@ public class DatosEditarMeta {
 
         return new DatosEditarMeta(id, categoriaMovimiento, montoMeta);
     }
+
+    public Long getId() {
+        return id;
+    }
 }

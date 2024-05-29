@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,12 @@ public class ServicioMetaImpl implements ServicioMeta{
         Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
         CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(datosMeta.getCategoria());
         repositorioMeta.eliminarMeta(usuario, datosMeta);
+    }
+
+    @Override
+    public void actualizarMeta(DatosEditarMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+
+        repositorioMeta.actualizarMeta(datosMeta.getId());
     }
 
 

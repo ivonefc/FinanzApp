@@ -73,4 +73,15 @@ public class RepositorioMetaImpl implements RepositorioMeta {
             throw new ExcepcionBaseDeDatos();
         }
     }
+
+    @Override
+    public void actualizarMeta(Long id) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Meta meta = session.get(Meta.class, id);
+            session.update(meta);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos();
+        }
+    }
 }

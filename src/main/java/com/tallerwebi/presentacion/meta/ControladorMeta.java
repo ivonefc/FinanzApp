@@ -1,11 +1,9 @@
 package com.tallerwebi.presentacion.meta;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
-import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
+import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -96,6 +94,19 @@ public class ControladorMeta {
             return new ModelAndView("redirect:/metas", modelo);
         }
 
+    }
+
+    @PostMapping("/metas/editar")
+    public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionCamposInvalidos, ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        ModelMap modelo = new ModelMap();
+
+        if (httpSession == null){
+            return new ModelAndView("redirect:/login");
+        }
+        servicioMeta.actualizarMeta(datosEditarMeta);
+
+        return new ModelAndView("redirect:/metas");
     }
 
         @PostMapping("/metas/eliminar")

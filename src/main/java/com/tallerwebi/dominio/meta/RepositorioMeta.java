@@ -15,4 +15,6 @@ public interface RepositorioMeta {
     Meta obtenerMetaPorId(Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 
     void eliminarMeta(Usuario usuario, DatosMeta datosMeta) throws ExcepcionBaseDeDatos;
+
+    void actualizarMeta(Long id) throws ExcepcionBaseDeDatos;
 }
