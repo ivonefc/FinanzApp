@@ -16,4 +16,12 @@ public class ControladorMovimientoCompartido {
         }
         return new ModelAndView("movimientos-compartidos");
     }
+
+    @GetMapping("/movimiento/panel")
+    public ModelAndView volverAPanel(HttpServletRequest request){
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("redirect:/panel");
+    }
 }

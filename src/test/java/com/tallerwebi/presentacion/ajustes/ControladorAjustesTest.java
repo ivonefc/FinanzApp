@@ -48,4 +48,28 @@ public class ControladorAjustesTest {
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 
+    @Test
+    public void queAlClickearVolverAPaginaDeInicioMeRedirijaAPanel(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlQuererVolverAPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
 }

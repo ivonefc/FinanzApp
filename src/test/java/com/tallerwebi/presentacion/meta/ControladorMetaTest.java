@@ -59,6 +59,30 @@ public class ControladorMetaTest {
     }
 
     @Test
+    public void queAlClickearVolverAPaginaDeInicioMeRedirijaAPanel(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlQuererVolverAPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
     public void queAlClickearEnLaOpcionAgregarMetaEnElMenuDirijaALaVistaAgregarMeta(){
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -179,5 +203,7 @@ public class ControladorMetaTest {
         assertEquals(excepcionBaseDeDatos.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
     }
+
+
 
 }

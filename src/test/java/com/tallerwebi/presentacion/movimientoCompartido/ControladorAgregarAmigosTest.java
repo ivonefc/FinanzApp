@@ -38,4 +38,40 @@ public class ControladorAgregarAmigosTest {
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-amigos"));
     }
+
+    @Test
+    public void queAlQuererIrALaOpcionAgregarAmigosYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAgregarAmigos.irAAgregarAmigos(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlClickearVolverAPaginaDeInicioMeRedirijaAPanel(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAgregarAmigos.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlQuererVolverAPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAgregarAmigos.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
 }
