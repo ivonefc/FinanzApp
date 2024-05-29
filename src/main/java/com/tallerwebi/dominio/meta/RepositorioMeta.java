@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 
 public interface RepositorioMeta {
@@ -16,5 +17,5 @@ public interface RepositorioMeta {
 
     void eliminarMeta(Usuario usuario, DatosMeta datosMeta) throws ExcepcionBaseDeDatos;
 
-    void actualizarMeta(Long id) throws ExcepcionBaseDeDatos;
+    void actualizarMeta(Long id, DatosEditarMeta datosEditarMeta) throws ExcepcionBaseDeDatos;
 }

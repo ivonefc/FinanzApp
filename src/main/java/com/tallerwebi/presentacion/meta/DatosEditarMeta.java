@@ -30,4 +30,14 @@ public class DatosEditarMeta {
     public Long getId() {
         return id;
     }
+
+    public CategoriaMovimiento getCategoriaMovimiento() {
+        return categoriaMovimiento;
+    }
+
+    public Double getMontoMeta() {
+        return montoMeta;
+    }
+
+
 }

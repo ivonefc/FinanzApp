@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -75,10 +76,12 @@ public class RepositorioMetaImpl implements RepositorioMeta {
     }
 
     @Override
-    public void actualizarMeta(Long id) throws ExcepcionBaseDeDatos {
+    public void actualizarMeta(Long id, DatosEditarMeta datosEditarMeta) throws ExcepcionBaseDeDatos {
         try {
             Session session = sessionFactory.getCurrentSession();
             Meta meta = session.get(Meta.class, id);
+            meta.setMontoMeta(datosEditarMeta.getMontoMeta());
+            meta.setCategoriaMovimiento(datosEditarMeta.getCategoriaMovimiento());
             session.update(meta);
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();

@@ -55,7 +55,7 @@ public class ServicioMetaImpl implements ServicioMeta{
     @Override
     public void actualizarMeta(DatosEditarMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
 
-        repositorioMeta.actualizarMeta(datosMeta.getId());
+        repositorioMeta.actualizarMeta(datosMeta.getId(), datosMeta);
     }
 
 
