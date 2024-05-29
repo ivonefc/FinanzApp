@@ -38,4 +38,16 @@ public class ControladorAgregarAmigosTest {
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-amigos"));
     }
+
+    @Test
+    public void queAlQuererIrALaOpcionAgregarAmigosYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAgregarAmigos.irAAgregarAmigos(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
 }
