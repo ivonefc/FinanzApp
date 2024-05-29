@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -67,39 +68,23 @@ public class ControladorMeta {
     }
 
     @GetMapping("/metas/editar/{id}")
-    public ModelAndView irAEditarMetas(HttpServletRequest request, @ModelAttribute("id") Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public ModelAndView irAFormularioEditarMetas(HttpServletRequest request, @PathVariable Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         //obtenerModelo y Sesión iniciada
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
 
         //Verificacion de sesion
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
 
-        //Obtener idUsuario
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-
-        try{
-            Meta meta = servicioMeta.obtenerMetaPorId(id);
-
-            DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
-            modelo.put("meta", meta);
-            return new ModelAndView("editar-meta", modelo);
-
-        } catch (ExcepcionBaseDeDatos e){
-        modelo.put("error", e.getMessage());
-        return new ModelAndView("redirect:/metas", modelo);
-
-        }catch (ExcepcionMetaNoExistente e){
-            modelo.put("error", e.getMessage());
-            return new ModelAndView("redirect:/metas", modelo);
-        }
-
+        Meta meta = servicioMeta.obtenerMetaPorId(id);
+        DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
+        modelo.put("meta", datosEditarMeta);
+        return new ModelAndView("editar-meta", modelo);
     }
 
-        @PostMapping("/metas/eliminar")
-        public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente {
+    @PostMapping("/metas/eliminar")
+    public ModelAndView eliminarMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionCamposInvalidos, ExcepcionCategoriaConMetaExistente {
             HttpSession httpSession = request.getSession(false);
             if(httpSession == null){
                 return new ModelAndView("redirect:/login");
@@ -118,5 +103,5 @@ public class ControladorMeta {
                 return new ModelAndView("agregar-meta", modelo);
             }
             return new ModelAndView("redirect:/metas");
-        }
+    }
 }
