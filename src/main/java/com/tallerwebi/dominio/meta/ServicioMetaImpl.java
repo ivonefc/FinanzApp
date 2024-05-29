@@ -75,7 +75,6 @@ public class ServicioMetaImpl implements ServicioMeta{
         Meta meta = repositorioMeta.obtenerMetaPorId(idMeta);
         if (meta == null)
             throw new ExcepcionMetaNoExistente();
-
         repositorioMeta.eliminarMeta(meta);
     }
 
