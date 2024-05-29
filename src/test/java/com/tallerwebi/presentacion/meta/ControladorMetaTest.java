@@ -1,9 +1,13 @@
 package com.tallerwebi.presentacion.meta;
 
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -179,6 +183,65 @@ public class ControladorMetaTest {
         assertEquals(excepcionBaseDeDatos.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).guardarMeta(anyLong(), ArgumentMatchers.any(DatosMeta.class));
     }
+
+    @Test
+    public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuDirijaALaVistaEditarMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        //preparacion
+        Usuario usuario = new Usuario();
+        CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
+        Meta meta = new Meta(usuario, categoriaMovimiento, 200.0);
+
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(1L)).thenReturn(meta);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("editar-meta"));
+    }
+
+    @Test
+    public void editarMetaQueAlQuererIrABarraEditarMetaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuYNoExistaMetaConEseIdMeRedirijaALaVistaMetas() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(1L)).thenThrow(new ExcepcionMetaNoExistente());
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionMetaNoExistente.class, () -> {
+            controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
+        });
+    }
+
+    @Test
+    public void editarMetaQueAlClickearEnLaOpcionEditarMetaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(1L)).thenThrow(new ExcepcionBaseDeDatos());
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
+        });
+    }
+
+    //eliminar
+
 
 
 }
