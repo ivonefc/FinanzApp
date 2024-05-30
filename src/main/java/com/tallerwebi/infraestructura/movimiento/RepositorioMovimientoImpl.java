@@ -30,7 +30,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
             return session.createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario", Movimiento.class)
                     .setParameter("idUsuario", idUsuario)
                     .getResultList();
-        }catch (Exception he){
+        }catch (HibernateException he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
