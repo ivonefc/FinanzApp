@@ -49,10 +49,17 @@
                             <!-- etc. -->
                         </span>
                     </li>
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pt-3">
+                            <span th:each="numeroPagina : ${#numbers.sequence(1, cantidadDePaginas)}">
+                                <li th:classappend="${numeroPagina == paginaActual} ? 'active' : ''" class="page-item"><a class="page-link" aria-current="${numeroPagina == paginaActual} ? 'page' : ''" href="#" th:href="@{/movimientos(pagina=${numeroPagina})}" th:text="${numeroPagina}"></a></li>
+                            </span>
+                        </ul>
+                    </nav><!-- End Pagination with icons -->
+
                     <div class="d-flex gap-3">
-                        <span th:each="numeroPagina : ${#numbers.sequence(1, cantidadDePaginas)}">
-                            <a th:href="@{/movimientos(pagina=${numeroPagina})}" th:text="${numeroPagina}"></a>
-                        </span>
+
                     </div>
                 </ul>
             </div>
