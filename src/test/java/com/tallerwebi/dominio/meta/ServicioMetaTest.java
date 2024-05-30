@@ -30,6 +30,9 @@ public class ServicioMetaTest {
     RepositorioMeta repositorioMetaMock;
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
+    Usuario usuarioMock;
+    CategoriaMovimiento categoriaMock;
+
 
     @BeforeEach
     public void init() {
@@ -37,6 +40,8 @@ public class ServicioMetaTest {
         repositorioCategoriaMock = mock(RepositorioCategoria.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        usuarioMock = mock(Usuario.class);
+        categoriaMock = mock(CategoriaMovimiento.class);
     }
 
     @Test
@@ -259,5 +264,50 @@ public class ServicioMetaTest {
         // ejecucion y validacion
         assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.eliminarMeta(idMeta));
     }
+
+    //Testeando el método obtenerMetas()
+//    @Test
+//    public void obtenerMetasQueAlSolicitarObtenerMetasDevuelvaUnaListaDeMetas() throws ExcepcionBaseDeDatos {
+//        //preparacion
+//        List<Meta> metas = List.of(
+//                new Meta(usuarioMock, categoriaMock, 300.0),
+//                new Meta(usuarioMock, categoriaMock, 200.0)
+//        );
+//        when(repositorioMetaMock.obtenerMetas(anyLong())).thenReturn(metas);
+//
+//        //ejecución
+//        List<Meta> metasObtenidas = servicioMeta.obtenerMetas(1L);
+//
+//        //validación
+//        assertThat(metasObtenidas, notNullValue());
+//        assertThat(metasObtenidas, not(empty()));
+//        assertThat(metasObtenidas, hasSize(2));
+//    }
+//
+//    @Test
+//    public void obtenerMetasQueAlSolicitarObtenerMetasDevuelvaUnaListaVaciaSiNoSeEstablecieronMetas() throws ExcepcionBaseDeDatos {
+//        //preparacion
+//        when(repositorioMetaMock.obtenerMetas(anyLong())).thenReturn(Collections.emptyList());
+//
+//        //ejecución
+//        List<Meta> metasObtenidas = servicioMeta.obtenerMetas(1L);
+//
+//        //validación
+//        assertThat(metasObtenidas, notNullValue());
+//        assertThat(metasObtenidas, empty());
+//        assertThat(metasObtenidas, hasSize(0));
+//    }
+//
+//    @Test
+//    public void obtenerMetasQueAlSolicitarObtenerMetasLanceUnaExcepcionDeBDDSiEstaNoEstaDisponible() throws ExcepcionBaseDeDatos {
+//        //preparacion
+//        when(repositorioMetaMock.obtenerMetas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+//
+//        //ejecución y validación
+//        Assertions.assertThrows(ExcepcionBaseDeDatos.class, ()->{
+//            servicioMeta.obtenerMetas(1L);
+//        }, "Base de datos no disponible");
+//
+//    }
 
 }

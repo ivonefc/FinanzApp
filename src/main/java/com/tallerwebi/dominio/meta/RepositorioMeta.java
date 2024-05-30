@@ -8,6 +8,8 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 
+import java.util.List;
+
 public interface RepositorioMeta {
     void guardar(Meta meta) throws ExcepcionBaseDeDatos;
 
@@ -18,4 +20,6 @@ public interface RepositorioMeta {
     void eliminarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 
     void actualizarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
+
+    List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 }
