@@ -5,13 +5,17 @@ import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -38,8 +42,48 @@ public class ServicioMetaImpl implements ServicioMeta{
         repositorioMeta.guardar(meta);
     }
 
+    @Transactional
+    @Override
+    public Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        return repositorioMeta.obtenerMetaPorId(idMeta);
+    }
+
+    @Transactional
+    @Override
+    public void actualizarMeta(DatosEditarMeta datosEditarMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        datosEditarMeta.validarCampos();
+        Double monto = datosEditarMeta.getMontoMeta();
+
+        CategoriaMovimiento categoria = datosEditarMeta.getCategoriaMovimiento();
+        if (categoria == null) {
+            Map<String, String> errores = new HashMap<>();
+            errores.put("categoria", "La categoría no existe");
+            throw new ExcepcionCamposInvalidos(errores);
+        }
+
+        Meta meta = repositorioMeta.obtenerMetaPorId(datosEditarMeta.getId());
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
+
+        meta.setCategoriaMovimiento(categoria);
+        meta.setMontoMeta(monto);
+        repositorioMeta.actualizarMeta(meta);
+    }
+
+    @Transactional
     @Override
     public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
         return repositorioMeta.obtenerMetas(idUsuario);
     }
+
+    @Transactional
+    @Override
+    public void eliminarMeta(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        Meta meta = repositorioMeta.obtenerMetaPorId(idMeta);
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
+        repositorioMeta.eliminarMeta(meta);
+    }
+
+
 }

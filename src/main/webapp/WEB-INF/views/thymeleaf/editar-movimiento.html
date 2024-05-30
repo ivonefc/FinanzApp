@@ -31,52 +31,52 @@
 <main id="main" class="main d-flex justify-content-center">
     <div class="card w-75 mb-3">
         <div class="card-body">
-<form th:object="${movimiento}" class="formulario-editar" th:action="@{/movimientos/editar}" method="POST">
-    <fieldset>
-        <legend>Editar movimiento</legend>
-      
-        <input th:field="*{fechayHora}" class="form-control" th:value="${fechayHora}" type="hidden">
-        <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
+            <form th:object="${movimiento}" class="formulario-editar" th:action="@{/movimientos/editar}" method="POST">
+                <fieldset>
+                    <legend>Editar movimiento</legend>
 
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <input th:field="*{descripcion}" type="text" class="form-control" th:value="${descripcion}">
-            <p th:if="${errores != null && errores.get('descripcion') != null}" class="alert alert-danger" th:text="${errores.get('descripcion')}"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Tipo</label>
-            <select class="form-select" id="tipos" th:field="*{tipo}">
-                <option  th:selected="${movimiento.tipo.equals('INGRESO')}" value="INGRESO">INGRESO</option>
-                <option th:selected="${movimiento.tipo.equals('EGRESO')}" value="EGRESO">EGRESO</option>
-            </select>
-            <p th:if="${errores != null && errores.get('tipo') != null}" class="alert alert-danger" th:text="${errores.get('tipo')}"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Categoria</label>
-            <div>
-            <select th:field="*{categoria}" class="form-select" id="categorias">
+                    <input th:field="*{fechayHora}" class="form-control" th:value="${fechayHora}" type="hidden">
+                    <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
 
-            </select>
-                <p th:if="${errores != null && errores.get('categoria') != null}" class="alert alert-danger" th:text="${errores.get('categoria')}"></p>
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <input th:field="*{descripcion}" type="text" class="form-control" th:value="${descripcion}">
+                        <p th:if="${errores != null && errores.get('descripcion') != null}" class="alert alert-danger" th:text="${errores.get('descripcion')}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select" id="tipos" th:field="*{tipo}">
+                            <option  th:selected="${movimiento.tipo.equals('INGRESO')}" value="INGRESO">INGRESO</option>
+                            <option th:selected="${movimiento.tipo.equals('EGRESO')}" value="EGRESO">EGRESO</option>
+                        </select>
+                        <p th:if="${errores != null && errores.get('tipo') != null}" class="alert alert-danger" th:text="${errores.get('tipo')}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categoria</label>
+                        <div>
+                            <select th:field="*{categoria}" class="form-select" id="categorias">
+
+                            </select>
+                            <p th:if="${errores != null && errores.get('categoria') != null}" class="alert alert-danger" th:text="${errores.get('categoria')}"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Monto</label>
+                        <input th:field="*{monto}" type="text" class="form-control" th:value="${monto}">
+                        <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
+                    </div>
+                    <input type="hidden" name="idMovimiento" th:value="${movimiento.id}"/>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="/spring/movimientos" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
+                    </div>
+                </fieldset>
+            </form>
+            <form th:object="${movimiento}" th:action="@{/movimientos/eliminar/{id}(id=${movimiento.id})}" method="POST">
+                <button type="submit" class="btn btn-danger mt-3">Eliminar</button>
+            </form>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Monto</label>
-            <input th:field="*{monto}" type="text" class="form-control" th:value="${monto}">
-            <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
-        </div>
-        <input type="hidden" name="idMovimiento" th:value="${movimiento.id}"/>
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <a href="/spring/movimientos" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
-        </div>
-    </fieldset>
-</form>
-    <form th:object="${movimiento}" th:action="@{/movimientos/eliminar/{id}(id=${movimiento.id})}" method="POST">
-        <button type="submit" class="btn btn-danger mt-3">Eliminar</button>
-    </form>
-        </div>
-</div>
+    </div>
 </main>
 <!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>

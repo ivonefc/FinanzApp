@@ -27,8 +27,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
@@ -42,6 +42,70 @@ public class RepositorioMovimientoTest {
     @BeforeEach
     public void init() {
         sessionFactoryMock = mock(SessionFactory.class);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioObtenerMovimientosPorUsurioDevuelvaLaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("SUELDO", new TipoMovimiento("INGRESO"));
+        Movimiento movimiento1 = new Movimiento("Sueldo", 100000.0, LocalDate.now());
+        Movimiento movimiento2 = new Movimiento("Compra de ropa", 60000.0, LocalDate.now());
+        Usuario usuario = new Usuario("victoria@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        guardarCategoria(categoria);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+        CategoriaMovimiento categoriaObtenida = obtenerCategoriaPorId(1L);
+
+        movimiento1.setUsuario(usuarioObtenido);
+        movimiento2.setUsuario(usuarioObtenido);
+        movimiento1.setCategoria(categoriaObtenida);
+        movimiento2.setCategoria(categoriaObtenida);
+
+        guardarMovimiento(movimiento1);
+        guardarMovimiento(movimiento2);
+
+        //ejecucion
+        List<Movimiento> movimientos = repositorioMovimiento.obtenerMovimientos(1L);
+
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, not(empty()));
+        assertThat(movimientos, containsInAnyOrder(movimiento1, movimiento2));
+        assertThat(movimientos, hasSize(2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioObtenerMovimientosPorUsurioLanceUnaExcepcionDeBDD() throws ExcepcionBaseDeDatos {
+        //preparacion
+        RepositorioMovimiento repositorioMovimientoMock = mock(RepositorioMovimiento.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+        when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMovimientoMock.obtenerMovimientos(1L));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarAlRepositorioObtenerMovimientosPorUsuarioDevuelvaListaVacioYaQueNoTieneMovimientos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+
+        //ejecucion
+        List<Movimiento> movimientos = repositorioMovimiento.obtenerMovimientos(1L);
+
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, empty());
     }
 
     @Test
@@ -80,7 +144,7 @@ public class RepositorioMovimientoTest {
         repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+        assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
             repositorioMovimiento.obtenerMovimientoPorId(1L);
         }, "No se encontro el movimiento");
     }
@@ -95,7 +159,7 @@ public class RepositorioMovimientoTest {
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.obtenerMovimientoPorId(1L);
         }, "Base de datos no disponible");
     }
@@ -143,7 +207,7 @@ public class RepositorioMovimientoTest {
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.actualizarMovimiento(new Movimiento());
         }, "Base de datos no disponible");
     }
@@ -157,7 +221,7 @@ public class RepositorioMovimientoTest {
         repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+        assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
             repositorioMovimiento.actualizarMovimiento(null);
         }, "No se encontro el movimiento");
     }
@@ -198,7 +262,7 @@ public class RepositorioMovimientoTest {
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.guardarMovimiento(new Movimiento());
         }, "Base de datos no disponible");
     }
@@ -254,7 +318,7 @@ public class RepositorioMovimientoTest {
         movimiento.setId(1L);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.eliminarMovimiento(movimiento);
         }, "Base de datos no disponible");
     }
@@ -268,7 +332,7 @@ public class RepositorioMovimientoTest {
         repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
+        assertThrows(ExcepcionMovimientoNoEncontrado.class,  () -> {
             repositorioMovimiento.eliminarMovimiento(new Movimiento());
         }, "No se encontro el movimiento");
     }
@@ -318,7 +382,7 @@ public class RepositorioMovimientoTest {
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.obtenerMovimientosPorFecha(1L, LocalDate.now());
         }, "Base de datos no disponible");
     }
@@ -392,7 +456,7 @@ public class RepositorioMovimientoTest {
         Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
         guardarUsuario(usuario);
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, ()->{
+        assertThrows(ExcepcionBaseDeDatos.class, ()->{
             repositorioMovimiento.obtenerCantidadDeMovimientosPorId(usuario.getId());
         }, "Base de datos no disponible" );
     }
@@ -432,7 +496,7 @@ public class RepositorioMovimientoTest {
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
 
         //ejecucion y validacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
             repositorioMovimiento.obtenerMovimientosPorPagina(1L, 1, 5);
         }, "Base de datos no disponible");
     }
