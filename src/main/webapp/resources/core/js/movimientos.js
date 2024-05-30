@@ -35,9 +35,10 @@ document.addEventListener("DOMContentLoaded", function (){
 
             nodoDivGrafico.style.display = 'block';
              const movimientosString = movimientos.map(movimiento =>{
-                 const {descripcion, categoria: { tipo, nombre }, monto, id} = movimiento
-                return `<li class="list-group-item item">
+                 const {descripcion, categoria: { tipo, nombre, icono, color }, monto, id} = movimiento
+                return `<li class="list-group-item item" style="background-color: ${color}80;">
                                 <span>
+                                    <span class="${icono}"></span>
                                     <span>${descripcion}</span><br>
                                     <span>${nombre}</span>
                                 </span>
