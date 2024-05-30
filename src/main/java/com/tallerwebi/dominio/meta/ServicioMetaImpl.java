@@ -70,6 +70,7 @@ public class ServicioMetaImpl implements ServicioMeta{
         repositorioMeta.actualizarMeta(meta);
     }
 
+    @Transactional
     @Override
     public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
         return repositorioMeta.obtenerMetas(idUsuario);
