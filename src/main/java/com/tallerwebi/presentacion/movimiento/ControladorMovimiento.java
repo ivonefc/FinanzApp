@@ -29,21 +29,6 @@ public class ControladorMovimiento {
         this.servicioMovimiento = servicioMovimiento;
     }
 
-    /*
-    @GetMapping("/movimientos")
-    public ModelAndView obtenerMovimientos(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
-        ModelMap model = new ModelMap();
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null)
-            return new ModelAndView("redirect:/login");
-
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
-        model.put("movimientos", movimientos);
-        return new ModelAndView("movimientos", model);
-    }
-     */
-
     @GetMapping("/movimientos")
     public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {
         ModelMap model = new ModelMap();
@@ -60,6 +45,7 @@ public class ControladorMovimiento {
             throw new PaginaInexistente();
         }
         model.put("cantidadDePaginas", cantidadDePaginas);
+        model.put("paginaActual", pagina);
         return new ModelAndView("movimientos", model);
     }
 
