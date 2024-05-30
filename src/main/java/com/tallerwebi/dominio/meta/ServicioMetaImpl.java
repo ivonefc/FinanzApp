@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Transactional
@@ -67,6 +68,12 @@ public class ServicioMetaImpl implements ServicioMeta{
         meta.setCategoriaMovimiento(categoria);
         meta.setMontoMeta(monto);
         repositorioMeta.actualizarMeta(meta);
+    }
+
+    @Transactional
+    @Override
+    public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMeta.obtenerMetas(idUsuario);
     }
 
     @Transactional

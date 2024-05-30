@@ -39,7 +39,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void queAlClickearLaOpcionSeguimientoDeMetasEnElMenuDirijaALaVistaMetas(){
+    public void queAlClickearLaOpcionSeguimientoDeMetasEnElMenuDirijaALaVistaMetas() throws ExcepcionBaseDeDatos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -51,7 +51,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionSeguimientoDeMetasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionSeguimientoDeMetasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

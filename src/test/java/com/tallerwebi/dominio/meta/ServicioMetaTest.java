@@ -14,13 +14,14 @@ import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -30,6 +31,9 @@ public class ServicioMetaTest {
     RepositorioMeta repositorioMetaMock;
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
+    Usuario usuarioMock;
+    CategoriaMovimiento categoriaMock;
+
 
     @BeforeEach
     public void init() {
@@ -37,6 +41,8 @@ public class ServicioMetaTest {
         repositorioCategoriaMock = mock(RepositorioCategoria.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        usuarioMock = mock(Usuario.class);
+        categoriaMock = mock(CategoriaMovimiento.class);
     }
 
     @Test
@@ -258,6 +264,45 @@ public class ServicioMetaTest {
 
         // ejecucion y validacion
         assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.eliminarMeta(idMeta));
+    }
+
+    //Testeando el método obtenerMetas()
+
+    @Test
+    public void obtenerMetasQueAlSolicitarObtenerMetasDevuelvaUnaListaDeMetas() throws ExcepcionBaseDeDatos {
+        // preparacion
+        List<Meta> expectedMetas = new ArrayList<>();
+        when(repositorioMetaMock.obtenerMetas(anyLong())).thenReturn(expectedMetas);
+
+        // ejecucion
+        List<Meta> actualMetas = servicioMeta.obtenerMetas(1L);
+
+        // validacion
+        verify(repositorioMetaMock, times(1)).obtenerMetas(1L);
+        assertEquals(expectedMetas, actualMetas);
+    }
+
+    @Test
+    public void obtenerMetasQueAlSolicitarObtenerMetasLanceUnaExcepcionDeBDDSiEstaNoEstaDisponible() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMetaMock.obtenerMetas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecución y validación
+        assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.obtenerMetas(1L));
+        verify(repositorioMetaMock, times(1)).obtenerMetas(1L);
+    }
+
+    @Test
+    public void obtenerMetasQueAlSolicitarObtenerMetasDevuelvaUnaListaVaciaSiNoSeEstablecieronMetas() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMetaMock.obtenerMetas(anyLong())).thenReturn(new ArrayList<>());
+
+        //ejecución
+        List<Meta> actualMetas = servicioMeta.obtenerMetas(1L);
+
+        //validación
+        verify(repositorioMetaMock, times(1)).obtenerMetas(1L);
+        assertTrue(actualMetas.isEmpty());
     }
 
 }

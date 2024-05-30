@@ -29,12 +29,41 @@
 <!-- Menu Lateral -->
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
-<main id="main" class="main">
-
-    <div class="pagetitle">
-        <h1>En construcción...</h1> <br> <br>
-        <a th:href="@{/meta/panel}" class="btn btn-primary">Volver a pagina de inicio</a>
+<main id="main" class="main d-flex justify-content-center">
+    <div th:if="${#lists.isEmpty(metas)}">
+        <div class="pagetitle">
+            <h1>No has establecido metas.</h1> <br> <br>
+            <a th:href="@{/metas/agregar}" class="btn btn-primary">Crear una meta</a>
+        </div>
     </div>
+
+
+
+    <div class="card  w-50" th:if="${not #lists.isEmpty(metas)}">
+        <div class="card-body">
+            <h2 class="card-title text-center border-bottom">Metas</h2>
+
+            <!-- Default Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Meta</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody th:each="meta: ${metas}">
+                <tr>
+                    <td th:text="${meta.categoriaMovimiento.getNombre()}"></td>
+                    <td th:text="${meta.montoMeta}"></td>
+                    <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- End Default Table Example -->
+        </div>
+    </div>
+
 
 </main>
 

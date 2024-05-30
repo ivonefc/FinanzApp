@@ -16,6 +16,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class RepositorioMetaImpl implements RepositorioMeta {
     private SessionFactory sessionFactory;
@@ -89,6 +91,18 @@ public class RepositorioMetaImpl implements RepositorioMeta {
         try {
             Session session = sessionFactory.getCurrentSession();
             session.update(meta);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
+    @Override
+    public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            return session.createQuery("FROM Meta m WHERE m.usuario.id = :idUsuario", Meta.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }

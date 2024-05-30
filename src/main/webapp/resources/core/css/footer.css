@@ -16,8 +16,7 @@
     transition: all 0.3s;
     border-top: 1px solid #cddfff;
     text-align: center;
-    color: white;
-    background-color: var(--azul-uno);
+    color: var(--azul-tres);
 }
 
 
