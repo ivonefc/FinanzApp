@@ -34,6 +34,18 @@ public class ControladorMeta {
         return new ModelAndView("metas");
     }
 
+    @GetMapping("/metas/{id}")
+    public ModelAndView obtenerMetas(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if(httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        ModelMap modelo = new ModelMap();
+        Meta meta = servicioMeta.obtenerMetaPorId(id);
+        modelo.put("meta", meta);
+        return new ModelAndView("metas", modelo);
+    }
+
     @GetMapping("/meta/panel")
     public ModelAndView volverAPanel(HttpServletRequest request){
         if (request.getSession(false) == null) {
@@ -117,4 +129,5 @@ public class ControladorMeta {
         servicioMeta.eliminarMeta(id);
         return new ModelAndView("redirect:/metas");
     }
+
 }
