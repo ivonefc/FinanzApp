@@ -93,6 +93,7 @@ public class ControladorMovimiento {
     public ModelAndView editarMovimiento(@ModelAttribute("movimiento") DatosEditarMovimiento datosEditarMovimiento, HttpServletRequest httpServletRequest) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
+
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 

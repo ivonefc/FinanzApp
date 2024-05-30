@@ -1,10 +1,14 @@
 package com.tallerwebi.dominio.meta;
 
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
+import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +19,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -137,6 +142,122 @@ public class ServicioMetaTest {
 
         // ejecucion y validacion
         assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.guardarMeta(idUsuario, datosMeta));
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerMetaPorIdObtengaLaMetaCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        // preparacion
+        Long idMeta = 1L;
+
+        // ejecucion
+        servicioMeta.obtenerMetaPorId(idMeta);
+
+        // validacion
+        verify(repositorioMetaMock, times(1)).obtenerMetaPorId(idMeta);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioActualizarMetaActualiceLaMetaCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
+        // preparacion
+        DatosEditarMeta datosEditarMeta = mock(DatosEditarMeta.class);
+        when(datosEditarMeta.getMontoMeta()).thenReturn(1000.0);
+        CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
+        when(datosEditarMeta.getCategoriaMovimiento()).thenReturn(categoriaMovimiento);
+        when(datosEditarMeta.getId()).thenReturn(1L);
+        Meta metaMock = mock(Meta.class);
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenReturn(metaMock);
+
+        // ejecucion
+        servicioMeta.actualizarMeta(datosEditarMeta);
+
+        // validacion
+        verify(metaMock).setCategoriaMovimiento(categoriaMovimiento);
+        verify(metaMock).setMontoMeta(1000.0);
+        verify(repositorioMetaMock).actualizarMeta(metaMock);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioActualizarMetaLanceExcepcionCamposInvalidosSiNoSeEnvianDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        // preparacion
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta();
+        Map<String, String> erroresEsperados = new HashMap<>();
+        erroresEsperados.put("categoria", "El campo es requerido");
+        erroresEsperados.put("monto", "El campo es requerido");
+
+        // ejecucion y validacion
+        ExcepcionCamposInvalidos excepcion = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMeta.actualizarMeta(datosEditarMeta));
+        assertEquals(erroresEsperados, excepcion.getErrores());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioActualizarMetaLanceExcepcionMetaNoExistenteSiNoExisteLaMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
+        // preparacion
+        DatosEditarMeta datosEditarMeta = mock(DatosEditarMeta.class);
+        when(datosEditarMeta.getId()).thenReturn(1L);
+        when(datosEditarMeta.getMontoMeta()).thenReturn(1000.0);
+        CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
+        when(datosEditarMeta.getCategoriaMovimiento()).thenReturn(categoriaMovimiento);
+
+        // Aquí hacemos que obtenerMetaPorId lance ExcepcionMetaNoExistente
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenThrow(new ExcepcionMetaNoExistente());
+
+        // ejecucion y validacion
+        assertThrows(ExcepcionMetaNoExistente.class, () -> servicioMeta.actualizarMeta(datosEditarMeta));
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioActualizarMetaLanceExcepcionBaseDeDatosSiOcurreUnErrorAlActualizarLaMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
+        // preparacion
+        DatosEditarMeta datosEditarMeta = mock(DatosEditarMeta.class);
+        when(datosEditarMeta.getId()).thenReturn(1L);
+        when(datosEditarMeta.getMontoMeta()).thenReturn(1000.0);
+        CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
+        when(datosEditarMeta.getCategoriaMovimiento()).thenReturn(categoriaMovimiento);
+        Meta metaMock = mock(Meta.class);
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenReturn(metaMock);
+        doThrow(ExcepcionBaseDeDatos.class).when(repositorioMetaMock).actualizarMeta(metaMock);
+
+        // ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.actualizarMeta(datosEditarMeta));
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarMetaElimineLaMetaCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        // preparacion
+        Long idMeta = 1L;
+        Meta metaMock = mock(Meta.class);
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenReturn(metaMock);
+
+        // ejecucion
+        servicioMeta.eliminarMeta(idMeta);
+
+        // validacion
+        verify(repositorioMetaMock).eliminarMeta(metaMock);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarMetaLanceExcepcionMetaNoExistenteSiNoExisteLaMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        // preparacion
+        Long idMeta = 1L;
+
+        // Aquí hacemos que obtenerMetaPorId lance ExcepcionMetaNoExistente
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenThrow(new ExcepcionMetaNoExistente());
+
+        // ejecucion y validacion
+        assertThrows(ExcepcionMetaNoExistente.class, () -> servicioMeta.eliminarMeta(idMeta));
+        verify(repositorioMetaMock, never()).eliminarMeta(any());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarMetaLanceExcepcionBaseDeDatosSiOcurreUnErrorAlEliminarLaMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        // preparacion
+        Long idMeta = 1L;
+        Meta metaMock = mock(Meta.class);
+        when(repositorioMetaMock.obtenerMetaPorId(anyLong())).thenReturn(metaMock);
+        doThrow(ExcepcionBaseDeDatos.class).when(repositorioMetaMock).eliminarMeta(metaMock);
+
+        // ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMeta.eliminarMeta(idMeta));
     }
 
 }

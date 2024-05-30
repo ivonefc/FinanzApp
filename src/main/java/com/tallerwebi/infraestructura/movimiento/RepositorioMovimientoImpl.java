@@ -82,6 +82,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         try {
             Session session = sessionFactory.getCurrentSession();
             Movimiento movimientoExistente = session.get(Movimiento.class, movimiento.getId());
+
             if (movimientoExistente == null)
                 throw new ExcepcionMovimientoNoEncontrado("No se encontro el movimiento");
 

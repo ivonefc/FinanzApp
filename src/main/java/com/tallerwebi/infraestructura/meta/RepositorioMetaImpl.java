@@ -4,9 +4,12 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
+import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -57,6 +60,37 @@ public class RepositorioMetaImpl implements RepositorioMeta {
             return meta;
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
+        }
+    }
+
+    @Override
+    public void eliminarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        if (meta == null || meta.getId() == null)
+            throw new ExcepcionMetaNoExistente();
+
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Meta metaExistente = session.get(Meta.class, meta.getId());
+
+            if (metaExistente == null)
+                throw new ExcepcionMetaNoExistente();
+
+            session.delete(meta);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
+        }
+    }
+
+    @Override
+    public void actualizarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        if (meta == null)
+            throw new ExcepcionMetaNoExistente();
+
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.update(meta);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 }
