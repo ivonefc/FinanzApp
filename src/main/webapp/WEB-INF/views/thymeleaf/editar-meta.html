@@ -31,7 +31,7 @@
         <div class="card-body">
             <form th:object="${meta}" class="formulario-editar" th:action="@{/metas/editar}" method="POST">
                 <fieldset>
-                    <legend>Editar meta</legend>
+                    <legend>Editar meta (boton guardar en construccion)</legend>
                     <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
                     <div class="mb-3">
                         <label class="form-label">Monto</label>

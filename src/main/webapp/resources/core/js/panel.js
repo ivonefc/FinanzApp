@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
-    //ACTUALIZAR GRAFICO
+    //ACTUALIZAR GRAFICO DONA
     async function actualizarGraficoDona(mesSeleccionado) {
         try {
             const montosMap = await obtenerMontosPorCategoriaPorMes(mesSeleccionado);
@@ -238,8 +238,9 @@ async function obtenerMontosPorCategoriaPorMes(mesSeleccionado) {
 
                 // Recorrer egresos y filtrar por mes
                 for (let egreso of egresos) {
+                    const anio = egreso.fechayHora[0];
                     const mes = egreso.fechayHora[1];
-                    if (mes === mesSeleccionado) {
+                    if (mes === mesSeleccionado && anio == aniosSelect.value) {
                         egresosFiltrados.push(egreso);
                     }
                 }
