@@ -15,6 +15,10 @@ public class CategoriaMovimiento {
 
     private String nombre;
 
+    private String icono;
+
+    private String color;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_tipo")
     private TipoMovimiento tipo;
@@ -49,6 +53,18 @@ public class CategoriaMovimiento {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getIcono() {
+        return icono;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     @Override

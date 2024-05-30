@@ -35,9 +35,10 @@
             <h1 class="pt-3 text-center">Movimientos</h1>
             <div class="card-body" th:if="${not #lists.isEmpty(movimientos)}">
                 <ul class="list-group" id="lista-movimientos">
-                    <li th:each="movimiento : ${movimientos}" class="list-group-item item">
+                    <li th:each="movimiento : ${movimientos}" class="list-group-item item" th:style="'background-color:' + ${movimiento.categoria.getColor()} + '80;'">
                         <!-- Accede a las propiedades de cada movimiento -->
                         <span>
+                            <span th:class="${movimiento.categoria.getIcono()}"></span>
                             <span th:text="${movimiento.descripcion}"></span><br>
                             <span th:text="${movimiento.categoria.getNombre()}"></span><br>
                             <small th:text="${movimiento.fechayHora}"></small>
