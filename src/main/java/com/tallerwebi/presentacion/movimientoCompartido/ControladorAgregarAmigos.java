@@ -16,4 +16,12 @@ public class ControladorAgregarAmigos {
         }
         return new ModelAndView("agregar-amigos");
     }
+
+    @GetMapping("/amigos/panel")
+    public ModelAndView volverAPanel(HttpServletRequest request){
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("redirect:/panel");
+    }
 }
