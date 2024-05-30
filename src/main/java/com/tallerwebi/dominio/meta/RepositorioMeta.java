@@ -5,8 +5,8 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.usuario.Usuario;
-
-import java.util.List;
+import com.tallerwebi.presentacion.meta.DatosEditarMeta;
+import com.tallerwebi.presentacion.meta.DatosMeta;
 
 public interface RepositorioMeta {
     void guardar(Meta meta) throws ExcepcionBaseDeDatos;
@@ -14,5 +14,8 @@ public interface RepositorioMeta {
     void existeMetaConUsuarioYCategoria(Usuario usuario, CategoriaMovimiento categoria) throws ExcepcionCategoriaConMetaExistente, ExcepcionBaseDeDatos;
 
     Meta obtenerMetaPorId(Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
-    List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    void eliminarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
+
+    void actualizarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 }

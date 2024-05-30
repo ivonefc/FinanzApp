@@ -54,15 +54,18 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         String descripcion = datosEditarMovimiento.getDescripcion();
         Double monto = datosEditarMovimiento.getMonto();
         Long id = datosEditarMovimiento.getId();
+
         CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
         if (categoriaMovimiento == null) {
             Map<String, String> errores = new HashMap<>();
             errores.put("categoria", "La categoría no existe");
             throw new ExcepcionCamposInvalidos(errores);
         }
+
         Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
         if (movimiento == null)
             throw new ExcepcionMovimientoNoEncontrado("El movimiento no existe");
+
         movimiento.setCategoria(categoriaMovimiento);
         movimiento.setDescripcion(descripcion);
         movimiento.setMonto(monto);
@@ -71,8 +74,8 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public void eliminarMovimiento(Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
-        Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(id);
+    public void eliminarMovimiento(Long idMovimiento) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+        Movimiento movimiento = repositorioMovimiento.obtenerMovimientoPorId(idMovimiento);
         if (movimiento == null)
             throw new ExcepcionMovimientoNoEncontrado("No se encontró ningún movimiento con el ID proporcionado");
         repositorioMovimiento.eliminarMovimiento(movimiento);
