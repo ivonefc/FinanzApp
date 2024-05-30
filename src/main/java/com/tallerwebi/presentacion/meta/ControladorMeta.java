@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class ControladorMeta {
@@ -27,15 +28,20 @@ public class ControladorMeta {
     }
 
     @GetMapping("/metas")
-    public ModelAndView irAMetas(HttpServletRequest request) {
-        if (request.getSession(false) == null) {
+    public ModelAndView irAMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos {
+        ModelMap modelo = new ModelMap();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
-        return new ModelAndView("metas");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
+        modelo.put("metas", metas);
+        return new ModelAndView("metas", modelo);
     }
 
     @GetMapping("/metas/{id}")
-    public ModelAndView obtenerMetas(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+    public ModelAndView obtenerMeta(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if(httpSession == null)
             return new ModelAndView("redirect:/login");
