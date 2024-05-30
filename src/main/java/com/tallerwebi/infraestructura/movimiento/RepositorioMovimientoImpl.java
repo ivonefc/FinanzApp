@@ -125,7 +125,7 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
     public List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos {
         try{
             return sessionFactory.getCurrentSession()
-                    .createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario", Movimiento.class)
+                    .createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario ORDER BY M.fechayHora DESC", Movimiento.class)
                     .setParameter("idUsuario", idUsuario)
                     .setFirstResult((pagina - 1) * tamanioDePagina)
                     .setMaxResults(tamanioDePagina)
