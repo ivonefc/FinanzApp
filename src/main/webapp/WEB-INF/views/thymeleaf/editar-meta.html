@@ -33,12 +33,12 @@
                 <fieldset>
                     <legend>Editar meta</legend>
                     <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
-                    <div class="mb-3">
+                    <input th:field="*{categoria}" type="hidden" class="form-control" th:value="${categoriaMovimiento}">
+                         <div class="mb-3">
                         <label class="form-label">Monto</label>
                         <input th:field="*{montoMeta}" type="text" class="form-control" th:value="${montoMeta}">
                         <p th:if="${errores != null && errores.get('montoMeta') != null}" class="alert alert-danger" th:text="${errores.get('montoMeta')}"></p>
                     </div>
-                    <input type="hidden" name="idMeta" th:value="${meta.id}"/>
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <a href="/spring/metas" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>

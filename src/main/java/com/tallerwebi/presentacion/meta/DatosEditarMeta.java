@@ -10,12 +10,12 @@ import java.util.Map;
 public class DatosEditarMeta {
 
     private Long id;
-    private CategoriaMovimiento categoriaMovimiento;
+    private String categoria;
     private Double montoMeta;
 
-    public DatosEditarMeta(Long id, CategoriaMovimiento categoriaMovimiento, Double montoMeta) {
+    public DatosEditarMeta(Long id, String categoria, Double montoMeta) {
         this.id = id;
-        this.categoriaMovimiento = categoriaMovimiento;
+        this.categoria = categoria;
         this.montoMeta = montoMeta;
     }
 
@@ -27,12 +27,12 @@ public class DatosEditarMeta {
         CategoriaMovimiento categoriaMovimiento = meta.getCategoriaMovimiento();
         Double montoMeta = meta.getMontoMeta();
 
-        return new DatosEditarMeta(id, categoriaMovimiento, montoMeta);
+        return new DatosEditarMeta(id, categoriaMovimiento.getNombre(), montoMeta);
     }
 
     public void validarCampos() throws ExcepcionCamposInvalidos {
         Map<String, String> errores = new HashMap<>();
-        if (this.categoriaMovimiento == null || this.categoriaMovimiento.getNombre().isEmpty()) {
+        if (this.categoria == null || this.categoria.isEmpty()) {
             errores.put("categoria", "El campo es requerido");
         }
         if (this.montoMeta == null) {
@@ -47,12 +47,23 @@ public class DatosEditarMeta {
         return id;
     }
 
-    public CategoriaMovimiento getCategoriaMovimiento() {
-        return categoriaMovimiento;
+    public String getCategoria() {
+        return categoria;
     }
 
     public Double getMontoMeta() {
         return montoMeta;
     }
 
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setMontoMeta(Double montoMeta) {
+        this.montoMeta = montoMeta;
+    }
 }
