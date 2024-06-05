@@ -328,4 +328,16 @@ async function obtenerColoresPorCategoria(mesSeleccionado) {
 }
 
 
-    });*/
+
+
+/*
+    // Seleccionar el año actual y actualizar el gráfico
+        const añoActual = new Date().getYear();
+        añosSelect.selectedIndex = añoActual;
+        actualizarGraficoPorAño(añoActual);
+
+    // Escuchar el cambio en el select de años
+        añosSelect.addEventListener('change', async function () {
+            const añoSeleccionado = parseInt(añosSelect.value);
+            await actualizarGraficoPorAño(añoSeleccionado);
+        });*/
