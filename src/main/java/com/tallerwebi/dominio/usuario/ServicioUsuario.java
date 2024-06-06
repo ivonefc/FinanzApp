@@ -4,7 +4,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 
-public interface RepositorioUsuario {
+public interface ServicioUsuario {
     Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos;
 
     void guardar(Usuario usuario) throws ExcepcionBaseDeDatos, UsuarioInexistente, UsuarioExistente;
@@ -15,5 +15,3 @@ public interface RepositorioUsuario {
 
     Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos, UsuarioInexistente;
 }
-
-

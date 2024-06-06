@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion.movimiento;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
-import com.tallerwebi.dominio.excepcion.PaginaInexistente;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
@@ -236,7 +233,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void queAlQuererAgregarUnMovimientoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -265,7 +262,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void queAlQuererAgregarUnMovimientoYNoSePuedaEstablecerConexionConLaBaseDeDatosSeMuestreUnMensajeDeError() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -277,7 +274,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void queAlQuererAgregarUnMovimientoYNoSeIngreseNingunDatoNoSePuedaAgregarMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);

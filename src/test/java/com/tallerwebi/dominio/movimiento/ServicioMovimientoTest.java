@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
@@ -36,7 +37,7 @@ public class ServicioMovimientoTest {
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
 
-     @BeforeEach
+    @BeforeEach
     public void init(){
          repositorioMovimientoMock = mock(RepositorioMovimiento.class);
          repositorioCategoriaMock = mock(RepositorioCategoria.class);
@@ -233,7 +234,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioNuevoMovimientoSeGuardeElMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void queAlSolicitarAlServicioNuevoMovimientoSeGuardeElMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
         DatosAgregarMovimiento datosAgregarMovimiento = mock(DatosAgregarMovimiento.class);
         when(datosAgregarMovimiento.getDescripcion()).thenReturn("descripcion");
@@ -251,7 +252,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         DatosAgregarMovimiento datosAgregarMovimiento = mock(DatosAgregarMovimiento.class);
         when(datosAgregarMovimiento.getDescripcion()).thenReturn("descripcion");
@@ -291,7 +292,7 @@ public class ServicioMovimientoTest {
 
     //Testeando el método calcularCantidadDePaginas para la paginación.
     @Test
-    public void queAlSolicitarLaCantidadDePaginasDevuelvaLaDivisionEnteraEntreLaCantidadDeMovimientosYElTamanioDePagina() throws ExcepcionBaseDeDatos{
+    public void queAlSolicitarLaCantidadDePaginasDevuelvaLaDivisionEnteraEntreLaCantidadDeMovimientosYElTamanioDePagina() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(20L);
         when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
@@ -303,7 +304,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarLaCantidadDePaginasCuandoLaCantidadDeMovimientosSeaCeroDevuelvaCero() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarLaCantidadDePaginasCuandoLaCantidadDeMovimientosSeaCeroDevuelvaCero() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(0L);
         when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
@@ -316,7 +317,7 @@ public class ServicioMovimientoTest {
 
     //Testeando método obtenerMovimientosPorPagina() (paginación)
     @Test
-    public void queAlSolicitarMovimientosDeUnaPaginaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarMovimientosDeUnaPaginaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
          //preparación
         List<Movimiento> movimientos = generarMovimientos(10);
         when(repositorioMovimientoMock.obtenerMovimientosPorPagina(anyLong(), anyInt(), anyInt())).thenReturn(movimientos);

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Repository("repositorioMovimiento")
 public class RepositorioMovimientoImpl implements RepositorioMovimiento {
 

@@ -60,6 +60,9 @@ public class ControladorLogin {
         } catch (ExcepcionCamposInvalidos e) {
             model.put("errores", e.getErrores());
             return new ModelAndView("nuevo-usuario", model);
+        } catch (UsuarioInexistente e) {
+            model.put("error", "");
+            return new ModelAndView("nuevo-usuario", model);
         }
     }
 

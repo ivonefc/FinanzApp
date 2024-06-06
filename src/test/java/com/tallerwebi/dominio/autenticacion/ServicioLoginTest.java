@@ -37,8 +37,8 @@ public class ServicioLoginTest {
     public void registrarmeQueAlQuererRegistarUnUsuarioPermitaRegistrar() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente, UsuarioInexistente {
         //preparacion
         DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("nombre", "email@test", "password");
-        UsuarioInexistente usuarioInexistente = new UsuarioInexistente();
-        doThrow(usuarioInexistente).when(repositorioUsuarioMock).buscarUsuarioPorEmail(anyString());
+        when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenReturn(null);
+
         //ejecucion
         servicioLogin.registrar(datosRegistroUsuario);
 

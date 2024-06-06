@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.usuario;
 
+import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("repositorioUsuario")
-public class  RepositorioUsuarioImpl implements RepositorioUsuario {
+public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     private SessionFactory sessionFactory;
 
@@ -22,25 +23,38 @@ public class  RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos {
-        Usuario usuario = null;
+        Usuario usuario;
         try {
-            final Session session = sessionFactory.getCurrentSession();
+            Session session = sessionFactory.getCurrentSession();
             usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email and u.password = :password")
                     .setParameter("email", email)
                     .setParameter("password", password)
                     .uniqueResult();
-            if (usuario == null) {
+
+            if (usuario == null)
                 throw new UsuarioInexistente();
-            }
+
+            return usuario;
         }catch (HibernateException e){
             throw new ExcepcionBaseDeDatos(e);
         }
-        return usuario;
     }
 
     @Override
-    public void guardar(Usuario usuario) {
-        sessionFactory.getCurrentSession().save(usuario);
+    public void guardar(Usuario usuario) throws ExcepcionBaseDeDatos, UsuarioExistente { // CREAR USUARIO Y GUARDARLO EN LA BDD
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuarioExistente = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
+                    .setParameter("email", usuario.getEmail())
+                    .uniqueResult();
+
+            if (usuarioExistente != null)
+                throw new UsuarioExistente();
+
+            session.save(usuario);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
+        }
     }
 
     @Override
@@ -50,9 +64,9 @@ public class  RepositorioUsuarioImpl implements RepositorioUsuario {
             Usuario usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
                     .setParameter("email", email)
                     .uniqueResult();
-            if(usuario == null){
+            if(usuario == null)
                 throw new UsuarioInexistente();
-            }
+
             return usuario;
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos(e);
@@ -65,9 +79,18 @@ public class  RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public Usuario obtenerUsuarioPorId(Long id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(Usuario.class, id);
+    public Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuario = session.get(Usuario.class, id);
+
+            if (usuario == null)
+                throw new UsuarioInexistente();
+
+            return usuario;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
+        }
     }
 
 }

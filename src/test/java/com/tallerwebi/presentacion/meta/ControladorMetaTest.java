@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion.meta;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
-import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -81,7 +78,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         doNothing().when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
@@ -92,7 +89,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -114,7 +111,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -134,7 +131,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -154,7 +151,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererCrearMetaParaUnaCategoriaQueYaTieneMetaEstablecidaRedirigirAlFormularioYMostrarUnError() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererCrearMetaParaUnaCategoriaQueYaTieneMetaEstablecidaRedirigirAlFormularioYMostrarUnError() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionCategoriaConMetaExistente excepcionCategoriaConMetaExistente = new ExcepcionCategoriaConMetaExistente();
@@ -169,7 +166,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();

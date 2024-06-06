@@ -1,10 +1,7 @@
 package com.tallerwebi.dominio.meta;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
-import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -46,7 +43,7 @@ public class ServicioMetaTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioGuardarMetaGuardeLaMetaCorrectamente() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void queAlSolicitarAlServicioGuardarMetaGuardeLaMetaCorrectamente() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         // preparacion
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
@@ -61,7 +58,7 @@ public class ServicioMetaTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionCamposInvalidosSiNoSeEnviaCategoria() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, ExcepcionCamposInvalidos {
+    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionCamposInvalidosSiNoSeEnviaCategoria() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         // preparacion
         DatosMeta datosMeta = new DatosMeta();
         Long idUsuario = 1L;
@@ -138,7 +135,7 @@ public class ServicioMetaTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionBaseDeDatosSiOcurreUnErrorAlConsultarUsuarioPorId() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarAlServicioGuardarMetaLanceExcepcionBaseDeDatosSiOcurreUnErrorAlConsultarUsuarioPorId() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // preparacion
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");

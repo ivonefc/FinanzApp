@@ -29,7 +29,7 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         datosRegistroUsuario.validarCampos();
         Usuario usuario = new Usuario(
                 datosRegistroUsuario.getNombre(),
@@ -38,12 +38,12 @@ public class ServicioLoginImpl implements ServicioLogin {
                 "USER",
                 true
         );
-        try {
-            repositorioUsuario.buscarUsuarioPorEmail(datosRegistroUsuario.getEmail());
+
+        Usuario usuarioExistente = repositorioUsuario.buscarUsuarioPorEmail(datosRegistroUsuario.getEmail());
+        if (usuarioExistente != null)
             throw new UsuarioExistente();
-        } catch (UsuarioInexistente e) {
-            repositorioUsuario.guardar(usuario);
-        }
+
+        repositorioUsuario.guardar(usuario);
     }
 
 }

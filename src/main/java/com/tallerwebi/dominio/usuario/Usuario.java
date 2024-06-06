@@ -36,8 +36,6 @@ public class Usuario {
         this.activo = activo;
     }
 
-
-
     public Usuario(){}
 
     public Long getId() {
@@ -45,6 +43,12 @@ public class Usuario {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     public String getEmail() {
         return email;

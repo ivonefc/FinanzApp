@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
@@ -89,7 +90,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
     @Transactional
     @Override
-    public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
        datosAgregarMovimiento.validarCampos();
 
        String descripcion = datosAgregarMovimiento.getDescripcion();

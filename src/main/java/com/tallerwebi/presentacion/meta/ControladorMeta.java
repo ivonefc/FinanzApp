@@ -89,6 +89,10 @@ public class ControladorMeta {
             modelo.put("error", e.getMessage());
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
+        } catch (UsuarioInexistente e) {
+            modelo.put("error", "El usuario no existe");
+            modelo.put("meta", new DatosMeta());
+            return new ModelAndView("agregar-meta", modelo);
         }
     }
 
