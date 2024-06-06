@@ -29,7 +29,7 @@ public class DatosAgregarMovimiento {
         if(this.descripcion.isEmpty()){
             errores.put("descripcion", "El campo es requerido");
         }
-        if(this.monto == null){
+        if(this.monto == null || this.monto == 0.0){
             errores.put("monto", "El campo es requerido");
         }
         if(this.categoria.isEmpty()){

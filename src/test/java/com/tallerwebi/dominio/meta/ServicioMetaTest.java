@@ -65,19 +65,20 @@ public class ServicioMetaTest {
         // preparacion
         DatosMeta datosMeta = new DatosMeta();
         Long idUsuario = 1L;
-        ServicioMeta servicioMetaMock = mock(ServicioMeta.class);
+
         Map<String, String> errores = new HashMap<>();
         errores.put("categoria", "El campo es requerido");
         errores.put("monto", "El campo es requerido");
         ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcion).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
+        when(repositorioCategoriaMock.obtenerCategoriaPorNombre(anyString())).thenReturn(null);
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(null);
 
         // ejecucion y validacion
-        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMetaMock.guardarMeta(idUsuario, datosMeta));
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMeta.guardarMeta(idUsuario, datosMeta));
         assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(2));
         assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
         assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
-        verify(repositorioMetaMock, times(0)).guardar(any(Meta.class));
     }
 
     @Test
