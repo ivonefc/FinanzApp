@@ -58,5 +58,5 @@ h3{
 /* Estilo del label */
 label{
     color: var(--fuente);
-    padding-top: 1em; //
+    padding-top: 1em;
 }
