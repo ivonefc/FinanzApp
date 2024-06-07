@@ -52,21 +52,10 @@
 
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#mov-com-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-bank"></i><span>Movimientos compartidos</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link collapsed" th:href="@{/movimientos-compartidos}">
+                <i class="bi bi-bank"></i>
+                <span>Movimientos compartidos</span>
             </a>
-            <ul id="mov-com-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a th:href="@{/agregar-amigos}">
-                        <i class="bi bi-person"></i><span>Amigos</span>
-                    </a>
-                </li>
-                <li>
-                    <a th:href="@{/movimientos-compartidos}">
-                        <i class="bi bi-person"></i><span>Ver movimientos compartidos</span>
-                    </a>
-                </li>
-            </ul>
         </li>
 
 

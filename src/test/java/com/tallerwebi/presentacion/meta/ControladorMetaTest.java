@@ -245,7 +245,8 @@ public class ControladorMetaTest {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        String categoria = categoriaMovimiento.getNombre();
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria , 200.0);
         doNothing().when(servicioMetaMock).actualizarMeta(datosEditarMeta);
 
         //ejecucion
@@ -273,7 +274,8 @@ public class ControladorMetaTest {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        String categoria = categoriaMovimiento.getNombre();
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
         Map<String, String> errores = Map.of(
                 "categoria", "El campo es requerido",
                 "monto", "El campo es requerido"
@@ -298,7 +300,8 @@ public class ControladorMetaTest {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        String categoria = categoriaMovimiento.getNombre();
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
         Map<String, String> errores = Map.of(
                 "categoria", "El campo es requerido"
         );
@@ -320,8 +323,7 @@ public class ControladorMetaTest {
     public void editarMetaQueAlQuererEditarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, "categoria", null);
         Map<String, String> errores = Map.of(
                 "monto", "El campo es requerido"
         );
@@ -344,7 +346,8 @@ public class ControladorMetaTest {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        String categoria = categoriaMovimiento.getNombre();
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
         doThrow(excepcionBaseDeDatos).when(servicioMetaMock).actualizarMeta(datosEditarMeta);
 
@@ -362,7 +365,8 @@ public class ControladorMetaTest {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
-        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoriaMovimiento, 200.0);
+        String categoria = categoriaMovimiento.getNombre();
+        DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
         ExcepcionMetaNoExistente excepcionMetaNoExistente = new ExcepcionMetaNoExistente();
         doThrow(excepcionMetaNoExistente).when(servicioMetaMock).actualizarMeta(datosEditarMeta);
 

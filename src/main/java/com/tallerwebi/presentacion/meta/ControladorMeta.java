@@ -104,7 +104,9 @@ public class ControladorMeta {
         }
 
         Meta meta = servicioMeta.obtenerMetaPorId(id);
+
         DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
+
         modelo.put("meta",datosEditarMeta);
         return new ModelAndView("editar-meta",modelo);
     }

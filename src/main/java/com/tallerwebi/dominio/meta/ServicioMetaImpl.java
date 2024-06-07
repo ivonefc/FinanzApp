@@ -51,10 +51,13 @@ public class ServicioMetaImpl implements ServicioMeta{
     @Transactional
     @Override
     public void actualizarMeta(DatosEditarMeta datosEditarMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
-        datosEditarMeta.validarCampos();
+
         Double monto = datosEditarMeta.getMontoMeta();
 
-        CategoriaMovimiento categoria = datosEditarMeta.getCategoriaMovimiento();
+        CategoriaMovimiento categoria = repositorioCategoria.obtenerCategoriaPorNombre(datosEditarMeta.getCategoria());
+
+        datosEditarMeta.validarCampos();
+
         if (categoria == null) {
             Map<String, String> errores = new HashMap<>();
             errores.put("categoria", "La categoría no existe");
