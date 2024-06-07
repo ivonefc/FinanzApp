@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const nodoUl = document.getElementById("lista-movimientos")
     const canvas = document.getElementById('myChart')
     const nodoDivGrafico = document.getElementById("contenedor-grafico")
+    const botonesExportar = document.getElementsByName("exportar")
 
     const chart = new Chart(canvas, {
         type: 'doughnut',
@@ -17,6 +18,10 @@ document.addEventListener("DOMContentLoaded", function (){
     })
 
     nodoInputCalendario.addEventListener("change", actualizarMovimientos)
+    botonesExportar.forEach(boton =>{
+        console.log(boton)
+        boton.addEventListener("click", exportarDatos)
+    })
 
     async function actualizarMovimientos(e){
         const fecha = e.target.value
@@ -70,5 +75,27 @@ document.addEventListener("DOMContentLoaded", function (){
     function actualizarGrafico(totalIngresos, totalEgresos) {
         chart.data.datasets[0].data = [totalIngresos, totalEgresos]
         chart.update()
+    }
+
+    async function exportarDatos(e) {
+        //obtengo el tipo de documento a exportar del name del boton clickeado
+        const tipoDeDoc = e.target.dataset.tipoDoc
+
+        try{
+            //espero obtener una respuesta al enviar una solicitud GET al controlador de movimientos.
+            const respuesta = await fetch(`/spring/movimientos/exportar/${tipoDeDoc}`)
+            //espero obtener un objeto javascript llamado blob que almacena los datos binarios del archivo.
+            const blob = await respuesta.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = `archivo.${tipoDeDoc.toLowerCase()}`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+        }catch (error){
+            alert(error.message)
+        }
     }
 })
