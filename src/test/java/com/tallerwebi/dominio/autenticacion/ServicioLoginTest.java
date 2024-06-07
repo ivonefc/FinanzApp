@@ -10,9 +10,6 @@ import com.tallerwebi.presentacion.autenticacion.DatosRegistroUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
