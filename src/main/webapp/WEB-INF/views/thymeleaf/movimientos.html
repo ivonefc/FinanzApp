@@ -57,15 +57,16 @@
                             </span>
                         </ul>
                     </nav><!-- End Pagination with icons -->
-
-                    <div class="d-flex gap-3">
-
-                    </div>
                 </ul>
             </div>
             <div th:if="${#lists.isEmpty(movimientos)}">
                 <p>No hay movimientos disponibles.</p>
             </div>
+            <ul th:if="${not #lists.isEmpty(movimientos)}">
+                <li>
+                    <button name="exportar" data-tipo-doc="PDF">Exportar PDF</button>
+                </li>
+            </ul>
         </div>
         <div class="contenedor-grafico-calendario">
             <div class="card w-100">
