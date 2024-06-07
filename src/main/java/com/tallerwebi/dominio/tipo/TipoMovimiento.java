@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio.tipo;
 
+import com.itextpdf.text.BaseColor;
 import javax.persistence.*;
-
 
 @Entity
 @Table(name = "tipos_movimiento")
@@ -28,6 +28,13 @@ public class TipoMovimiento {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public BaseColor obtenerBaseColor(){
+        if(this.nombre.equals("INGRESO")){
+            return BaseColor.GREEN;
+        }
+        return BaseColor.RED;
     }
 
     public void setNombre(String nombre) {

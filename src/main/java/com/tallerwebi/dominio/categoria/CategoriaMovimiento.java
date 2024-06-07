@@ -1,9 +1,11 @@
 package com.tallerwebi.dominio.categoria;
 
 
+import com.itextpdf.text.BaseColor;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
 
 import javax.persistence.*;
+import java.awt.*;
 
 
 @Entity
@@ -61,6 +63,11 @@ public class CategoriaMovimiento {
 
     public String getColor() {
         return color;
+    }
+
+    public BaseColor getBaseColor() {
+        Color awtColor = Color.decode(this.color);
+        return new BaseColor(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue());
     }
 
     public void setColor(String color) {
