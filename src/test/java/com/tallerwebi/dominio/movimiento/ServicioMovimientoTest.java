@@ -6,6 +6,9 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.RepositorioMeta;
+import com.tallerwebi.dominio.tipo.TipoMovimiento;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
@@ -33,16 +36,18 @@ public class ServicioMovimientoTest {
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
     HttpServletRequest httpServletRequestMock;
+    RepositorioMeta repositorioMetaMock;
     HttpSession httpSessionMock;
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
 
-    @BeforeEach
+     @BeforeEach
     public void init(){
          repositorioMovimientoMock = mock(RepositorioMovimiento.class);
          repositorioCategoriaMock = mock(RepositorioCategoria.class);
          repositorioUsuarioMock = mock(RepositorioUsuario.class);
-         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+         repositorioMetaMock = mock(RepositorioMeta.class);
+         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
          httpServletRequestMock = mock(HttpServletRequest.class);
          httpSessionMock = mock(HttpSession.class);
          usuarioMock = mock(Usuario.class);
@@ -149,7 +154,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.actualizarMovimiento(datosActualizar));
@@ -279,7 +284,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.nuevoMovimiento(1L, datosAgregarMovimiento));
@@ -354,7 +359,44 @@ public class ServicioMovimientoTest {
         assertThrows(ExcepcionBaseDeDatos.class, () -> servicioMovimiento.obtenerMovimientosPorPagina(1L, 1, 5));
     }
 
+    //Testeando metodo para obtener un Map con las categorias y los montos totales gastados para la misma en el mes y año actual.
+    @Test
+    public void queAlSolicitarElTotalGastadoEnCategoriasConMetasDevuelvaUnMapaConLosDatos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+
+        CategoriaMovimiento categoria1 = new CategoriaMovimiento("Categoria 1", new TipoMovimiento("Egreso"));
+        categoria1.setId(1L);
+        CategoriaMovimiento categoria2 = new CategoriaMovimiento("Categoria 2", new TipoMovimiento("Egreso"));
+        categoria2.setId(2L);
+
+        Meta meta1 = new Meta(usuario, categoria1, 100.0);
+        Meta meta2 = new Meta(usuario, categoria2, 200.0);
+
+        List<Meta> metas = Arrays.asList(meta1, meta2);
+
+        LocalDate fechaActual = LocalDate.now();
+        int mes = fechaActual.getMonthValue();
+        int anio = fechaActual.getYear();
+
+        when(repositorioMetaMock.obtenerMetas(usuario.getId())).thenReturn(metas);
+        when(repositorioMovimientoMock.obtenerTotalPorCategoriaEnMesYAnioActual(categoria1.getId(), mes, anio)).thenReturn(50.0);
+        when(repositorioMovimientoMock.obtenerTotalPorCategoriaEnMesYAnioActual(categoria2.getId(), mes, anio)).thenReturn(60.0);
+
+        //ejecucion
+        Map<String, Double> totalesGastadosPorCategoria = servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(usuario.getId());
+
+        //validacion
+        assertThat(totalesGastadosPorCategoria, is(notNullValue()));
+        assertThat(totalesGastadosPorCategoria.size(), is(2));
+        assertThat(totalesGastadosPorCategoria, hasEntry("Categoria 1", 50.0));
+        assertThat(totalesGastadosPorCategoria, hasEntry("Categoria 2", 60.0));
+    }
+
+
     //METODOS PRIVADOS
+
 
     private List<Movimiento> generarMovimientos(int cantidadDeMovimientos) {
          List<Movimiento> movimientos = new ArrayList<>();

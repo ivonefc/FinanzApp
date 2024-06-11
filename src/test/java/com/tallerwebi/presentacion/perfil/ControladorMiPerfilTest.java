@@ -1,5 +1,9 @@
 package com.tallerwebi.presentacion.perfil;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.junit.jupiter.api.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,6 +17,7 @@ import static org.mockito.Mockito.*;
 public class ControladorMiPerfilTest {
 
     private ControladorMiPerfil controladorMiPerfil;
+    private ServicioUsuario servicioUsuarioMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
 
@@ -20,13 +25,20 @@ public class ControladorMiPerfilTest {
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
-        controladorMiPerfil = new ControladorMiPerfil();
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        controladorMiPerfil = new ControladorMiPerfil(servicioUsuarioMock);
     }
 
     @Test
-    public void queAlClickearLaOpcionMiPerfilEnNavDeUsuarioDirijaALaVistaMiPerfil(){
+    public void queAlClickearLaOpcionMiPerfilEnNavDeUsuarioDirijaALaVistaMiPerfil() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
+        Long idUsuarioMock = 1L;
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setId(idUsuarioMock);
+
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuarioMock);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuarioMock)).thenReturn(usuarioMock);
 
         //ejecucion
         ModelAndView modelAndView = controladorMiPerfil.irAMiPerfil(requestMock);
@@ -36,7 +48,7 @@ public class ControladorMiPerfilTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionMiPerfilYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionMiPerfilYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

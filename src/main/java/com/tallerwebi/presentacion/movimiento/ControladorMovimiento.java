@@ -1,8 +1,8 @@
 package com.tallerwebi.presentacion.movimiento;
 
+
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimiento.*;
-import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +26,7 @@ public class ControladorMovimiento {
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
+
 
     @GetMapping("/movimientos")
     public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {

@@ -14,10 +14,16 @@
 }
 
 .tipo-ingreso{
-    color: green;
+    color: black;
+    border: solid 2px black;
+    border-radius: 5px;
+    background: #3ad915de;
 }
 .tipo-egreso{
-    color: red;
+    color: black;
+    border: solid 2px black;
+    border-radius: 5px;
+    background: #f72727de;
 }
 
 
@@ -30,6 +36,25 @@
 
 
  */
+
+.btn-color {
+    background-color: white;
+    color: #000;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    position: relative;
+    top: 55px;
+    left: 15px;
+
+}
+
+
+.btn-color:hover {
+    background-color: #ccc;
+}
+
 
 .item{
     display: flex;

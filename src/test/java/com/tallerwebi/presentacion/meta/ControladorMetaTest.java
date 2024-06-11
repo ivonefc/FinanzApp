@@ -4,18 +4,21 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
 import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -26,13 +29,15 @@ public class ControladorMetaTest {
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private ServicioMeta servicioMetaMock;
+    private ServicioMovimiento servicioMovimientoMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
         servicioMetaMock = mock(ServicioMeta.class);
-        controladorMeta = new ControladorMeta(servicioMetaMock);
+        servicioMovimientoMock =  mock(ServicioMovimiento.class);
+        controladorMeta = new ControladorMeta(servicioMetaMock, servicioMovimientoMock);
     }
 
     @Test
@@ -80,8 +85,9 @@ public class ControladorMetaTest {
     @Test
     public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        doNothing().when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
+        doNothing().when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
 
@@ -97,8 +103,9 @@ public class ControladorMetaTest {
                 "monto", "El campo es requerido"
         );
         ExcepcionCamposInvalidos excepcionCamposInvalidos = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta();
+        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
         Map<String, String> erroresObtenidos = (Map<String, String>) modelAndView.getModel().get("errores");
@@ -118,8 +125,8 @@ public class ControladorMetaTest {
                 "categoria", "El campo es requerido"
         );
         ExcepcionCamposInvalidos excepcionCamposInvalidos = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta();
+        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
         Map<String, String> erroresObtenidos = (Map<String, String>) modelAndView.getModel().get("errores");
@@ -138,8 +145,9 @@ public class ControladorMetaTest {
                 "monto", "El campo es requerido"
         );
         ExcepcionCamposInvalidos excepcionCamposInvalidos = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta();
+        doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
         Map<String, String> erroresObtenidos = (Map<String, String>) modelAndView.getModel().get("errores");
@@ -155,8 +163,9 @@ public class ControladorMetaTest {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionCategoriaConMetaExistente excepcionCategoriaConMetaExistente = new ExcepcionCategoriaConMetaExistente();
-        doThrow(excepcionCategoriaConMetaExistente).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta=  new DatosMeta("categoria", 200.0);
+        doThrow(excepcionCategoriaConMetaExistente).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
 
@@ -170,8 +179,9 @@ public class ControladorMetaTest {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
-        doThrow(excepcionBaseDeDatos).when(servicioMetaMock).guardarMeta(anyLong(), any(DatosMeta.class));
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
+        doThrow(excepcionBaseDeDatos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
+
 
         ExcepcionBaseDeDatos thrownException = assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMeta.crearMeta(datosMeta, requestMock);
@@ -434,6 +444,33 @@ public class ControladorMetaTest {
 
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).eliminarMeta(1L);
+    }
+
+
+
+    @Test
+    public void deberiaDevolverMapaConNombresYMontosGastadosEnCadaCategoriaConMetaEnMesYAnioActual() throws ExcepcionBaseDeDatos {
+        //preparacion
+        Long idUsuario = 1L;
+        Map<String, Double> mapEsperado = new HashMap<>();
+        mapEsperado.put("TRANSPORTE", 30000.0);
+        mapEsperado.put("RESTAURANTE", 20000.0);
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioMovimientoMock.obtenerTotalGastadoEnCategoriasConMetas(idUsuario)).thenReturn(mapEsperado);
+
+        //ejecucion
+        Map<String, Double> totalGastadoPorCategoria = controladorMeta.obtenerTotalGastadoPorCategoriasConMetas(requestMock);
+
+        //validacion
+        assertThat(totalGastadoPorCategoria, notNullValue());
+        assertThat(totalGastadoPorCategoria, aMapWithSize(2));
+        assertThat(totalGastadoPorCategoria, hasEntry("TRANSPORTE", 30000.0));
+        assertThat(totalGastadoPorCategoria, hasEntry("RESTAURANTE", 20000.0));
+
+        verify(requestMock, times(1)).getSession(false);
+        verify(sessionMock, times(1)).getAttribute("idUsuario");
+        verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
 
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Mi perfil</title>
+    <title>Editar categorías</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/mi-perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/movimientos.css}">
 </head>
 
 <body>
@@ -30,46 +30,39 @@
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
 <main id="main" class="main">
+    <div class="card w-100">
+        <div>
+            <h1 class="pt-3 text-center">Categorías</h1>
+        </div>
+        <div class="card-body" th:if="${not #lists.isEmpty(categorias)}">
+            <ul class="list-group" id="lista-categorias">
+                <li th:each="categoria : ${categorias}" class="list-group-item item" th:style="'background-color:' + ${categoria.getColor()} + '80;'">
+                    <!-- Accede a las propiedades de cada categoria -->
+                    <span>
+                            <span th:class="${categoria.getIcono()}"></span>
+                            <span th:text="${categoria.getNombre()}"></span><br>
+                    </span>
+                    <form th:object="${categoria}"  class="d-flex align-items-center actualizar-color" th:action="@{/categorias/actualizar-color}" method="POST" >
+                        <input type="color" th:value="${categoria.color}" name="color"/>
+                        <input type="hidden" th:value="${categoria.nombre}" name="nombre" />
+                        <button type="submit" class="btn btn-outline-dark mx-1">Guardar</button>
+                    </form>
+                </li>
 
-    <div class="pagetitle">
-        <h1>Mi Perfil! (en contrucción...)</h1> <br> <br>
-        <a th:href="@{/perfil/panel}" class="btn btn-primary">Volver a pagina de inicio</a>
-    </div>
+                <div class="d-flex gap-3">
 
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Datos Personales</h5>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" readonly>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" readonly>
-                            </div>
-
-                            <a href="/ruta-a-la-vista-de-edicion" class="btn btn-primary">Editar datos personales</a>
-                        </form>
-                    </div>
                 </div>
-            </div>
+            </ul>
         </div>
     </div>
-
 </main>
 
 <!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
-<!-- Script -->
+
 <script th:src="@{/js/principal.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

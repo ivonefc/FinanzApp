@@ -6,6 +6,8 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +30,14 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     private RepositorioMovimiento repositorioMovimiento;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;
+    private RepositorioMeta repositorioMeta;
 
     @Autowired
-    public ServicioMovimientoImpl(RepositorioMovimiento repositorioMovimiento, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario) {
+    public ServicioMovimientoImpl(RepositorioMovimiento repositorioMovimiento, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMeta repositorioMeta) {
         this.repositorioMovimiento = repositorioMovimiento;
         this.repositorioCategoria = repositorioCategoria;
         this.repositorioUsuario = repositorioUsuario;
+        this.repositorioMeta = repositorioMeta;
     }
 
     @Transactional
@@ -119,5 +124,20 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
+    }
+
+    @Override
+    public Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        Map<String, Double> totalGastadoEnCategoriasConMetas = new HashMap<>();
+        LocalDate fechaActual = LocalDate.now();
+        int anio = fechaActual.getYear();
+        int mes = fechaActual.getMonthValue();
+        if(!metas.isEmpty()){
+            for (Meta meta : metas) {
+                totalGastadoEnCategoriasConMetas.put(meta.getCategoriaMovimiento().getNombre(), repositorioMovimiento.obtenerTotalPorCategoriaEnMesYAnioActual(meta.getCategoriaMovimiento().getId(), mes, anio));
+            }
+        }
+        return totalGastadoEnCategoriasConMetas;
     }
 }
