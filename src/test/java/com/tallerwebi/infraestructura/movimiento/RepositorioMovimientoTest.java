@@ -11,7 +11,6 @@ import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -501,6 +500,34 @@ public class RepositorioMovimientoTest {
             repositorioMovimiento.obtenerMovimientosPorPagina(1L, 1, 5);
         }, "Base de datos no disponible");
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarElMontoTotalGastadoEnUnaCategoriaEnElMesYAnioActualDevuelvaLaSumaDeSusMontos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactory);
+        CategoriaMovimiento categoria = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
+        Usuario usuario = new Usuario("clarisa@test", "1234", "USER", true);
+        guardarUsuario(usuario);
+        Usuario usuarioObtenido = obtenerUsuarioPorId(1L);
+        guardarCategoria(categoria);
+        CategoriaMovimiento categoriaObtenida = obtenerCategoriaPorId(1L);
+
+        generarMovimientos(20, usuarioObtenido, categoriaObtenida);
+
+        LocalDate fechaActual = LocalDate.now();
+        int mes = fechaActual.getMonthValue();
+        int anio = fechaActual.getYear();
+
+        //ejecucion
+        Double totalPorCategoria = repositorioMovimiento.obtenerTotalPorCategoriaEnMesYAnioActual(usuarioObtenido.getId(), mes, anio);
+
+        //validacion
+        assertThat(totalPorCategoria, closeTo(190.0, 0.0));
+    }
+
 
     // METODOS PRIVADOS
     private void guardarCategoria(CategoriaMovimiento categoria) {

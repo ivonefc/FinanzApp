@@ -11,17 +11,14 @@ public class Notificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String titulo;
-
     private String descripcion;
 
     @ManyToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    public Notificacion(Long id, String titulo, String descripcion) {
+    public Notificacion(Long id, String descripcion) {
         this.id = id;
-        this.titulo = titulo;
         this.descripcion = descripcion;
     }
 
@@ -35,14 +32,6 @@ public class Notificacion {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
     }
 
     public String getDescripcion() {

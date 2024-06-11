@@ -10,3 +10,27 @@
 /*--------------------------------------------------------------
 # Metas
 --------------------------------------------------------------*/
+
+.contenedor-tablas{
+    display: flex;
+    column-gap: 20px;
+    justify-content: space-around;
+}
+
+@media (max-width: 768px) {
+    .contenedor-tablas{
+        row-gap: 20px;
+        flex-direction: column;
+    }
+}
+
+.contenedor-cat-montos{
+    display:flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+}
+
+.contenedor-montos{
+    display: flex;
+    flex-direction: column;
+}

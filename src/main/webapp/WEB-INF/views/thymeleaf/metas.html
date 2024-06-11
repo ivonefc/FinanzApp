@@ -29,42 +29,49 @@
 <!-- Menu Lateral -->
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
-<main id="main" class="main d-flex justify-content-center">
+<main id="main" class="main align-content-center">
     <div th:if="${#lists.isEmpty(metas)}">
         <div class="pagetitle">
             <h1>No has establecido metas.</h1> <br> <br>
             <a th:href="@{/metas/agregar}" class="btn btn-primary">Crear una meta</a>
         </div>
     </div>
+    <div class="contenedor-tablas">
+        <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
+            <div class="card-body">
+                <h2 class="card-title text-center border-bottom">Metas</h2>
 
+                <!-- Default Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Meta</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="meta: ${metas}">
+                    <tr>
+                        <td th:text="${meta.categoriaMovimiento.getNombre()}"></td>
+                        <td th:text="${meta.montoMeta}"></td>
+                        <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
+            <div class="seguimiento card-body">
+                <h3 class="pt-3 text-center border-bottom">Seguimiento de metas</h3>
+                <ul id="lista-seguimiento-metas">
 
-
-    <div class="card  w-50" th:if="${not #lists.isEmpty(metas)}">
-        <div class="card-body">
-            <h2 class="card-title text-center border-bottom">Metas</h2>
-
-            <!-- Default Table -->
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Categoría</th>
-                    <th scope="col">Meta</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody th:each="meta: ${metas}">
-                <tr>
-                    <td th:text="${meta.categoriaMovimiento.getNombre()}"></td>
-                    <td th:text="${meta.montoMeta}"></td>
-                    <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- End Default Table Example -->
+                </ul>
+            </div>
         </div>
     </div>
-
-
+    <div class="pt-3" th:if="${not #lists.isEmpty(metas)}">
+        <a th:href="@{/metas/agregar}" class="btn btn-primary">Agregar nueva meta</a>
+    </div>
 </main>
 
 <!-- Footer -->
@@ -72,6 +79,7 @@
 
 <!-- Script -->
 <script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/js/metas.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
 </body>
 </html>
