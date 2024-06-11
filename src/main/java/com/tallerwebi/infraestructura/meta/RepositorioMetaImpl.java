@@ -90,6 +90,10 @@ public class RepositorioMetaImpl implements RepositorioMeta {
 
         try {
             Session session = sessionFactory.getCurrentSession();
+            Meta metaExistente = session.get(Meta.class, meta.getId());
+
+            if (metaExistente == null)
+                throw new ExcepcionMetaNoExistente();
             session.update(meta);
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");

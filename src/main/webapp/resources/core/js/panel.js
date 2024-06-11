@@ -32,10 +32,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     actualizarGraficoLinea();
 
     // Escuchar el cambio en el select de años
-    aniosSelect.addEventListener('change', async function () {
-        const anioSeleccionado = parseInt(aniosSelect.value);
-        await actualizarGraficoLinea();
-    });
+     aniosSelect.addEventListener('change', async function () {
+            const anioSeleccionado = parseInt(aniosSelect.value);
+            await actualizarGraficoLinea();
+            const mesSeleccionado = parseInt(mesesSelect.value); //AGREGUE ESTA LINEA PARA QUE ACTUALICE EL GRAFICO DE DONA CUANDO CAMBIO DE AÑO
+            await actualizarGraficoDona(mesSeleccionado + 1); //AGREGUE ESTA LINEA PARA QUE ACTUALICE EL GRAFICO DE DONA CUANDO CAMBIO DE AÑO
+        });
 
 
 
@@ -43,19 +45,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function actualizarGraficoDona(mesSeleccionado) {
         try {
             const montosMap = await obtenerMontosPorCategoriaPorMes(mesSeleccionado);
+            const coloresMap = await obtenerColoresPorCategoria(mesSeleccionado);
 
             if (!montosMap) {
                 console.error('No data available for the selected month.');
                 return;
             }
 
-            // Extraer categorías y montos del Map
+            // Extraer categorías, montos y colores del Map
             const nombresCategorias = [];
             const montos = [];
+            const colores = [];
 
             for (const [categoria, monto] of montosMap) {
                 nombresCategorias.push(categoria);
                 montos.push(monto);
+                colores.push(coloresMap.get(categoria));
             }
 
             const data = {
@@ -63,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 datasets: [{
                     label: 'Monto $',
                     data: montos,
+                    backgroundColor: colores,
                     borderWidth: 1,
                     hoverOffset: 10
                 }]
@@ -83,18 +89,17 @@ document.addEventListener("DOMContentLoaded", async function () {
                         legend: {
                             position: 'top',
                         },
-
                     }
                 }
             });
+
             nodo.innerHTML = '';
-            if(montos.length===0){
-                nodo.innerHTML = `<p>No hay movimientos registrados.</p>`
+            if (montos.length === 0) {
+                nodo.innerHTML = `<p>No hay movimientos registrados.</p>`;
             }
         } catch (error) {
             console.error('Error fetching or processing data:', error);
         }
-
     }
 
     //GRAFICO LINEAS
@@ -132,7 +137,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     }
 
 
-                    const labels = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                    const labels = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                     const dataLineas = {
                         labels: labels,
                         datasets: [{
@@ -289,6 +294,37 @@ async function obtenerMontosPorTipoDeCategoriaPorMes(mesSeleccionado) {
     }
 
 
+}
+
+//FUNCION PARA OBTENER COLORES POR CATEGORÍA
+async function obtenerColoresPorCategoria(mesSeleccionado) {
+    try {
+        const egresos = await obtenerEgresos();
+        const egresosFiltrados = []; // Todos los egresos para el mes elegido
+
+        // Recorrer egresos y filtrar por mes
+        for (let egreso of egresos) {
+            const anio = egreso.fechayHora[0];
+            const mes = egreso.fechayHora[1];
+            if (mes === mesSeleccionado && anio == aniosSelect.value) {
+                egresosFiltrados.push(egreso);
+            }
+        }
+
+        const coloresPorCategoria = new Map();
+        for (let egreso of egresosFiltrados) {
+            const categoria = egreso.categoria.nombre;
+            const color = egreso.categoria.color; // Asegúrate de que la propiedad color exista
+            if (!coloresPorCategoria.has(categoria)) {
+                coloresPorCategoria.set(categoria, `${color}80`);
+            }
+        }
+
+        console.log(coloresPorCategoria); // Verificar en la consola si los colores están bien
+        return coloresPorCategoria;
+    } catch (error) {
+        console.error('Error al obtener los colores de la categoría:', error);
+    }
 }
 
 

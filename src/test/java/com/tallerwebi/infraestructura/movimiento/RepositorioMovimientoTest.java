@@ -83,12 +83,13 @@ public class RepositorioMovimientoTest {
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     public void queAlSolicitarAlRepositorioObtenerMovimientosPorUsurioLanceUnaExcepcionDeBDD() throws ExcepcionBaseDeDatos {
         //preparacion
-        RepositorioMovimiento repositorioMovimientoMock = mock(RepositorioMovimiento.class);
+        //Se genera un sessionFactoryMock que esté configurado para lanzar una HibernateException, sino no lanzaba la excepción.
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
         when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
-        when(repositorioMovimientoMock.obtenerMovimientos(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
 
         //ejecucion y validacion
-        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMovimientoMock.obtenerMovimientos(1L));
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMovimiento.obtenerMovimientos(1L));
     }
 
     @Test

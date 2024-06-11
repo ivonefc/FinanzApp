@@ -140,23 +140,23 @@ public class ServicioMovimientoTest {
 
     @Test
     public void queAlSolicitarAlServicioActualizarYNoSeIngreseNingunDatoNoSePuedaActualizar() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, ExcepcionMovimientoNoEncontrado {
-        //preparacion
-        DatosEditarMovimiento datosActualizarMock = mock(DatosEditarMovimiento.class);
-        when(datosActualizarMock.getDescripcion()).thenReturn(null);
-        when(datosActualizarMock.getTipo()).thenReturn("");
-        when(datosActualizarMock.getCategoria()).thenReturn(null);
-        when(datosActualizarMock.getMonto()).thenReturn(null);
-        ServicioMovimiento servicioMovimientoMock = mock(ServicioMovimiento.class);
-        Map<String, String> errores = new HashMap<>();
-        errores.put("descripcion", "El campo es requerido");
-        errores.put("tipo", "El campo es requerido");
-        errores.put("categoria", "El campo es requerido");
-        errores.put("monto", "El campo es requerido");
-        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcion).when(servicioMovimientoMock).actualizarMovimiento(datosActualizarMock);
+        // Preparación
+        DatosEditarMovimiento datosActualizar = new DatosEditarMovimiento();
+        datosActualizar.setDescripcion(null);
+        datosActualizar.setTipo("");
+        datosActualizar.setCategoria(null);
+        datosActualizar.setMonto(null);
 
-        //ejecucion y validacion
-        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoMock.actualizarMovimiento(datosActualizarMock));
+        // Mocks para los repositorios
+        RepositorioMovimiento repositorioMovimientoMock = mock(RepositorioMovimiento.class);
+        RepositorioCategoria repositorioCategoriaMock = mock(RepositorioCategoria.class);
+        RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
+
+        // Usamos la implementación real del servicio con repositorios mock
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+
+        // Ejecución y validación
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.actualizarMovimiento(datosActualizar));
         assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(4));
         assertThat(thrown.getErrores(), hasEntry("descripcion", "El campo es requerido"));
         assertThat(thrown.getErrores(), hasEntry("tipo", "El campo es requerido"));
@@ -270,25 +270,28 @@ public class ServicioMovimientoTest {
 
     @Test
     public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionCamposInvalidos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos {
-        //preparacion
-        DatosAgregarMovimiento datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
-        when(datosAgregarMovimientoMock.getDescripcion()).thenReturn(null);
-        when(datosAgregarMovimientoMock.getMonto()).thenReturn(null);
-        when(datosAgregarMovimientoMock.getCategoria()).thenReturn("");
-        ServicioMovimiento servicioMovimientoMock = mock(ServicioMovimiento.class);
-        Map<String, String> errores = new HashMap<>();
-        errores.put("descripcion", "El campo es requerido");
-        errores.put("monto", "El campo es requerido");
-        errores.put("categoria", "El campo es requerido");
-        ExcepcionCamposInvalidos excepcion = new ExcepcionCamposInvalidos(errores);
-        doThrow(excepcion).when(servicioMovimientoMock).nuevoMovimiento(anyLong(), eq(datosAgregarMovimientoMock));
+        // Preparación
+        DatosAgregarMovimiento datosAgregarMovimiento = new DatosAgregarMovimiento();
+        datosAgregarMovimiento.setDescripcion("");
+        datosAgregarMovimiento.setMonto(0.0);
+        datosAgregarMovimiento.setCategoria("");
+        datosAgregarMovimiento.setTipo("");
 
-        //ejecucion y validacion
-        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoMock.nuevoMovimiento(1L, datosAgregarMovimientoMock));
-        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(3));
+        // Mocks para los repositorios
+        RepositorioMovimiento repositorioMovimientoMock = mock(RepositorioMovimiento.class);
+        RepositorioCategoria repositorioCategoriaMock = mock(RepositorioCategoria.class);
+        RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
+
+        // Usamos la implementación real del servicio con repositorios mock
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+
+        // Ejecución y validación
+        ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.nuevoMovimiento(1L, datosAgregarMovimiento));
+        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(4));
         assertThat(thrown.getErrores(), hasEntry("descripcion", "El campo es requerido"));
         assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
         assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
+        assertThat(thrown.getErrores(), hasEntry("tipo", "El campo es requerido"));
     }
 
     //Testeando el método calcularCantidadDePaginas para la paginación.

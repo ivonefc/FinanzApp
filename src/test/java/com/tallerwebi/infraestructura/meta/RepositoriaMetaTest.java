@@ -8,10 +8,10 @@ import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,50 +60,41 @@ public class RepositoriaMetaTest {
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaSpy = spy(repositorioMeta);
-        doAnswer(invocation -> {
-            Meta argument = (Meta) invocation.getArguments()[0];
-            argument.setId(1L);
-            return null;
-        }).when(repositorioMetaSpy).guardar(any());
-
-        Session sessionMock = mock(Session.class);
-        when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
-        when(sessionMock.get(Meta.class, 1L)).thenReturn(meta);
+        // Usamos la implementación real del repositorio
+        RepositorioMeta repositorioMetaReal = new RepositorioMetaImpl(sessionFactory);
 
         // ejecucion
-        repositorioMetaSpy.guardar(meta);
+        repositorioMetaReal.guardar(meta);
 
-        // ejecucion
+        // verificacion
         assertNotNull(meta.getId());
-        Meta metaGuardada = repositorioMetaSpy.obtenerMetaPorId(meta.getId());
+        Meta metaGuardada = repositorioMetaReal.obtenerMetaPorId(meta.getId());
 
         assertNotNull(metaGuardada);
         assertEquals(meta.getId(), metaGuardada.getId());
         assertEquals(meta.getUsuario(), metaGuardada.getUsuario());
         assertEquals(meta.getCategoriaMovimiento(), metaGuardada.getCategoriaMovimiento());
-        verify(repositorioMetaSpy, times(1)).guardar(meta);
     }
 
     @Test
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioGuardarSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarAlRepositorioGuardarSeLanceExcepcionBaseDeDatos() {
         // preparacion
         Meta meta = new Meta();
         meta.setId(1L);
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).guardar(meta);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
 
-        // ejecucion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.guardar(meta));
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
 
-        // verificacion
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).guardar(meta);
+        // ejecucion y verificacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.guardar(meta));
     }
 
     @Test
@@ -133,36 +124,50 @@ public class RepositoriaMetaTest {
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioExisteMetaConUsuarioYCategoriaSeLanceExcepcionCategoriaConMetaExistente() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void queAlSolicitarAlRepositorioExisteMetaConUsuarioYCategoriaSeLanceExcepcionCategoriaConMetaExistente() {
         // preparacion
+        // genera usuario y categoria
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         categoriaMovimiento.setId(1L);
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionCategoriaConMetaExistente()).when(repositorioMetaMock).existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento);
+        // genera meta
+        Meta meta = new Meta();
+        meta.setUsuario(usuario);
+        meta.setCategoriaMovimiento(categoriaMovimiento);
+
+        // guarda usuario, categoria y meta
+        Session session = sessionFactory.getCurrentSession();
+        session.save(usuario);
+        session.save(categoriaMovimiento);
+        session.save(meta);
+
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactory); // use real implementation
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionCategoriaConMetaExistente.class, () -> repositorioMetaMock.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento));
+        assertThrows(ExcepcionCategoriaConMetaExistente.class, () -> repositorioMeta.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento));
     }
 
     @Test
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioExisteMetaConUsuarioYCategoriaSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void queAlSolicitarAlRepositorioExisteMetaConUsuarioYCategoriaSeLanceExcepcionBaseDeDatos() {
         // preparacion
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         categoriaMovimiento.setId(1L);
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
+
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento));
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento));
     }
 
     @Test
@@ -191,31 +196,31 @@ public class RepositoriaMetaTest {
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioObtenerMetaPorIdSeLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioObtenerMetaPorIdSeLanceExcepcionMetaNoExistente() {
         // preparacion
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionMetaNoExistente()).when(repositorioMetaMock).obtenerMetaPorId(1L);
+        Long idMetaNoExistente = 1L;
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactory);
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMetaMock.obtenerMetaPorId(1L));
+        assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMeta.obtenerMetaPorId(idMetaNoExistente));
     }
 
     @Test
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioObtenerMetaPorIdSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioObtenerMetaPorIdSeLanceExcepcionBaseDeDatos()  {
         // preparacion
-        Meta meta = new Meta();
-        meta.setId(1L);
-        meta.setCategoriaMovimiento(new CategoriaMovimiento());
-        meta.setUsuario(new Usuario());
+        Long idMetaNoExistente = 1L;
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).obtenerMetaPorId(1L);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
+
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.obtenerMetaPorId(1L));
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.obtenerMetaPorId(idMetaNoExistente));
     }
 
     @Test
@@ -241,38 +246,37 @@ public class RepositoriaMetaTest {
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioEliminarMetaSeLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioEliminarMetaSeLanceExcepcionMetaNoExistente() {
         // preparacion
+        Long idMetaNoExistente = 1L;
         Meta meta = new Meta();
-        meta.setId(1L);
+        meta.setId(idMetaNoExistente);
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionMetaNoExistente()).when(repositorioMetaMock).eliminarMeta(meta);
-
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMetaMock.eliminarMeta(meta));
-        verify(repositorioMetaMock, times(1)).eliminarMeta(meta);
+        assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMeta.eliminarMeta(meta));
     }
 
     @Test
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioEliminarMetaSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioEliminarMetaSeLanceExcepcionBaseDeDatos()  {
         // preparacion
         Meta meta = new Meta();
         meta.setId(1L);
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).eliminarMeta(meta);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
+
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock); // use real implementation
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.eliminarMeta(meta));
-        verify(repositorioMetaMock, times(1)).eliminarMeta(meta);
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.eliminarMeta(meta));
     }
 
     @Test
@@ -303,38 +307,40 @@ public class RepositoriaMetaTest {
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioActualizarMetaSeLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioActualizarMetaSeLanceExcepcionMetaNoExistente() {
         // preparacion
+        Long idMetaNoExistente = 1L;
+
         Meta meta = new Meta();
-        meta.setId(1L);
+        meta.setId(idMetaNoExistente);
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionMetaNoExistente()).when(repositorioMetaMock).actualizarMeta(meta);
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactory); // use real implementation
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMetaMock.actualizarMeta(meta));
-        verify(repositorioMetaMock, times(1)).actualizarMeta(meta);
+        assertThrows(ExcepcionMetaNoExistente.class, () -> repositorioMeta.actualizarMeta(meta));
     }
 
     @Test
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioActualizarMetaSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void queAlSolicitarAlRepositorioActualizarMetaSeLanceExcepcionBaseDeDatos() {
         // preparacion
         Meta meta = new Meta();
         meta.setId(1L);
         meta.setCategoriaMovimiento(new CategoriaMovimiento());
         meta.setUsuario(new Usuario());
 
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).actualizarMeta(meta);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
+
+        RepositorioMeta repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.actualizarMeta(meta));
-        verify(repositorioMetaMock, times(1)).actualizarMeta(meta);
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.actualizarMeta(meta));
     }
 
     @Test
@@ -378,14 +384,17 @@ public class RepositoriaMetaTest {
     @Transactional
     @Rollback
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlSolicitarAlRepositorioObtenerMetasSeLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarAlRepositorioObtenerMetasSeLanceExcepcionBaseDeDatos(){
         // preparacion
-        RepositorioMeta repositorioMetaMock = mock(RepositorioMeta.class);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioMetaMock).obtenerMetas(1L);
+        // mockeando la session factory para que lance una excepcion
+        SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(new HibernateException("Base de datos no disponible"));
+
+        // inicializando repositorioMeta con sessionFactoryMock
+        repositorioMeta = new RepositorioMetaImpl(sessionFactoryMock);
 
         // ejecucion y verificacion
-        Assertions.assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMetaMock.obtenerMetas(1L));
-        verify(repositorioMetaMock, times(1)).obtenerMetas(1L);
+        assertThrows(ExcepcionBaseDeDatos.class, () -> repositorioMeta.obtenerMetas(1L));
     }
 
     @Test
