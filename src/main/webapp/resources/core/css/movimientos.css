@@ -14,10 +14,16 @@
 }
 
 .tipo-ingreso{
-    color: green;
+    color: black;
+    border: solid 2px black;
+    border-radius: 5px;
+    background: #3ad915de;
 }
 .tipo-egreso{
-    color: red;
+    color: black;
+    border: solid 2px black;
+    border-radius: 5px;
+    background: #f72727de;
 }
 
 
