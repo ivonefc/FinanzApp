@@ -63,8 +63,29 @@
         <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
             <div class="seguimiento card-body">
                 <h3 class="pt-3 text-center border-bottom">Seguimiento de metas</h3>
-                <ul id="lista-seguimiento-metas">
+                <ul id="lista-seguimiento-metas" th:each="total: ${totales}">
+                    <li class="list-group-item p-3">
+                        <span class="contenedor-cat-montos">
+                            <span th:text="${total.key}"></span>
+                            <span class="contenedor-montos">
 
+                                <span class="fw-semibold">$ <span th:text="${total.value}"></span></span>
+
+                                <span  th:each="meta : ${metas}">
+                                    <span th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
+                                        <span>de $</span>
+                                        <span th:text="${meta.montoMeta}"></span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                        <div th:each="meta : ${metas}">
+                            <div class="progress" th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
+                                <div class="progress-bar" role="progressbar" th:attr="aria-valuenow=${total.value}, aria-valuemin=0, aria-valuemax=${meta.montoMeta}" th:style="'width: ' + (${(total.value/meta.montoMeta)*100} + '%')" th:text="${(total.value/meta.montoMeta)*100} + '%'">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -79,7 +100,7 @@
 
 <!-- Script -->
 <script th:src="@{/js/principal.js}"></script>
-<script th:src="@{/js/metas.js}"></script>
+
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

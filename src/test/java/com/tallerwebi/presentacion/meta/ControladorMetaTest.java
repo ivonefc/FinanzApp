@@ -450,7 +450,7 @@ public class ControladorMetaTest {
     }
 
 
-
+/*
     @Test
     public void deberiaDevolverMapaConNombresYMontosGastadosEnCadaCategoriaConMetaEnMesYAnioActual() throws ExcepcionBaseDeDatos {
         //preparacion
@@ -475,5 +475,7 @@ public class ControladorMetaTest {
         verify(sessionMock, times(1)).getAttribute("idUsuario");
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
+
+ */
 
 }
