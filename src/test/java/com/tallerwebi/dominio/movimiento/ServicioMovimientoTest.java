@@ -153,7 +153,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.actualizarMovimiento(datosActualizar));
@@ -283,7 +283,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.nuevoMovimiento(1L, datosAgregarMovimiento));
