@@ -31,6 +31,25 @@
 
  */
 
+.btn-color {
+    background-color: white;
+    color: #000;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    position: relative;
+    top: 55px;
+    left: 15px;
+
+}
+
+
+.btn-color:hover {
+    background-color: #ccc;
+}
+
+
 .item{
     display: flex;
     justify-content: space-between;

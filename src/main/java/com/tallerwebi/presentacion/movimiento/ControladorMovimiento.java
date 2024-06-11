@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion.movimiento;
 
+
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
@@ -28,6 +29,7 @@ public class ControladorMovimiento {
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
+
 
     @GetMapping("/movimientos")
     public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {
@@ -132,6 +134,8 @@ public class ControladorMovimiento {
         }
         return new ModelAndView("redirect:/movimientos");
     }
+
+
 }
 
 
