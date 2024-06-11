@@ -135,4 +135,22 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         }
     }
 
+    @Override
+    public Double obtenerTotalPorCategoriaEnMesYAnioActual(Long idCategoria, int mes, int anio) throws ExcepcionBaseDeDatos {
+        try {
+            Double total =  sessionFactory.getCurrentSession()
+                    .createQuery("SELECT SUM(monto) FROM Movimiento M WHERE M.categoria.id = :idCategoria AND month(M.fechayHora) =:mes AND year(M.fechayHora) =:anio", Double.class)
+                    .setParameter("idCategoria", idCategoria)
+                    .setParameter("mes", mes)
+                    .setParameter("anio", anio)
+                    .uniqueResult();
+            if(total==null){
+                return 0.0;
+            }
+            return total;
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+    }
+
 }

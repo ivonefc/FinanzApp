@@ -8,6 +8,7 @@ import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface ServicioMovimiento {
     List<Movimiento> obtenerMovimientos(Long idUsuario) throws ExcepcionBaseDeDatos;
@@ -18,4 +19,5 @@ public interface ServicioMovimiento {
     void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos;
     int calcularCantidadDePaginas(Long idUsuario, int tamanioDePaginas) throws ExcepcionBaseDeDatos;
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
+    Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 }

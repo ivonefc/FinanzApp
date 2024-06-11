@@ -23,4 +23,6 @@ public interface RepositorioMovimiento {
     Long obtenerCantidadDeMovimientosPorId(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
+
+    Double obtenerTotalPorCategoriaEnMesYAnioActual(Long id, int mes, int anio) throws ExcepcionBaseDeDatos;
 }
