@@ -52,39 +52,51 @@
                     </thead>
                     <tbody th:each="meta: ${metas}">
                     <tr>
-                        <td th:text="${meta.categoriaMovimiento.getNombre()}"></td>
-                        <td th:text="${meta.montoMeta}"></td>
+                        <td th:style="'background-color:' + (${meta.categoriaMovimiento.getColor()}) + '; color: white;'">
+                            <span>
+                                 <i th:classappend="${meta.categoriaMovimiento.getIcono()}"></i>
+                                <span th:text="${meta.categoriaMovimiento.getNombre()}" class="px-2fw-semibold"></span>
+                            </span>
+                        </td>
+                        <td th:text="'$ ' + (${meta.montoMeta})" class="fw-semibold"></td>
                         <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!--SEGUIMIENTO DE METAS-->
+
         <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
             <div class="seguimiento card-body">
                 <h3 class="pt-3 text-center border-bottom">Seguimiento de metas</h3>
-                <ul id="lista-seguimiento-metas" th:each="total: ${totales}">
-                    <li class="list-group-item p-3">
-                        <span class="contenedor-cat-montos">
-                            <span th:text="${total.key}"></span>
-                            <span class="contenedor-montos">
+               <!--LISTA DE SEGUIMIENTO DE METAS-->
+                <ul class="p-0">
+                    <li th:each="total: ${totales}" class="list-group-item p-1">
 
-                                <span class="fw-semibold">$ <span th:text="${total.value}"></span></span>
-
-                                <span  th:each="meta : ${metas}">
-                                    <span th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
-                                        <span>de $</span>
-                                        <span th:text="${meta.montoMeta}"></span>
+                            <span  th:each="meta : ${metas}">
+                                <span  class="contenedor-cat-montos" th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
+                                    <!--ICONO Y NOMBRE DE CATEGORIA-->
+                                    <span th:style="'color:' + (${meta.categoriaMovimiento.getColor()})" class="fw-semibold">
+                                        <i th:classappend="${meta.categoriaMovimiento.getIcono()}"></i>
+                                        <span th:text="${total.key}"></span>
+                                    </span>
+                                   <!--MONTO GASTADO Y MONTO META DE LA CATEGORIA-->
+                                    <span class="contenedor-montos">
+                                        <span th:text="'$ ' + ${total.value}" class="fw-semibold"></span>
+                                        <small th:text=" ' / de $ ' + ${meta.montoMeta}"></small>
                                     </span>
                                 </span>
                             </span>
-                        </span>
-                        <div th:each="meta : ${metas}">
-                            <div class="progress" th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
-                                <div class="progress-bar" role="progressbar" th:attr="aria-valuenow=${total.value}, aria-valuemin=0, aria-valuemax=${meta.montoMeta}" th:style="'width: ' + (${(total.value/meta.montoMeta)*100} + '%')" th:text="${(total.value/meta.montoMeta)*100} + '%'">
+
+                        <!--BARRA DE PROGRESO-->
+                            <div th:each="meta : ${metas}">
+                                <div class="progress" th:if="${meta.categoriaMovimiento.getNombre().equals(total.key)}">
+                                    <div class="progress-bar" role="progressbar" th:attr="aria-valuenow=${total.value}, aria-valuemin=0, aria-valuemax=${meta.montoMeta}" th:style="'width: ' + ${(total.value/meta.montoMeta)*100} + '%; background-color: ' + ${meta.categoriaMovimiento.getColor()}"  th:text="${(total.value/meta.montoMeta)*100}>100? '100%': ${T(java.lang.Math).round((total.value / meta.montoMeta) * 100)} + '%'">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </li>
                 </ul>
             </div>
@@ -94,13 +106,10 @@
         <a th:href="@{/metas/agregar}" class="btn btn-primary">Agregar nueva meta</a>
     </div>
 </main>
-
 <!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>
-
 <!-- Script -->
 <script th:src="@{/js/principal.js}"></script>
-
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
 </body>
 </html>
