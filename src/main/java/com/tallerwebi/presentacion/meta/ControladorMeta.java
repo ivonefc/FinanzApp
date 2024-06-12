@@ -40,27 +40,10 @@ public class ControladorMeta {
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
         modelo.put("metas", metas);
+
+        Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
+        modelo.put("totales", totalGastadoPorCategoria);
         return new ModelAndView("metas", modelo);
-    }
-
-    @GetMapping("/metas/definidas")
-    @ResponseBody
-    public List<Meta> obtenerMetasDefinidas(HttpServletRequest request) throws ExcepcionBaseDeDatos {
-        HttpSession httpSession = request.getSession(false);
-        if (httpSession == null)
-            return null;
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        return servicioMeta.obtenerMetas(idUsuario);
-    }
-
-    @GetMapping("/metas/seguimiento")
-    @ResponseBody
-    public Map<String, Double> obtenerTotalGastadoPorCategoriasConMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos {
-        HttpSession httpSession = request.getSession(false);
-        if (httpSession == null)
-            return null;
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        return servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
 
     @GetMapping("/metas/{id}")
