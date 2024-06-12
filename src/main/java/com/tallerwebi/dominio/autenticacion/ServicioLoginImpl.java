@@ -33,8 +33,13 @@ public class ServicioLoginImpl implements ServicioLogin {
         datosRegistroUsuario.validarCampos();
         Usuario usuario = new Usuario(
                 datosRegistroUsuario.getNombre(),
+                datosRegistroUsuario.getApellido(),
+                datosRegistroUsuario.getNombreUsuario(),
                 datosRegistroUsuario.getEmail(),
                 datosRegistroUsuario.getPassword(),
+                datosRegistroUsuario.getFechaNacimiento(),
+                datosRegistroUsuario.getPais(),
+                datosRegistroUsuario.getTelefono(),
                 "USER",
                 true
         );

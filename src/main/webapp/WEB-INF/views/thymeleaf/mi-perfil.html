@@ -46,13 +46,38 @@
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre</label>
+                                <label for="nombre" class="form-label">Nombre:</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="apellido" class="form-label">Apellido:</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido" th:value="${usuario.apellido}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nombreUsuario" class="form-label">Nombre Usuario:</label>
+                                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" th:value="${usuario.nombreUsuario}" readonly>
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
+                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" th:value="${usuario.fechaNacimiento}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="pais" class="form-label">País:</label>
+                                <input type="text" class="form-control" id="pais" name="pais" th:value="${usuario.pais}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">Teléfono:</label>
+                                <input type="number" class="form-control" id="telefono" name="telefono" th:value="${usuario.telefono}" readonly>
                             </div>
 
                             <a href="/ruta-a-la-vista-de-edicion" class="btn btn-primary">Editar datos personales</a>
