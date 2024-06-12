@@ -33,7 +33,10 @@
     <div th:if="${#lists.isEmpty(metas)}">
         <div class="pagetitle">
             <h1>No has establecido metas.</h1> <br> <br>
-            <a th:href="@{/metas/agregar}" class="btn btn-primary">Crear una meta</a>
+            <a th:href="@{/metas/agregar}" class="btn btn-primary">Agregar meta</a>
+        </div>
+        <div class="pt-3">
+            <a th:href="@{/ajustes/panel}" class="btn btn-primary">Volver a página de inicio</a>
         </div>
     </div>
     <div class="contenedor-tablas">
