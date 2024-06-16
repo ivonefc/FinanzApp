@@ -40,18 +40,6 @@ public class Usuario {
         this.activo = activo;
     }
 
-    public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password, String rol, Boolean activo, String pais, Long telefono) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.nombreUsuario = nombreUsuario;
-        this.email = email;
-        this.password = password;
-        this.rol = rol;
-        this.activo = activo;
-        this.pais = pais;
-        this.telefono = telefono;
-    }
-
     public Usuario(){}
 
     public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password, LocalDate fechaNacimiento, String pais, Long telefono, String rol, boolean activo) {

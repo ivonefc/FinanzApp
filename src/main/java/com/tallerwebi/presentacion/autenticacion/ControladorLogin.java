@@ -43,6 +43,8 @@ public class ControladorLogin {
         } catch (UsuarioInexistente e) {
             model.put("error", e.getMessage());
             return new ModelAndView("login", model);
+        } catch (ExcepcionCamposInvalidos e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -76,7 +78,6 @@ public class ControladorLogin {
     public ModelAndView inicio() {
         return new ModelAndView("redirect:/login");
     }
-
 
 }
 

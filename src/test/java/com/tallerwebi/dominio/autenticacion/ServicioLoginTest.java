@@ -136,7 +136,7 @@ public class ServicioLoginTest {
 
     //Consultar usuario de forma exitosa
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioExistenteRetorneElUsuario() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioExistenteRetorneElUsuario() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenReturn(usuarioMock);
         when(usuarioMock.getEmail()).thenReturn("email@test");
@@ -153,7 +153,7 @@ public class ServicioLoginTest {
 
     //Error al consultar un usuario inexistente
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioInexistenteLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioInexistenteLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenThrow(new UsuarioInexistente());
 
@@ -168,7 +168,7 @@ public class ServicioLoginTest {
 
     //Error al consultar un usuario por caida de la base de datos
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenThrow(new ExcepcionBaseDeDatos("Error en la base de datos"));
 

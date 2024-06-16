@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura.usuario;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
@@ -19,10 +20,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
@@ -41,7 +43,7 @@ public class RepositorioUsuarioTest {
         @Test
         @Transactional
         @Rollback
-        public void queAlSolicitarAlRepositorioBuscarUsuarioPorEmailYPasswordLoHagaCorrectamente() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+        public void queAlSolicitarAlRepositorioBuscarUsuarioPorEmailYPasswordLoHagaCorrectamente() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
             // preparacion
             Usuario usuario = new Usuario("email", "password", "rol", true);
             Session session = sessionFactory.getCurrentSession();
@@ -222,74 +224,80 @@ public class RepositorioUsuarioTest {
             assertEquals(ExcepcionBaseDeDatos.class, exception.getClass());
         }
 
-//        @Test
-//        @Transactional
-//        @Rollback
-//        public void queAlSolicitarAlRepositorioModificarLoHagaCorrectamente() {
-//            // preparacion
-//            Usuario usuario = new Usuario("email", "password", "rol", true);
-//            Session session = sessionFactory.getCurrentSession();
-//            session.save(usuario);
-//
-//            // ejecucion
-//            usuario.setActivo(false);
-//            repositorioUsuario.modificar(usuario);
-//
-//            // validacion
-//            Usuario usuarioEncontrado = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
-//                    .setParameter("email", "email")
-//                    .uniqueResult();
-//            assertNotNull(usuarioEncontrado);
-//            assertEquals(usuario.getEmail(), usuarioEncontrado.getEmail());
-//            assertEquals(usuario.getPassword(), usuarioEncontrado.getPassword());
-//            assertEquals(usuario.getRol(), usuarioEncontrado.getRol());
-//            assertEquals(usuario.getActivo(), usuarioEncontrado.getActivo());
-//        }
-//
-//        @Test
-//        @Transactional
-//        @Rollback
-//        public void queAlSolicitarAlRepositorioModificarConUsuarioInexistenteLanceUsuarioInexistente() {
-//            // preparacion
-//            Usuario usuario = new Usuario("email", "password", "rol", true);
-//            Session session = sessionFactory.getCurrentSession();
-//            session.save(usuario);
-//
-//            // ejecucion
-//            usuario.setEmail("emailIncorrecto");
-//            Exception exception = assertThrows(UsuarioInexistente.class, () -> {
-//                repositorioUsuario.modificar(usuario);
-//            });
-//
-//            // validacion
-//            assertTrue(exception instanceof UsuarioInexistente);
-//            assertEquals(UsuarioInexistente.class, exception.getClass());
-//        }
-//
-//        @Test
-//        @Transactional
-//        @Rollback
-//        public void queAlSolicitarAlRepositorioModificarLanceExceptionBaseDeDatos() {
-//            // preparacion
-//            Usuario usuario = new Usuario("email", "password", "rol", true);
-//            SessionFactory sessionFactoryMock = mock(SessionFactory.class);
-//            Session sessionMock = mock(Session.class);
-//            when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
-//            when(sessionMock.createQuery(anyString())).thenThrow(new HibernateException("Simulated exception"));
-//            RepositorioUsuario repositorioUsuario = new RepositorioUsuarioImpl(sessionFactoryMock);
-//            Session session = sessionFactory.getCurrentSession();
-//            session.save(usuario);
-//
-//            // ejecucion
-//            usuario.setActivo(false);
-//            Exception exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
-//                repositorioUsuario.modificar(usuario);
-//            });
-//
-//            // validacion
-//            assertTrue(exception instanceof ExcepcionBaseDeDatos);
-//            assertEquals(ExcepcionBaseDeDatos.class, exception.getClass());
-//        }
+        @Test
+        @Transactional
+        @Rollback
+        public void queAlSolicitarAlRepositorioModificarLoHagaCorrectamente() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+            // preparacion
+            LocalDate fechaNacimiento = LocalDate.of(2024, 6, 16);
+            Usuario usuario = new Usuario("nombre", "apellido", "nombreUsuario", "email@test","pass", fechaNacimiento, "pais", 1122334455L, "admin", true);
+            Session session = sessionFactory.getCurrentSession();
+            session.save(usuario);
+
+            // ejecucion
+            usuario.setActivo(false);
+            repositorioUsuario.modificar(usuario);
+
+            // validacion
+            Usuario usuarioEncontrado = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
+                    .setParameter("email", "email@test")
+                    .uniqueResult();
+            assertNotNull(usuarioEncontrado);
+            assertEquals(usuario.getEmail(), usuarioEncontrado.getEmail());
+            assertEquals(usuario.getPassword(), usuarioEncontrado.getPassword());
+            assertEquals(usuario.getRol(), usuarioEncontrado.getRol());
+            assertEquals(usuario.getActivo(), usuarioEncontrado.getActivo());
+            assertEquals(usuario.getNombre(), usuarioEncontrado.getNombre());
+            assertEquals(usuario.getApellido(), usuarioEncontrado.getApellido());
+            assertEquals(usuario.getNombreUsuario(), usuarioEncontrado.getNombreUsuario());
+            assertEquals(usuario.getPais(), usuarioEncontrado.getPais());
+            assertEquals(usuario.getTelefono(), usuarioEncontrado.getTelefono());
+            assertEquals(usuario.getFechaNacimiento(), usuarioEncontrado.getFechaNacimiento());
+        }
+
+        @Test
+        @Transactional
+        @Rollback
+        public void queAlSolicitarAlRepositorioModificarConUsuarioInexistenteLanceUsuarioInexistente() {
+            // preparacion
+            LocalDate fechaNacimiento = LocalDate.of(2024, 6, 16);
+            Usuario usuario = new Usuario("nombre", "apellido", "nombreUsuario", "email@test","pass", fechaNacimiento, "pais", 1122334455L, "admin", true);
+            Session session = sessionFactory.getCurrentSession();
+            session.save(usuario);
+
+            // ejecucion
+            usuario.setId(0L);
+            Exception exception = assertThrows(UsuarioInexistente.class, () -> {
+                repositorioUsuario.modificar(usuario);
+            });
+
+            // validacion
+            assertTrue(exception instanceof UsuarioInexistente);
+            assertEquals(UsuarioInexistente.class, exception.getClass());
+        }
+
+        @Test
+        @Transactional
+        @Rollback
+        public void queAlSolicitarAlRepositorioModificarLanceExceptionBaseDeDatos() {
+            // preparacion
+            Usuario usuario = new Usuario("email", "password", "rol", true);
+            usuario.setId(1L);
+
+            Session sessionMock = mock(Session.class);
+            when(sessionMock.get(Usuario.class, usuario.getId())).thenReturn(usuario);
+            doThrow(new HibernateException("Simulated exception")).when(sessionMock).update(usuario);
+
+            SessionFactory sessionFactoryMock = mock(SessionFactory.class);
+            when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
+
+            RepositorioUsuarioImpl repositorioUsuario = new RepositorioUsuarioImpl(sessionFactoryMock);
+
+            // ejecucion y validacion
+            assertThrows(ExcepcionBaseDeDatos.class, () -> {
+                repositorioUsuario.modificar(usuario);
+            });
+        }
 
         @Test
         @Transactional

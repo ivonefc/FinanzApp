@@ -1,11 +1,15 @@
 package com.tallerwebi.dominio.usuario;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.presentacion.perfil.DatosEditarPerfil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service("servicioUsuario")
 @Transactional
@@ -20,7 +24,7 @@ public class ServicioUsuarioImpl implements ServicioUsuario{
 
     @Transactional
     @Override
-    public Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         return repositorioUsuario.buscarUsuarioPorEmailYPassword(email, password);
     }
 
@@ -38,9 +42,30 @@ public class ServicioUsuarioImpl implements ServicioUsuario{
 
     @Transactional
     @Override
-    public void modificar(Usuario usuario) {
+    public void modificar(DatosEditarPerfil datosEditarPerfil) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
+        datosEditarPerfil.validarCampos();
+        String nombre = datosEditarPerfil.getNombre();
+        String apellido = datosEditarPerfil.getApellido();
+        String nombreUsuario = datosEditarPerfil.getNombreUsuario();
+        String email = datosEditarPerfil.getEmail();
+        String pais = datosEditarPerfil.getPais();
+        Long telefono = datosEditarPerfil.getTelefono();
+        LocalDate fechaNacimiento = datosEditarPerfil.getFechaNacimiento();
+        Long id = datosEditarPerfil.getId();
+
+        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(id);
+        if (usuario == null)
+            throw new UsuarioInexistente();
+
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setEmail(email);
+        usuario.setPais(pais);
+        usuario.setTelefono(telefono);
+        usuario.setFechaNacimiento(fechaNacimiento);
         repositorioUsuario.modificar(usuario);
-    } //modificar test
+    }
 
     @Transactional
     @Override

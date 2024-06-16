@@ -1,13 +1,18 @@
 package com.tallerwebi.presentacion.perfil;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +45,45 @@ public class ControladorMiPerfil {
         ModelAndView modelAndView = new ModelAndView("mi-perfil");
         modelAndView.addObject("usuario", usuario);
         return modelAndView;
+    }
+
+    @GetMapping("/perfil/editar/{id}")
+    public ModelAndView irAEditarPerfil(@PathVariable Long id, HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        ModelMap modelo = new ModelMap();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        if (id == null)
+            return new ModelAndView("redirect:/login");
+
+        // Obtener el usuario de la base de datos
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(id);
+        if (usuario == null)
+            return new ModelAndView("redirect:/login");
+
+        // Agregar el usuario al modelo
+        modelo.addAttribute("usuario", usuario);
+
+        // Retornar la vista de edición de datos del usuario
+        return new ModelAndView("editar-perfil", modelo);
+    }
+
+    @PostMapping("/perfil/editar")
+    public ModelAndView editarPerfil(@ModelAttribute("usuario") DatosEditarPerfil datosEditarPerfil, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        ModelMap modelo = new ModelMap();
+
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        try{
+           servicioUsuario.modificar(datosEditarPerfil);
+        } catch (ExcepcionCamposInvalidos e) {
+            modelo.put("errores", e.getMessage());
+            return new ModelAndView("editar-perfil", modelo);
+        }
+        return new ModelAndView("redirect:/mi-perfil");
     }
 
     @GetMapping("/perfil/panel")

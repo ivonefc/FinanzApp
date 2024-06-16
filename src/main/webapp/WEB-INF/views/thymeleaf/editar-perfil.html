@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Editar perfil</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Bootstrap css / Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Mi CSS-->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/mi-perfil.css}">
+</head>
+
+<body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main d-flex justify-content-center">
+
+    <div class="card w-75 mb-3">
+        <div class="card-body">
+            <form th:object="${usuario}" class="formulario-editar" th:action="@{/perfil/editar}" method="POST">
+                <fieldset>
+                    <legend>Editar perfil</legend>
+
+                    <input th:field="*{id}" type="hidden" class="form-control" th:value="${id}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre:</label>
+                        <input th:field="*{nombre}" type="text" class="form-control" th:value="${nombre}">
+                        <p th:if="${errores != null && errores.get('nombre') != null}" class="alert alert-danger" th:text="${errores.get('nombre')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Apellido:</label>
+                        <input th:field="*{apellido}" type="text" class="form-control" th:value="${apellido}">
+                        <p th:if="${errores != null && errores.get('apellido') != null}" class="alert alert-danger" th:text="${errores.get('apellido')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de usuario:</label>
+                        <input th:field="*{nombreUsuario}" type="text" class="form-control" th:value="${nombreUsuario}">
+                        <p th:if="${errores != null && errores.get('nombreUsuario') != null}" class="alert alert-danger" th:text="${errores.get('nombreUsuario')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email:</label>
+                        <input th:field="*{email}" type="text" class="form-control" th:value="${email}">
+                        <p th:if="${errores != null && errores.get('email') != null}" class="alert alert-danger" th:text="${errores.get('email')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Nacimiento:</label>
+                        <input th:field="*{fechaNacimiento}" type="date" class="form-control" th:value="${fechaNacimiento}">
+                        <p th:if="${errores != null && errores.get('fechaNacimiento') != null}" class="alert alert-danger" th:text="${errores.get('fechaNacimiento')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">País:</label>
+                        <input th:field="*{pais}" type="text" class="form-control" th:value="${pais}">
+                        <p th:if="${errores != null && errores.get('pais') != null}" class="alert alert-danger" th:text="${errores.get('pais')}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono:</label>
+                        <input th:field="*{telefono}" type="text" class="form-control" th:value="${telefono}">
+                        <p th:if="${errores != null && errores.get('telefono') != null}" class="alert alert-danger" th:text="${errores.get('telefono')}"></p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="/spring/mi-perfil" class="btn btn-warning" style="color:white; margin-top: 5px">Cancelar</a>
+                    </div>
+                </fieldset>
+            </form>
+<!--            <form th:object="${movimiento}" th:action="@{/movimientos/eliminar/{id}(id=${movimiento.id})}" method="POST">-->
+<!--                <button type="submit" class="btn btn-danger mt-3">Eliminar</button>-->
+<!--            </form>-->
+        </div>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

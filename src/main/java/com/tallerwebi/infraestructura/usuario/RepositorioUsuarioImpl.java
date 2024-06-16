@@ -74,8 +74,19 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public void modificar(Usuario usuario) {
-        sessionFactory.getCurrentSession().update(usuario);
+    public void modificar(Usuario usuario) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        if (usuario == null)
+            throw new UsuarioInexistente();
+
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuarioExistente = session.get(Usuario.class, usuario.getId());
+            if (usuarioExistente == null)
+                throw new UsuarioInexistente();
+            session.update(usuario);
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
     }
 
     @Override

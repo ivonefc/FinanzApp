@@ -24,7 +24,7 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public Usuario consultarUsuario (String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public Usuario consultarUsuario (String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         return repositorioUsuario.buscarUsuarioPorEmailYPassword(email, password);
     }
 

@@ -42,7 +42,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void loginConUsuarioYPasswordInorrectosDeberiaLlevarALoginNuevamenteYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+	public void loginConUsuarioYPasswordInorrectosDeberiaLlevarALoginNuevamenteYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
 		// preparacion
 		UsuarioInexistente usuarioInexistente = new UsuarioInexistente();
 		when(servicioLoginMock.consultarUsuario(anyString(), anyString())).thenThrow(usuarioInexistente);
@@ -56,7 +56,7 @@ public class ControladorLoginTest {
 	}
 	
 	@Test
-	public void loginConUsuarioYPasswordCorrectosDeberiaLLevarAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+	public void loginConUsuarioYPasswordCorrectosDeberiaLLevarAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
 		// preparacion
 		Usuario usuarioEncontradoMock = mock(Usuario.class);
 		when(requestMock.getSession()).thenReturn(sessionMock);

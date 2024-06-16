@@ -80,7 +80,7 @@
                                 <input type="number" class="form-control" id="telefono" name="telefono" th:value="${usuario.telefono}" readonly>
                             </div>
 
-                            <a href="/ruta-a-la-vista-de-edicion" class="btn btn-primary">Editar datos personales</a>
+                            <a th:href="@{/perfil/editar/{id}(id=${usuario.id})}" class="btn btn-primary">Editar datos personales</a>
                         </form>
                     </div>
                 </div>

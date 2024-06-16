@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.usuario;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ public class ServicioUsuarioTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLoBusqueCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLoBusqueCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
         // preparacion
         when(usuarioMock.getEmail()).thenReturn("email@test");
         when(usuarioMock.getPassword()).thenReturn("password");
@@ -46,7 +47,7 @@ public class ServicioUsuarioTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
         // preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword("email@test", "password")).thenThrow(new UsuarioInexistente());
 
@@ -60,7 +61,7 @@ public class ServicioUsuarioTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
         // preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword("email@test", "password")).thenThrow(new ExcepcionBaseDeDatos(new Exception()));
 
