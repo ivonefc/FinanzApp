@@ -5,7 +5,9 @@ import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.tipo.TipoMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -40,17 +41,81 @@ public class ControladorMetaTest {
         controladorMeta = new ControladorMeta(servicioMetaMock, servicioMovimientoMock);
     }
 
+    //Test Metas (SEGUIMIENTO Y TABLA DE METAS ESTABLECIDAS)
     @Test
-    public void queAlClickearLaOpcionSeguimientoDeMetasEnElMenuDirijaALaVistaMetas() throws ExcepcionBaseDeDatos {
+    public void deberiaNavegarAVistaMetasYMostrarTablaDeMetasYListaDeSeguimientoCuandoSeClickeaEnOpcionSeguimientoDeMetas() throws ExcepcionBaseDeDatos {
         //preparacion
+        Usuario usuario= new Usuario();
+        Long idUsuario = 1L;
+        usuario.setId(idUsuario);
+        CategoriaMovimiento categoria1 = new CategoriaMovimiento("TRANSPORTE", new TipoMovimiento("EGRESO"));
+        CategoriaMovimiento categoria2 = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
+        Meta meta1 = new Meta(usuario, categoria1, 100000.0);
+        Meta meta2 = new Meta(usuario, categoria2, 200000.0);
+        List<Meta> listaEsperada = new ArrayList<>();
+        listaEsperada.add(meta1);
+        listaEsperada.add(meta2);
+        Map<String, Double> mapEsperado = new HashMap<>();
+        mapEsperado.put("TRANSPORTE", 30000.0);
+        mapEsperado.put("RESTAURANTE", 20000.0);
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioMovimientoMock.obtenerTotalGastadoEnCategoriasConMetas(idUsuario)).thenReturn(mapEsperado);
+        when(servicioMetaMock.obtenerMetas(idUsuario)).thenReturn(listaEsperada);
 
         //ejecucion
         ModelAndView modelAndView = controladorMeta.irAMetas(requestMock);
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("metas"));
+       assertThat(modelAndView.getModel().get("totales"), is(mapEsperado));
+       assertThat(modelAndView.getModel().get("metas"), is(listaEsperada));
+       assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("TRANSPORTE", 30000.0));
+       assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("RESTAURANTE", 20000.0));
+       assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasSize(2));
+        assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasItem(meta1));
+        assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasItem(meta2));
+
+        verify(requestMock, times(1)).getSession(false);
+        verify(sessionMock, times(1)).getAttribute("idUsuario");
+        verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
+
+
+    @Test
+    public void  deberiaDevolverListaYMapaVaciosEnElModeloCuandoNoHayMetasEstablecidas() throws ExcepcionBaseDeDatos {
+        //preparacion
+        Long idUsuario = 1L;
+        List<Meta> listaEsperada = Collections.emptyList();
+        Map<String, Double> mapEsperado = Collections.emptyMap();
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioMovimientoMock.obtenerTotalGastadoEnCategoriasConMetas(idUsuario)).thenReturn(mapEsperado);
+        when(servicioMetaMock.obtenerMetas(idUsuario)).thenReturn(listaEsperada);
+
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.irAMetas(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("metas"));
+        assertThat(modelAndView.getModel().get("metas"), notNullValue());
+        assertThat(modelAndView.getModel().get("totales"), notNullValue());
+        assertThat(((List<Meta>)modelAndView.getModel().get("metas")), IsIterableWithSize.iterableWithSize(0));
+        assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), IsMapWithSize.aMapWithSize(0));
+        assertThat(modelAndView.getModel().get("totales"), is(mapEsperado));
+        assertThat(modelAndView.getModel().get("metas"), is(listaEsperada));
+
+
+
+
+        verify(requestMock, times(1)).getSession(false);
+        verify(sessionMock, times(1)).getAttribute("idUsuario");
+        verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
+
+
+    }
+
 
     @Test
     public void queAlQuererIrALaOpcionSeguimientoDeMetasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
@@ -447,7 +512,7 @@ public class ControladorMetaTest {
     }
 
 
-
+/*
     @Test
     public void deberiaDevolverMapaConNombresYMontosGastadosEnCadaCategoriaConMetaEnMesYAnioActual() throws ExcepcionBaseDeDatos {
         //preparacion
@@ -472,5 +537,7 @@ public class ControladorMetaTest {
         verify(sessionMock, times(1)).getAttribute("idUsuario");
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
+
+ */
 
 }

@@ -28,6 +28,10 @@ public class RepositorioCategoriaImpl implements RepositorioCategoria {
         this.sessionFactory = sessionFactory;
     }
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public CategoriaMovimiento obtenerCategoriaPorNombre(String nombre) throws ExcepcionBaseDeDatos {
         try{

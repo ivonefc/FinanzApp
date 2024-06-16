@@ -40,7 +40,7 @@ public class ControladorMovimiento {
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
         model.put("movimientos", movimientos);
         int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(idUsuario, tamanioDePagina);
-        if (pagina > cantidadDePaginas) {
+        if (pagina > cantidadDePaginas && !movimientos.isEmpty()) {
             throw new PaginaInexistente();
         }
         model.put("cantidadDePaginas", cantidadDePaginas);
