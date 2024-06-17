@@ -1,4 +1,7 @@
 INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test2@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test3@unlam.edu.ar', 'test', 'ADMIN', true);
+
 
 INSERT INTO tipos_movimiento(id, nombre) VALUES(null, 'INGRESO');
 INSERT INTO tipos_movimiento(id, nombre) VALUES(null, 'EGRESO');
@@ -37,3 +40,4 @@ INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usu
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Zapatillas', '2024-04-12', 20000, 7, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Remera y Buzo', '2022-04-13', 32000, 7, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Campera River', '2021-06-14', 20000, 7, 1);
+

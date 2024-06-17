@@ -10,7 +10,7 @@
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-    <!-- Bootstrap css / Bootstrap Icons -->
+    <!-- Bootstrap css / Bootstrap Icons-->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
     <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
 
@@ -29,25 +29,23 @@
 <!-- Menu Lateral -->
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
-<main id="main" class="main">
+<main id="main" class="main d-flex justify-content-center">
+    <div class="card w-75 mb-3">
+        <div class="card-body">
+            <h1 class="pt-3 text-center">Agregar Amigos</h1>
 
-    <h1 class="pt-3 text-center">Amigos</h1>
-    <div class="d-flex justify-content-end mb-3">
-        <a th:href="@{/movimientos-compartidos/agregar-amigo}" class="btn btn-primary">Agregar Amigo</a>
+        <form action="#" th:action="@{/movimientos-compartidos/agregar-nuevo-amigo}" method="POST"  th:object="${nuevoAmigo}">
+            <div class="mb-3">
+                 <label for="email" class="form-label">Email: </label>
+                    <input th:field="*{email}" name="email" id="email" type="text" class="form-control">
+                   <p th:if="${errores != null }" class="alert alert-danger" th:text="${errores}"></p>
+             </div>
+                <div class="d-flex justify-content-end mb-3">
+                   <button type="submit" class="btn btn-primary">Agregar</button>
+                </div>
+          </form>
+        </div>
     </div>
-    <div class="card-body" th:if="${not #lists.isEmpty(amigos)}">
-        <ul class="list-group" id="lista-amigos">
-            <li th:each="amigo : ${amigos}" class="list-group-item item d-flex justify-content-between">
-                <span th:text="${amigo.getEmail()}"></span>
-                <a th:href="@{/movimiento/panel}" class="btn btn-primary">Ver Movimientos</a>
-            </li>
-
-            <div class="d-flex gap-3">
-
-            </div>
-        </ul>
-    </div>
-
 </main>
 
 <!-- Footer -->

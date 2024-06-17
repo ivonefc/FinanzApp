@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio.excepcion;
 
 public class ExcepcionBaseDeDatos extends Exception{
-    private static final String mensaje = "Base de datos no disponible";
+    private static final String mensaje = "Usuario no encontrado o usuario inválido";
      public ExcepcionBaseDeDatos() {
          super(mensaje);
      }
@@ -14,5 +14,9 @@ public class ExcepcionBaseDeDatos extends Exception{
     }
     public ExcepcionBaseDeDatos(String mensaje, Throwable cause) {
         super(mensaje, cause);
+    }
+
+    public static String getMensaje() {
+        return mensaje;
     }
 }
