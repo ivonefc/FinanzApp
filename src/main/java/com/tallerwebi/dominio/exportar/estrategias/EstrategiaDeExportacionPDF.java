@@ -31,7 +31,7 @@ public class EstrategiaDeExportacionPDF implements EstrategiaDeExportacion{
         return TipoDeArchivo.PDF;
     }
 
-
+    // Este metodo crea el documento PDF y lo devuelve como un arreglo de bytes
     @Override
     public byte[] generarArchivo(Long idUsuario) throws ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

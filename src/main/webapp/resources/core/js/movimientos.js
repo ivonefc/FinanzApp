@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function (){
     })
 
     nodoInputCalendario.addEventListener("change", actualizarMovimientos)
+
     botonesExportar.forEach(boton =>{
-        console.log(boton)
         boton.addEventListener("click", exportarDatos)
     })
 
