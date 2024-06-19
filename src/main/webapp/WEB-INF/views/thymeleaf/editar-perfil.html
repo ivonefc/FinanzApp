@@ -41,43 +41,43 @@
 
                     <div class="mb-3">
                         <label class="form-label">Nombre:</label>
-                        <input th:field="*{nombre}" type="text" class="form-control" th:value="${nombre}">
+                        <input th:field="*{nombre}" type="text" class="form-control">
                         <p th:if="${errores != null && errores.get('nombre') != null}" class="alert alert-danger" th:text="${errores.get('nombre')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Apellido:</label>
-                        <input th:field="*{apellido}" type="text" class="form-control" th:value="${apellido}">
+                        <input th:field="*{apellido}" type="text" class="form-control">
                         <p th:if="${errores != null && errores.get('apellido') != null}" class="alert alert-danger" th:text="${errores.get('apellido')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Nombre de usuario:</label>
-                        <input th:field="*{nombreUsuario}" type="text" class="form-control" th:value="${nombreUsuario}">
+                        <input th:field="*{nombreUsuario}" type="text" class="form-control">
                         <p th:if="${errores != null && errores.get('nombreUsuario') != null}" class="alert alert-danger" th:text="${errores.get('nombreUsuario')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Email:</label>
-                        <input th:field="*{email}" type="text" class="form-control" th:value="${email}">
+                        <input th:field="*{email}" type="email" class="form-control">
                         <p th:if="${errores != null && errores.get('email') != null}" class="alert alert-danger" th:text="${errores.get('email')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Fecha de Nacimiento:</label>
-                        <input th:field="*{fechaNacimiento}" type="date" class="form-control" th:value="${fechaNacimiento}">
+                        <input th:field="*{fechaNacimiento}" type="date" class="form-control">
                         <p th:if="${errores != null && errores.get('fechaNacimiento') != null}" class="alert alert-danger" th:text="${errores.get('fechaNacimiento')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">País:</label>
-                        <input th:field="*{pais}" type="text" class="form-control" th:value="${pais}">
+                        <input th:field="*{pais}" type="text" class="form-control">
                         <p th:if="${errores != null && errores.get('pais') != null}" class="alert alert-danger" th:text="${errores.get('pais')}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Teléfono:</label>
-                        <input th:field="*{telefono}" type="text" class="form-control" th:value="${telefono}">
+                        <input th:field="*{telefono}" type="number" class="form-control">
                         <p th:if="${errores != null && errores.get('telefono') != null}" class="alert alert-danger" th:text="${errores.get('telefono')}"></p>
                     </div>
 

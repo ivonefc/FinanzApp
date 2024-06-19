@@ -55,17 +55,13 @@ public class ControladorMiPerfil {
             return new ModelAndView("redirect:/login");
 
         if (id == null)
-            return new ModelAndView("redirect:/login");
+            throw new UsuarioInexistente();;
 
-        // Obtener el usuario de la base de datos
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(id);
         if (usuario == null)
-            return new ModelAndView("redirect:/login");
+            throw new UsuarioInexistente();
 
-        // Agregar el usuario al modelo
         modelo.addAttribute("usuario", usuario);
-
-        // Retornar la vista de edición de datos del usuario
         return new ModelAndView("editar-perfil", modelo);
     }
 
@@ -77,10 +73,12 @@ public class ControladorMiPerfil {
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 
-        try{
-           servicioUsuario.modificar(datosEditarPerfil);
+        try {
+            datosEditarPerfil.validarCampos();
+            servicioUsuario.modificar(datosEditarPerfil);
         } catch (ExcepcionCamposInvalidos e) {
-            modelo.put("errores", e.getMessage());
+            modelo.put("errores", e.getErrores());
+            modelo.put("usuario", datosEditarPerfil);
             return new ModelAndView("editar-perfil", modelo);
         }
         return new ModelAndView("redirect:/mi-perfil");

@@ -452,7 +452,6 @@ public class ControladorMetaTest {
     }
 
     //eliminar
-
     @Test
     public void eliminarMetaQueAlClickearEnLaOpcionEliminarMetaEnElMenuElimineLaMetaYRedirijaAVistaMetas() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         //preparacion
@@ -510,34 +509,5 @@ public class ControladorMetaTest {
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).eliminarMeta(1L);
     }
-
-
-/*
-    @Test
-    public void deberiaDevolverMapaConNombresYMontosGastadosEnCadaCategoriaConMetaEnMesYAnioActual() throws ExcepcionBaseDeDatos {
-        //preparacion
-        Long idUsuario = 1L;
-        Map<String, Double> mapEsperado = new HashMap<>();
-        mapEsperado.put("TRANSPORTE", 30000.0);
-        mapEsperado.put("RESTAURANTE", 20000.0);
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
-        when(servicioMovimientoMock.obtenerTotalGastadoEnCategoriasConMetas(idUsuario)).thenReturn(mapEsperado);
-
-        //ejecucion
-        Map<String, Double> totalGastadoPorCategoria = controladorMeta.obtenerTotalGastadoPorCategoriasConMetas(requestMock);
-
-        //validacion
-        assertThat(totalGastadoPorCategoria, notNullValue());
-        assertThat(totalGastadoPorCategoria, aMapWithSize(2));
-        assertThat(totalGastadoPorCategoria, hasEntry("TRANSPORTE", 30000.0));
-        assertThat(totalGastadoPorCategoria, hasEntry("RESTAURANTE", 20000.0));
-
-        verify(requestMock, times(1)).getSession(false);
-        verify(sessionMock, times(1)).getAttribute("idUsuario");
-        verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
-    }
-
- */
 
 }
