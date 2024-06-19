@@ -32,34 +32,35 @@
 <main id="main" class="main">
     <div class="flex-movimientos">
         <div class="card w-100" id="movimientoTarjeta">
-            <div>
+            <div class="contenedor-movimiento-ajuste">
                 <a th:href="@{/categorias/editar-colores}">
                     <button class="btn btn-outline-dark mx-1" style="
                 border-radius: 5px !important;
                 padding: 5px 10px !important;
                 cursor: pointer !important;
-                position: relative !important;
-                top: 55px !important;
-                left: 15px !important;"> <i class="bi bi-gear"></i> Cambiar colores</button>
+                position: relative !important;"> <i class="bi bi-gear"></i> <p class="rueda-01">Cambiar colores</p></button>
                 </a>
                 <h1 class="pt-3 text-center">Movimientos</h1>
+                <div class="agregar-m">
+                    <a th:href="@{/agregar-movimiento}" class="btn btn-primary"><i class="bi bi-plus"></i><p class="texto-plus">Agregar Movimiento</p></a>
+                </div>
             </div>
 
             <div class="card-body" th:if="${not #lists.isEmpty(movimientos)}">
                 <ul class="list-group" id="lista-movimientos">
                     <li th:each="movimiento : ${movimientos}" class="list-group-item item" th:style="'background-color:' + ${movimiento.categoria.getColor()} + '80;'">
                         <!-- Accede a las propiedades de cada movimiento -->
-                        <span>
+                        <div class="contenedor-icono-nombre">
                             <span th:class="${movimiento.categoria.getIcono()}"></span>
                             <span th:text="${movimiento.descripcion}"></span><br>
                             <span th:text="${movimiento.categoria.getNombre()}"></span><br>
                             <small th:text="${movimiento.fechayHora}"></small>
-                        </span>
-                        <span>
-                            <span th:text="${movimiento.categoria.tipo.nombre eq 'INGRESO' ? '+ $' + movimiento.monto : '- $' + movimiento.monto}" th:class="${movimiento.categoria.tipo.nombre eq 'INGRESO'} ? 'tipo-ingreso' : 'tipo-egreso'"></span>
-                            <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil btn btn-outline-dark mx-1"></i></a>
+                        </div>
+                        <div class="contenedor-valor-editar">
+                            <p th:text="${movimiento.categoria.tipo.nombre eq 'INGRESO' ? '+ $' + movimiento.monto : '- $' + movimiento.monto}" th:class="${movimiento.categoria.tipo.nombre eq 'INGRESO'} ? 'tipo-ingreso' : 'tipo-egreso'"></p>
+                            <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil btn btn-outline-dark mx-1"><p class="editar-isotipo">Editar</p></i></a>
                             <!-- etc. -->
-                        </span>
+                        </div>
                     </li>
 
                     <nav aria-label="Page navigation example">
@@ -80,6 +81,7 @@
             </div>
         </div>
         <div class="contenedor-grafico-calendario">
+
             <div class="card w-100">
                 <div class="card-body">
                     <h5 class="card-title">Podés ver tus movimientos por fecha.</h5>
@@ -96,9 +98,7 @@
                 </div>
             </div>
 
-            <div class="pt-3">
-                <a th:href="@{/agregar-movimiento}" class="btn btn-primary">Agregar Movimiento</a>
-            </div>
+
         </div>
     </div>
 </main>

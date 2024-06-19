@@ -1,25 +1,17 @@
 
-.flex-movimientos{
-    display: flex;
-    column-gap: 20px;
-    flex-direction: row-reverse;
-}
-
-@media (max-width: 768px) {
-    .flex-movimientos{
-        flex-direction: column;
-        align-items: center;
-        row-gap: 20px;
-    }
-}
-
-
+ .flex-movimientos{
+        display: flex;
+          flex-direction: column-reverse;
+          align-items: center;
+          row-gap: 20px;
+ }
 .tipo-egreso {
     color: black;
     border: solid 2px #00000052;
     border-radius: 0.4em;
     background: #c33838;
     padding: 0.2em;
+    margin-bottom:0.1em;
 }
 
 .tipo-ingreso {
@@ -28,6 +20,7 @@
     border-radius: 0.4em;
     background: #39cb29;
     padding: 0.2em;
+    margin-bottom:0.1em;
 }
 
 
@@ -73,3 +66,171 @@
     overflow-x: hidden;
 }*/
 
+/* Estilos para pantallas extra pequeñas (teléfonos móviles) */
+.rueda-01{
+    display: none;
+}
+
+.contenedor-valor-editar{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.editar-isotipo{
+    display: inline;
+}
+
+.contenedor-movimiento-ajuste{
+    display: flex;
+    justify-content: center;
+    column-gap: 1em;
+    flex-direction: row;
+    align-items: center;
+    padding: 1em;
+}
+
+.texto-plus{
+    display: none;
+}
+
+/* Estilos para pantallas pequeñas (retratos de teléfonos móviles) */
+@media (min-width: 576px) {
+   .rueda-01{
+              display: none;
+   }
+   .flex-movimientos{
+           flex-direction: column-reverse;
+           align-items: center;
+           row-gap: 20px;
+   }
+
+   .contenedor-valor-editar{
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       column-gap: 20px;
+   }
+
+   .editar-isotipo{
+       display: inline;
+   }
+
+   .tipo-egreso {
+       color: black;
+       border: solid 2px #00000052;
+       border-radius: 0.4em;
+       background: #c33838;
+       padding: 0.2em;
+       margin-bottom:0.1em;
+   }
+
+   .tipo-ingreso{
+       color: black;
+       border: solid 2px #00000052;
+       border-radius: 0.4em;
+       background: #39cb29;
+       padding: 0.2em;
+       margin-bottom:0.1em;
+   }
+
+   .contenedor-movimiento-ajuste{
+       column-gap: 2em;
+   }
+}
+
+/* Estilos para pantallas medianas (tabletas) */
+@media (min-width: 768px) {
+   .rueda-01{
+              display: inline;
+  }
+  .flex-movimientos{
+      flex-direction: column-reverse;
+      align-items: center;
+      row-gap: 20px;
+  }
+  .contenedor-valor-editar{
+    flex-direction: row;
+    column-gap: 0.5em;
+  }
+  .editar-isotipo{
+    display: none;
+  }
+
+  .contenedor-movimiento-ajuste{
+      display: flex;
+      justify-content: center;
+      column-gap: 2em;
+      flex-direction: row;
+      align-items: center;
+      padding: 1em;
+  }
+
+    .texto-plus{
+        display: inline;
+    }
+    .bi-plus{
+        display: none;
+    }
+}
+
+/* Estilos para pantallas grandes (computadoras de escritorio) */
+@media (min-width: 992px) {
+    .rueda-01{
+       display: inline;
+    }
+    .flex-movimientos{
+        display: flex;
+        column-gap: 20px;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+    }
+    .editar-isotipo{
+        display: none;
+    }
+    .contenedor-valor-editar{
+        flex-direction: row;
+        column-gap: 1em;
+      }
+
+      .contenedor-movimiento-ajuste{
+          display: flex;
+          justify-content: center;
+          column-gap: 2em;
+          flex-direction: row;
+          align-items: center;
+          padding: 1em;
+      }
+}
+
+/* Estilos para pantallas extra grandes (pantallas grandes de escritorio) */
+@media (min-width: 1200px) {
+    .rueda-01{
+           display: inline;
+    }
+   .flex-movimientos{
+       display: flex;
+       column-gap: 20px;
+       flex-direction: row-reverse;
+       align-items: flex-start;
+   }
+
+   .editar-isotipo{
+       display: none;
+ }
+   .contenedor-valor-editar{
+         flex-direction: row;
+         column-gap: 1em;
+   }
+
+   .contenedor-movimiento-ajuste{
+       display: flex;
+       justify-content: center;
+       column-gap: 2em;
+       flex-direction: row;
+       align-items: center;
+       padding: 1em;
+   }
+}

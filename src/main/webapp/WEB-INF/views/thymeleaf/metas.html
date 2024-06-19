@@ -42,7 +42,15 @@
     <div class="contenedor-tablas">
         <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
             <div class="card-body">
-                <h2 class="card-title text-center border-bottom">Metas</h2>
+
+                <div class="meta-botonAgregar">
+                    <h2 class="card-title text-center border-bottom">Metas</h2>
+                    <div class="agregarNMeta" th:if="${not #lists.isEmpty(metas)}">
+                        <a th:href="@{/metas/agregar}" class="btn btn-primary"><i class="bi bi-plus"></i><p class="text-meta-b">Agregar nueva meta</p></a>
+                    </div>
+                </div>
+
+
 
                 <!-- Default Table -->
                 <table class="table">
@@ -105,9 +113,7 @@
             </div>
         </div>
     </div>
-    <div class="pt-3" th:if="${not #lists.isEmpty(metas)}">
-        <a th:href="@{/metas/agregar}" class="btn btn-primary">Agregar nueva meta</a>
-    </div>
+
 </main>
 <!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>

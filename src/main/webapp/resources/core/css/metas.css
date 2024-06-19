@@ -34,3 +34,76 @@
 .contenedor-montos{
     display: flex;
 }
+
+/* Estilos para pantallas extra pequeñas (teléfonos móviles) */
+
+.meta-botonAgregar{
+display: flex;
+align-items: center;
+justify-content: space-evenly;
+}
+
+.bi-plus{
+      display: inline;
+  }
+
+.text-meta-b{
+    display: none;
+ }
+
+/* Estilos para pantallas pequeñas (retratos de teléfonos móviles) */
+@media (min-width: 576px) {
+    .bi-plus{
+          display: inline;
+      }
+
+    .text-meta-b{
+        display: none;
+     }
+}
+
+/* Estilos para pantallas medianas (tabletas) */
+@media (min-width: 768px) {
+
+     .bi-plus{
+           display: none;
+       }
+
+       .text-meta-b{
+           display: inline;
+        }
+}
+
+/* Estilos para pantallas grandes (computadoras de escritorio) */
+@media (min-width: 992px) {
+  .meta-botonAgregar{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  }
+
+  .bi-plus{
+      display: none;
+  }
+
+  .text-meta-b{
+      display: inline;
+   }
+}
+
+/* Estilos para pantallas extra grandes (pantallas grandes de escritorio) */
+@media (min-width: 1200px) {
+ .meta-botonAgregar{
+ display: flex;
+ align-items: center;
+ justify-content: space-evenly;
+ }
+
+ .bi-plus{
+    display: none;
+ }
+
+ .text-meta-b{
+    display: inline;
+ }
+}
