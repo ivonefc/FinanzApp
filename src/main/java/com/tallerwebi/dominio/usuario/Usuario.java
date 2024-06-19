@@ -2,6 +2,7 @@ package com.tallerwebi.dominio.usuario;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -24,6 +25,18 @@ public class Usuario {
     private Long telefono;
 
     //private String foto;
+
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "amigos",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private List<Usuario> amigos;
+
+
 
     public Usuario(String email, String password, String rol, Boolean activo) {
         this.email = email;
@@ -110,6 +123,11 @@ public class Usuario {
 
     public void activar() {
         activo = true;
+    }
+
+
+    public void agregarAmigo(Usuario amigo) {
+        this.amigos.add(amigo);
     }
 
     @Override

@@ -34,7 +34,13 @@
         <div class="card w-100" id="movimientoTarjeta">
             <div>
                 <a th:href="@{/categorias/editar-colores}">
-                    <button class="btn-color"> <i class="bi bi-gear"></i> Cambiar colores</button>
+                    <button class="btn btn-outline-dark mx-1" style="
+                border-radius: 5px !important;
+                padding: 5px 10px !important;
+                cursor: pointer !important;
+                position: relative !important;
+                top: 55px !important;
+                left: 15px !important;"> <i class="bi bi-gear"></i> Cambiar colores</button>
                 </a>
                 <h1 class="pt-3 text-center">Movimientos</h1>
             </div>
@@ -51,7 +57,7 @@
                         </span>
                         <span>
                             <span th:text="${movimiento.categoria.tipo.nombre eq 'INGRESO' ? '+ $' + movimiento.monto : '- $' + movimiento.monto}" th:class="${movimiento.categoria.tipo.nombre eq 'INGRESO'} ? 'tipo-ingreso' : 'tipo-egreso'"></span>
-                            <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil"></i></a>
+                            <a th:href="@{/movimientos/editar/{id}(id=${movimiento.id})}"><i class="bi bi-pencil btn btn-outline-dark mx-1"></i></a>
                             <!-- etc. -->
                         </span>
                     </li>

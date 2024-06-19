@@ -1,3 +1,7 @@
+INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test2@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test3@unlam.edu.ar', 'test', 'ADMIN', true);
+
 INSERT INTO usuarios(email, password, rol, activo, nombre, apellido, nombreUsuario, fechaNacimiento, pais, telefono) VALUES('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Messi', 'Grupo 10', 'grupo_10', '2024/05/15', 'Argentina', '1122334455');
 
 INSERT INTO tipos_movimiento(id, nombre) VALUES(null, 'INGRESO');

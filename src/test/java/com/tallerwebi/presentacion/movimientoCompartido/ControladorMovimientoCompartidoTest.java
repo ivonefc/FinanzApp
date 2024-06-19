@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion.movimientoCompartido;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,16 +18,18 @@ public class ControladorMovimientoCompartidoTest {
     private ControladorMovimientoCompartido controladorMovimientoCompartido;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
-        controladorMovimientoCompartido = new ControladorMovimientoCompartido();
+        servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
+        controladorMovimientoCompartido = new ControladorMovimientoCompartido(servicioMovimientoCompartidoMock);
     }
 
     @Test
-    public void queAlClickearLaOpcionMovimientosCompartidosEnElMenuDirijaALaVistaMovimientosCompartidos(){
+    public void queAlClickearLaOpcionMovimientosCompartidosEnElMenuDirijaALaVistaMovimientosCompartidos() throws ExcepcionBaseDeDatos {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -37,7 +41,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionCuentasCompartidasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionCuentasCompartidasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos{
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
