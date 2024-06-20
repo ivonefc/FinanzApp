@@ -25,7 +25,7 @@ public class DatosEditarPerfil {
     private String email;
 
     @NotNull
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
 
     @NotNull

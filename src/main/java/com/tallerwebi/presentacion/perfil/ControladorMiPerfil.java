@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.validation.ObjectError;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ControladorMiPerfil {
@@ -74,11 +77,21 @@ public class ControladorMiPerfil {
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 
-        if (result.hasErrors()) {
-            modelo.put("errores", result.getAllErrors());
-            modelo.put("usuario", datosEditarPerfil);
-            return new ModelAndView("editar-perfil", modelo);
-        }
+////        if (result.hasErrors()) {
+////            modelo.put("errores", result.getAllErrors());
+////            modelo.put("usuario", datosEditarPerfil);
+////            return new ModelAndView("editar-perfil", modelo);
+////        }
+//
+//        if (result.hasErrors()) {
+//            List<String> errorMessages = result.getAllErrors()
+//                    .stream()
+//                    .map(ObjectError::getDefaultMessage)
+//                    .collect(Collectors.toList());
+//            modelo.put("errores", errorMessages);
+//            modelo.put("usuario", datosEditarPerfil);
+//            return new ModelAndView("editar-perfil", modelo);
+//        }
 
         try {
             servicioUsuario.modificar(datosEditarPerfil);

@@ -23,7 +23,7 @@ public class Usuario {
     private String rol;
     private Boolean activo = false;
 
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
     private String pais;
     private Long telefono;
