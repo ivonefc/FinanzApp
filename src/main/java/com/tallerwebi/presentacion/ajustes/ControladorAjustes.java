@@ -25,7 +25,7 @@ public class ControladorAjustes {
         return new ModelAndView("redirect:/panel");
     }
 
-    @GetMapping("/mi-perfil")
+    @GetMapping("/ajustes/mi-perfil")
     public ModelAndView irAMiPerfil(HttpServletRequest request){
         if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
@@ -33,7 +33,7 @@ public class ControladorAjustes {
         return new ModelAndView("redirect:/mi-perfil");
     }
 
-    @GetMapping("/categorias/editar-colores")
+    @GetMapping("/ajustes/categorias/editar-colores")
     public ModelAndView irAEditarColores(HttpServletRequest request){
         if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");

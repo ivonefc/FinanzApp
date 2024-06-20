@@ -39,6 +39,7 @@ public class ControladorLogin {
         try {
             Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
             request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
+            request.getSession().setAttribute("nombreUsuario", usuarioBuscado.getNombreUsuario());
             return new ModelAndView("redirect:/panel");
         } catch (UsuarioInexistente e) {
             model.put("error", e.getMessage());
