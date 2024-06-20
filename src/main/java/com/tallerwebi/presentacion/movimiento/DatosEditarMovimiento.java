@@ -47,21 +47,21 @@ public class DatosEditarMovimiento {
 
     public void validarCampos() throws ExcepcionCamposInvalidos {
         Map<String, String> errores = new HashMap<>();
-        if(this.descripcion == null || this.descripcion.isEmpty()){
+
+        if(this.descripcion == null || this.descripcion.isEmpty())
             errores.put("descripcion", "El campo es requerido");
-        }
-        if(this.tipo == null || this.tipo.isEmpty()){
+
+        if(this.tipo == null || this.tipo.isEmpty())
             errores.put("tipo", "El campo es requerido");
-        }
-        if(this.categoria == null || this.categoria.isEmpty()){
+
+        if(this.categoria == null || this.categoria.isEmpty())
             errores.put("categoria", "El campo es requerido");
-        }
-        if(this.monto == null){
+
+        if(this.monto == null)
             errores.put("monto", "El campo es requerido");
-        }
-        if(!errores.isEmpty()){
+
+        if(!errores.isEmpty())
             throw new ExcepcionCamposInvalidos(errores);
-        }
     }
 
     public Long getId() {

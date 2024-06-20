@@ -24,26 +24,31 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public Usuario consultarUsuario (String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public Usuario consultarUsuario (String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         return repositorioUsuario.buscarUsuarioPorEmailYPassword(email, password);
     }
 
     @Override
-    public void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         datosRegistroUsuario.validarCampos();
         Usuario usuario = new Usuario(
                 datosRegistroUsuario.getNombre(),
+                datosRegistroUsuario.getApellido(),
+                datosRegistroUsuario.getNombreUsuario(),
                 datosRegistroUsuario.getEmail(),
                 datosRegistroUsuario.getPassword(),
+                datosRegistroUsuario.getFechaNacimiento(),
+                datosRegistroUsuario.getPais(),
+                datosRegistroUsuario.getTelefono(),
                 "USER",
                 true
         );
-        try {
-            repositorioUsuario.buscarUsuarioPorEmail(datosRegistroUsuario.getEmail());
+
+        Usuario usuarioExistente = repositorioUsuario.buscarUsuarioPorEmail(datosRegistroUsuario.getEmail());
+        if (usuarioExistente != null)
             throw new UsuarioExistente();
-        } catch (UsuarioInexistente e) {
-            repositorioUsuario.guardar(usuario);
-        }
+
+        repositorioUsuario.guardar(usuario);
     }
 
 }

@@ -42,7 +42,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void loginConUsuarioYPasswordInorrectosDeberiaLlevarALoginNuevamenteYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+	public void loginConUsuarioYPasswordInorrectosDeberiaLlevarALoginNuevamenteYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
 		// preparacion
 		UsuarioInexistente usuarioInexistente = new UsuarioInexistente();
 		when(servicioLoginMock.consultarUsuario(anyString(), anyString())).thenThrow(usuarioInexistente);
@@ -56,7 +56,7 @@ public class ControladorLoginTest {
 	}
 	
 	@Test
-	public void loginConUsuarioYPasswordCorrectosDeberiaLLevarAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+	public void loginConUsuarioYPasswordCorrectosDeberiaLLevarAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
 		// preparacion
 		Usuario usuarioEncontradoMock = mock(Usuario.class);
 		when(requestMock.getSession()).thenReturn(sessionMock);
@@ -80,7 +80,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYVolverAlLogin() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYVolverAlLogin() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
 		//preparacion
 		doNothing().when(servicioLoginMock).registrar(datosRegistroUsuarioMock);
 		//ejecucion
@@ -91,7 +91,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeSiUsuarioExisteDeberiaVolverAFormularioYMostrarError() throws UsuarioExistente, ExcepcionCamposInvalidos, ExcepcionBaseDeDatos {
+	public void registrarmeSiUsuarioExisteDeberiaVolverAFormularioYMostrarError() throws UsuarioExistente, ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioInexistente {
 		// preparacion
 		UsuarioExistente usuarioExistente = new UsuarioExistente();
 		doThrow(usuarioExistente).when(servicioLoginMock).registrar(datosRegistroUsuarioMock);
@@ -105,7 +105,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeSiAlEnviarElFormularioConTodosLosCamposVaciosDeberiaDevolverAFormularioYMostrarErrores() throws UsuarioExistente, ExcepcionCamposInvalidos, ExcepcionBaseDeDatos {
+	public void registrarmeSiAlEnviarElFormularioConTodosLosCamposVaciosDeberiaDevolverAFormularioYMostrarErrores() throws UsuarioExistente, ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioInexistente {
 		// preparacion
 		Map<String, String> errores = Map.of(
 			"email", "El campo es requerido",
@@ -128,7 +128,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoPasswordVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente {
+	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoPasswordVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente, UsuarioInexistente {
 		// preparacion
 		Map<String, String> errores = Map.of(
 				"password", "El campo es requerido"
@@ -147,7 +147,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoNombreVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente {
+	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoNombreVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente, UsuarioInexistente {
 		// preparacion
 		Map<String, String> errores = Map.of(
 				"nombre", "El campo es requerido"
@@ -166,7 +166,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoEmailVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente {
+	public void registrarmeQueAlIntentarRegistrarUnUsuarioConCampoEmailVacioRedirijaAlFormularioYMuestreUnErrorEnDichoCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente, UsuarioInexistente {
 		// preparacion
 		Map<String, String> errores = Map.of(
 				"email", "El campo es requerido"
@@ -185,7 +185,7 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrarmeSiAlRegistrarUnUsuarioIngresaUnMailSinArrobaDeberiaVolverAFormularioYMostrarError () throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+	public void registrarmeSiAlRegistrarUnUsuarioIngresaUnMailSinArrobaDeberiaVolverAFormularioYMostrarError () throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
 		// preparacion
 		Map<String, String> errores = Map.of(
 				"email", "El email es invalido"

@@ -46,46 +46,35 @@
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre" value="Juan">
+                                <p><strong>Nombre:</strong> <span th:text="${usuario.nombre}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="apellido" class="form-label">Apellido</label>
-                                <input type="text" class="form-control" id="apellido" name="apellido" value="Pérez">
+                                <p><strong>Apellido:</strong> <span th:text="${usuario.apellido}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="">
+                                <p><strong>Nombre Usuario:</strong> <span th:text="${usuario.nombreUsuario}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" value="">
+                                <p><strong>Email:</strong> <span th:text="${usuario.email}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="">
+                                <p><strong>Fecha de Nacimiento:</strong> <span th:text="${usuario.fechaNacimiento}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="genero" class="form-label">Género</label>
-                                <select class="form-select" id="genero" name="genero">
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Femenino</option>
-                                    <option value="O">Otro</option>
-                                </select>
+                                <p><strong>País:</strong> <span th:text="${usuario.pais}"></span></p>
                             </div>
+
                             <div class="mb-3">
-                                <label for="pais" class="form-label">País</label>
-                                <select class="form-select" id="pais" name="pais">
-                                    <option value="1">Argentina</option>
-                                    <option value="2">Brasil</option>
-                                    <option value="3">Chile</option>
-                                    <option value="4">Colombia</option>
-                                    <option value="5">Ecuador</option>
-                                    <option value="6">México</option>
-                                    <option value="7">Perú</option>
-                                    <option value="8">Uruguay</option>
-                                    <option value="9">Venezuela</option>
-                                </select>
+                                <p><strong>Teléfono:</strong> <span th:text="${usuario.telefono}"></span></p>
+                            </div>
+
+                            <div class="mb-3 button-container">
+                                <a th:href="@{/perfil/editar/{id}(id=${usuario.id})}" class="btn btn-primary">Editar datos personales</a>
                             </div>
                         </form>
                     </div>

@@ -31,10 +31,17 @@ public class ControladorPanel {
 
     @GetMapping("/panel")
     public ModelAndView irAPanel(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+        HttpSession session = request.getSession(false);
+        if (session == null)
             return new ModelAndView("redirect:/login");
-        }
-        return new ModelAndView("panel");
+
+        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
+        if (nombreUsuario == null)
+            return new ModelAndView("redirect:/login");
+
+        ModelMap model = new ModelMap();
+        model.addAttribute("nombreUsuario", nombreUsuario);
+        return new ModelAndView("panel", model);
     }
 
     @GetMapping("/panel/egresos")

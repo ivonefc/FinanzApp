@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion.movimiento;
 
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.PaginaInexistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimiento.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -131,11 +128,13 @@ public class ControladorMovimiento {
             modelo.put("errores", e.getErrores());
             modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
             return new ModelAndView("agregar-movimiento", modelo);
+        } catch (UsuarioInexistente e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
+            return new ModelAndView("agregar-movimiento", modelo);
         }
         return new ModelAndView("redirect:/movimientos");
     }
-
-
 }
 
 

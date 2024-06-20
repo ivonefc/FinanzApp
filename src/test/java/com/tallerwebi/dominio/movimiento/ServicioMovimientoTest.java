@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
@@ -238,7 +239,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioNuevoMovimientoSeGuardeElMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
+    public void queAlSolicitarAlServicioNuevoMovimientoSeGuardeElMovimiento() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
         DatosAgregarMovimiento datosAgregarMovimiento = mock(DatosAgregarMovimiento.class);
         when(datosAgregarMovimiento.getDescripcion()).thenReturn("descripcion");
@@ -256,7 +257,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarAlServicioNuevoMovimientoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         DatosAgregarMovimiento datosAgregarMovimiento = mock(DatosAgregarMovimiento.class);
         when(datosAgregarMovimiento.getDescripcion()).thenReturn("descripcion");
@@ -296,7 +297,7 @@ public class ServicioMovimientoTest {
 
     //Testeando el método calcularCantidadDePaginas para la paginación.
     @Test
-    public void queAlSolicitarLaCantidadDePaginasDevuelvaLaDivisionEnteraEntreLaCantidadDeMovimientosYElTamanioDePagina() throws ExcepcionBaseDeDatos{
+    public void queAlSolicitarLaCantidadDePaginasDevuelvaLaDivisionEnteraEntreLaCantidadDeMovimientosYElTamanioDePagina() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(20L);
         when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
@@ -308,7 +309,7 @@ public class ServicioMovimientoTest {
     }
 
     @Test
-    public void queAlSolicitarLaCantidadDePaginasCuandoLaCantidadDeMovimientosSeaCeroDevuelvaCero() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarLaCantidadDePaginasCuandoLaCantidadDeMovimientosSeaCeroDevuelvaCero() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(repositorioMovimientoMock.obtenerCantidadDeMovimientosPorId(anyLong())).thenReturn(0L);
         when(repositorioUsuarioMock.obtenerUsuarioPorId(anyLong())).thenReturn(usuarioMock);
@@ -321,7 +322,7 @@ public class ServicioMovimientoTest {
 
     //Testeando método obtenerMovimientosPorPagina() (paginación)
     @Test
-    public void queAlSolicitarMovimientosDeUnaPaginaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos {
+    public void queAlSolicitarMovimientosDeUnaPaginaDevuelvaUnaListaDeMovimientos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
          //preparación
         List<Movimiento> movimientos = generarMovimientos(10);
         when(repositorioMovimientoMock.obtenerMovimientosPorPagina(anyLong(), anyInt(), anyInt())).thenReturn(movimientos);
@@ -361,7 +362,7 @@ public class ServicioMovimientoTest {
     //Testeando metodo para obtener un Map con las categorias y los montos totales gastados para la misma en el mes y año actual.
     @Test
     public void queAlSolicitarElTotalGastadoEnCategoriasConMetasDevuelvaUnMapaConLosDatos() throws ExcepcionBaseDeDatos {
-         //preparacion
+        //preparacion
         Usuario usuario = new Usuario();
         usuario.setId(1L);
 
@@ -391,7 +392,7 @@ public class ServicioMovimientoTest {
         assertThat(totalesGastadosPorCategoria.size(), is(2));
         assertThat(totalesGastadosPorCategoria, hasEntry("Categoria 1", 50.0));
         assertThat(totalesGastadosPorCategoria, hasEntry("Categoria 2", 60.0));
-     }
+    }
 
 
     //METODOS PRIVADOS

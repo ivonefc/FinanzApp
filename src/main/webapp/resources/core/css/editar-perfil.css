@@ -1,0 +1,50 @@
+/*--------------------------------------------------------------
+# Editar Perfil
+--------------------------------------------------------------*/
+
+/* Estilo general del contenedor */
+.container {
+    width: 80%;
+    margin: auto;
+    background-color: var(--background);
+}
+
+/* Estilo de la tarjeta */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    background-color: var(--blanco);
+}
+
+/* Estilo del encabezado de la tarjeta */
+.card-header {
+    background-color: var(--azul-uno);
+    padding: 10px;
+    text-align: center;
+    color: var(--blanco);
+}
+
+/* Estilo del cuerpo de la tarjeta */
+.card-body {
+    padding: 20px;
+}
+
+/* Estilo de los campos de entrada del formulario */
+.form-control {
+    border-radius: 5px;
+    border: 1px solid var(--azul-dos);
+    color: var(--fuente);
+}
+
+/* Estilo de las etiquetas del formulario */
+.form-label {
+    color: var(--azul-tres);
+}
+
+/* Estilo de los selectores del formulario */
+.form-select {
+    border-radius: 5px;
+    border: 1px solid var(--azul-dos);
+    color: var(--fuente);
+}

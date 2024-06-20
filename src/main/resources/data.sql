@@ -1,24 +1,24 @@
-INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);
-INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test2@unlam.edu.ar', 'test', 'ADMIN', true);
-INSERT INTO usuarios(id, email, password, rol, activo) VALUES(null, 'test3@unlam.edu.ar', 'test', 'ADMIN', true);
-
+INSERT INTO usuarios(email, password, rol, activo, nombre, apellido, nombreUsuario, fechaNacimiento, pais, telefono) VALUES('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Messi', 'Grupo 10', 'grupo_10', '2024/05/15', 'Argentina', '1122334455');
+INSERT INTO usuarios(email, password, rol, activo) VALUES('test1@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(email, password, rol, activo) VALUES('test2@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(email, password, rol, activo) VALUES('test3@unlam.edu.ar', 'test', 'ADMIN', true);
 
 INSERT INTO tipos_movimiento(id, nombre) VALUES(null, 'INGRESO');
 INSERT INTO tipos_movimiento(id, nombre) VALUES(null, 'EGRESO');
 
 
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null,  'SUELDO', 1, 'bi bi-wallet2','#1ef50f');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'EXTRA', 1, 'bi bi-cash','#343232');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'REEMBOLSO', 1, 'bi bi-arrow-counterclockwise','#5a00f5');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'REGALO', 1, 'bi bi-gift','#f00000');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null,  'SUELDO', 1, 'bi bi-wallet2','#E39E1E');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'EXTRA', 1, 'bi bi-cash','#28EB1C');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'REEMBOLSO', 1, 'bi bi-arrow-counterclockwise','#671EE3');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'REGALO', 1, 'bi bi-gift','#EB2727');
 
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'RESTAURANTE', 2, 'bi bi-cup-hot','#dda969');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'ENTRETENIMIENTO', 2, 'bi bi-controller','#ff0073');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'INDUMENTARIA', 2, 'bi bi-bag','#002aff');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'TRANSPORTE', 2, 'bi bi-bus-front-fill','#ff7300');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'PAGO_DE_SERVICIOS', 2, 'bi bi-receipt','#00fbff');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'SUPERMERCADO', 2, 'bi bi-cart3','#044200');
-INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'SALUD_BELLEZA', 2, 'bi bi-heart-pulse','#fbff00');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'RESTAURANTE', 2, 'bi bi-cup-hot','#553722');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'ENTRETENIMIENTO', 2, 'bi bi-controller','#E31E76');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'INDUMENTARIA', 2, 'bi bi-bag','#671EE3');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'TRANSPORTE', 2, 'bi bi-bus-front-fill','#6E0E32');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'PAGO_DE_SERVICIOS', 2, 'bi bi-receipt','#1E73E3');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'SUPERMERCADO', 2, 'bi bi-cart3','#6F106C');
+INSERT INTO categorias_movimiento(id, nombre, id_tipo, icono, color) VALUES(null, 'SALUD_BELLEZA', 2, 'bi bi-heart-pulse','#EBE21C');
 
 
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Ropa', '2023-05-15', 30000, 7, 1);
@@ -40,4 +40,3 @@ INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usu
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Zapatillas', '2024-04-12', 20000, 7, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Remera y Buzo', '2022-04-13', 32000, 7, 1);
 INSERT INTO movimientos(id, descripcion, fechayHora, monto, id_categoria, id_usuario) VALUES(null, 'Campera River', '2021-06-14', 20000, 7, 1);
-
