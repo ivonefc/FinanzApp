@@ -70,7 +70,7 @@ public class ServicioUsuarioTest {
     @Test
     public void queAlSolicitarAlServicioBuscarUsuarioPorEmailYPasswordLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos {
         // preparacion
-        when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword("email@test", "password")).thenThrow(new ExcepcionBaseDeDatos(new Exception()));
+        when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword("email@test", "password")).thenThrow(new ExcepcionBaseDeDatos("Base de datos no disponible"));
 
         // ejecucion
         ExcepcionBaseDeDatos excepcion = assertThrows(ExcepcionBaseDeDatos.class, () -> {
@@ -79,6 +79,7 @@ public class ServicioUsuarioTest {
 
         // validacion
         assertEquals("Base de datos no disponible", excepcion.getMessage());
+        verify(repositorioUsuarioMock).buscarUsuarioPorEmailYPassword("email@test", "password");
     }
 
     @Test
@@ -116,7 +117,7 @@ public class ServicioUsuarioTest {
         // preparacion
         when(usuarioMock.getEmail()).thenReturn("email@test");
         when(repositorioUsuarioMock.buscarUsuarioPorEmail("email@test")).thenReturn(usuarioMock);
-        doThrow(new ExcepcionBaseDeDatos()).when(repositorioUsuarioMock).guardar(usuarioMock);
+        doThrow(new ExcepcionBaseDeDatos("Base de datos no disponible")).when(repositorioUsuarioMock).guardar(usuarioMock);
 
         // ejecucion
         ExcepcionBaseDeDatos excepcion = assertThrows(ExcepcionBaseDeDatos.class, () -> {
@@ -125,6 +126,7 @@ public class ServicioUsuarioTest {
 
         // validacion
         assertEquals("Base de datos no disponible", excepcion.getMessage());
+        verify(repositorioUsuarioMock).guardar(usuarioMock);
     }
 
     @Test
@@ -158,7 +160,7 @@ public class ServicioUsuarioTest {
     @Test
     public void queAlSolicitarAlServicioBuscarUsuarioPorEmailLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // preparacion
-        when(repositorioUsuarioMock.buscarUsuarioPorEmail("email@test")).thenThrow(new ExcepcionBaseDeDatos(new Exception()));
+        when(repositorioUsuarioMock.buscarUsuarioPorEmail("email@test")).thenThrow(new ExcepcionBaseDeDatos("Base de datos no disponible"));
 
         // ejecucion
         ExcepcionBaseDeDatos excepcion = assertThrows(ExcepcionBaseDeDatos.class, () -> {
@@ -167,6 +169,7 @@ public class ServicioUsuarioTest {
 
         // validacion
         assertEquals("Base de datos no disponible", excepcion.getMessage());
+        verify(repositorioUsuarioMock).buscarUsuarioPorEmail("email@test");
     }
 
     @Test
@@ -228,7 +231,7 @@ public class ServicioUsuarioTest {
         // preparacion
         DatosEditarPerfil datosEditarPerfil = mock(DatosEditarPerfil.class);
         when(datosEditarPerfil.getId()).thenReturn(1L);
-        when(repositorioUsuarioMock.obtenerUsuarioPorId(1L)).thenThrow(new ExcepcionBaseDeDatos());
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(1L)).thenThrow(new ExcepcionBaseDeDatos("Base de datos no disponible"));
 
         // ejecucion
         ExcepcionBaseDeDatos excepcion = assertThrows(ExcepcionBaseDeDatos.class, () -> {
@@ -301,7 +304,7 @@ public class ServicioUsuarioTest {
     @Test
     public void queAlSolicitarAlServicioObtenerUsuarioPorIdLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // preparacion
-        when(repositorioUsuarioMock.obtenerUsuarioPorId(1L)).thenThrow(new ExcepcionBaseDeDatos(new Exception()));
+        when(repositorioUsuarioMock.obtenerUsuarioPorId(1L)).thenThrow(new ExcepcionBaseDeDatos("Base de datos no disponible"));
 
         // ejecucion
         ExcepcionBaseDeDatos excepcion = assertThrows(ExcepcionBaseDeDatos.class, () -> {
@@ -310,6 +313,7 @@ public class ServicioUsuarioTest {
 
         // validacion
         assertEquals("Base de datos no disponible", excepcion.getMessage());
+        verify(repositorioUsuarioMock).obtenerUsuarioPorId(1L);
     }
 
 }
