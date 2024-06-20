@@ -70,28 +70,12 @@ public class ControladorMiPerfil {
     }
 
     @PostMapping("/perfil/editar")
-    public ModelAndView editarPerfil(@ModelAttribute("usuario") DatosEditarPerfil datosEditarPerfil, BindingResult result, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public ModelAndView editarPerfil(@ModelAttribute("usuario") DatosEditarPerfil datosEditarPerfil, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
 
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
-
-////        if (result.hasErrors()) {
-////            modelo.put("errores", result.getAllErrors());
-////            modelo.put("usuario", datosEditarPerfil);
-////            return new ModelAndView("editar-perfil", modelo);
-////        }
-//
-//        if (result.hasErrors()) {
-//            List<String> errorMessages = result.getAllErrors()
-//                    .stream()
-//                    .map(ObjectError::getDefaultMessage)
-//                    .collect(Collectors.toList());
-//            modelo.put("errores", errorMessages);
-//            modelo.put("usuario", datosEditarPerfil);
-//            return new ModelAndView("editar-perfil", modelo);
-//        }
 
         try {
             servicioUsuario.modificar(datosEditarPerfil);
