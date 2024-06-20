@@ -46,41 +46,36 @@
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre:</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" readonly>
+                                <p><strong>Nombre:</strong> <span th:text="${usuario.nombre}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="apellido" class="form-label">Apellido:</label>
-                                <input type="text" class="form-control" id="apellido" name="apellido" th:value="${usuario.apellido}" readonly>
+                                <p><strong>Apellido:</strong> <span th:text="${usuario.apellido}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="nombreUsuario" class="form-label">Nombre Usuario:</label>
-                                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" th:value="${usuario.nombreUsuario}" readonly>
+                                <p><strong>Nombre Usuario:</strong> <span th:text="${usuario.nombreUsuario}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" readonly>
+                                <p><strong>Email:</strong> <span th:text="${usuario.email}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
-                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" th:value="${usuario.fechaNacimiento}" readonly>
+                                <p><strong>Fecha de Nacimiento:</strong> <span th:text="${usuario.fechaNacimiento}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="pais" class="form-label">País:</label>
-                                <input type="text" class="form-control" id="pais" name="pais" th:value="${usuario.pais}" readonly>
+                                <p><strong>País:</strong> <span th:text="${usuario.pais}"></span></p>
                             </div>
 
                             <div class="mb-3">
-                                <label for="telefono" class="form-label">Teléfono:</label>
-                                <input type="number" class="form-control" id="telefono" name="telefono" th:value="${usuario.telefono}" readonly>
+                                <p><strong>Teléfono:</strong> <span th:text="${usuario.telefono}"></span></p>
                             </div>
 
-                            <a th:href="@{/perfil/editar/{id}(id=${usuario.id})}" class="btn btn-primary">Editar datos personales</a>
+                            <div class="mb-3 button-container">
+                                <a th:href="@{/perfil/editar/{id}(id=${usuario.id})}" class="btn btn-primary">Editar datos personales</a>
+                            </div>
                         </form>
                     </div>
                 </div>

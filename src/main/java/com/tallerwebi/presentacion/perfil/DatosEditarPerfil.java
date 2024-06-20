@@ -1,19 +1,37 @@
 package com.tallerwebi.presentacion.perfil;
 
+import com.sun.istack.NotNull;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DatosEditarPerfil {
+    @NotNull
     private Long id;
+
+    @NotNull
     private String nombre;
+
+    @NotNull
     private String apellido;
+
+    @NotNull
     private String nombreUsuario;
+
+    @NotNull
     private String email;
+
+    @NotNull
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
     private LocalDate fechaNacimiento;
+
+    @NotNull
     private String pais;
+
+    @NotNull
     private Long telefono;
 
     public DatosEditarPerfil() {

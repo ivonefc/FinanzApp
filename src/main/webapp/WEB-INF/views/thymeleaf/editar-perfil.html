@@ -19,7 +19,7 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/mi-perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/editar-perfil.css}">
 </head>
 
 <body>
@@ -42,43 +42,43 @@
                     <div class="mb-3">
                         <label class="form-label">Nombre:</label>
                         <input th:field="*{nombre}" type="text" class="form-control">
-                        <p th:if="${errores != null && errores.get('nombre') != null}" class="alert alert-danger" th:text="${errores.get('nombre')}"></p>
+                        <p th:if="${errores != null && errores['nombre'] != null}" class="alert alert-danger" th:text="${errores['nombre']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Apellido:</label>
                         <input th:field="*{apellido}" type="text" class="form-control">
-                        <p th:if="${errores != null && errores.get('apellido') != null}" class="alert alert-danger" th:text="${errores.get('apellido')}"></p>
+                        <p th:if="${errores != null && errores['apellido'] != null}" class="alert alert-danger" th:text="${errores['apellido']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Nombre de usuario:</label>
                         <input th:field="*{nombreUsuario}" type="text" class="form-control">
-                        <p th:if="${errores != null && errores.get('nombreUsuario') != null}" class="alert alert-danger" th:text="${errores.get('nombreUsuario')}"></p>
+                        <p th:if="${errores != null && errores['nombreUsuario'] != null}" class="alert alert-danger" th:text="${errores['nombreUsuario']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Email:</label>
                         <input th:field="*{email}" type="email" class="form-control">
-                        <p th:if="${errores != null && errores.get('email') != null}" class="alert alert-danger" th:text="${errores.get('email')}"></p>
+                        <p th:if="${errores != null && errores['email'] != null}" class="alert alert-danger" th:text="${errores['email']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Fecha de Nacimiento:</label>
-                        <input th:field="*{fechaNacimiento}" type="date" class="form-control">
-                        <p th:if="${errores != null && errores.get('fechaNacimiento') != null}" class="alert alert-danger" th:text="${errores.get('fechaNacimiento')}"></p>
+                        <input th:field="*{fechaNacimiento}" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                        <p th:if="${errores != null && errores['fechaNacimiento'] != null}" class="alert alert-danger" th:text="${errores['fechaNacimiento']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">País:</label>
                         <input th:field="*{pais}" type="text" class="form-control">
-                        <p th:if="${errores != null && errores.get('pais') != null}" class="alert alert-danger" th:text="${errores.get('pais')}"></p>
+                        <p th:if="${errores != null && errores['pais'] != null}" class="alert alert-danger" th:text="${errores['pais']}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Teléfono:</label>
                         <input th:field="*{telefono}" type="number" class="form-control">
-                        <p th:if="${errores != null && errores.get('telefono') != null}" class="alert alert-danger" th:text="${errores.get('telefono')}"></p>
+                        <p th:if="${errores != null && errores['telefono'] != null}" class="alert alert-danger" th:text="${errores['telefono']}"></p>
                     </div>
 
                     <div class="d-flex justify-content-between">

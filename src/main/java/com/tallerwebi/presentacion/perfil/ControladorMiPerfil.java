@@ -9,6 +9,7 @@ import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,15 +67,20 @@ public class ControladorMiPerfil {
     }
 
     @PostMapping("/perfil/editar")
-    public ModelAndView editarPerfil(@ModelAttribute("usuario") DatosEditarPerfil datosEditarPerfil, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public ModelAndView editarPerfil(@ModelAttribute("usuario") DatosEditarPerfil datosEditarPerfil, BindingResult result, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
 
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 
+        if (result.hasErrors()) {
+            modelo.put("errores", result.getAllErrors());
+            modelo.put("usuario", datosEditarPerfil);
+            return new ModelAndView("editar-perfil", modelo);
+        }
+
         try {
-            datosEditarPerfil.validarCampos();
             servicioUsuario.modificar(datosEditarPerfil);
         } catch (ExcepcionCamposInvalidos e) {
             modelo.put("errores", e.getErrores());

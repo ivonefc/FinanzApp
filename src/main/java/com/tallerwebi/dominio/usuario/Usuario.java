@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio.usuario;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +22,8 @@ public class Usuario {
     private String password;
     private String rol;
     private Boolean activo = false;
+
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
     private LocalDate fechaNacimiento;
     private String pais;
     private Long telefono;

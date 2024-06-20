@@ -72,4 +72,52 @@ public class ControladorAjustesTest {
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 
+    @Test
+    public void queAlClickearIrAMiPerfilMeRedirijaAMiPerfil(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAMiPerfil(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/mi-perfil"));
+    }
+
+    @Test
+    public void queAlQuererIrAMiPerfilYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAMiPerfil(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlClickearEditarColoresDeCategoriaMeRedirijaAEditarColores(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAEditarColores(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/categorias/editar-colores"));
+    }
+
+    @Test
+    public void queAlQuererIrAEditarColoresDeCategoriaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAEditarColores(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
 }
