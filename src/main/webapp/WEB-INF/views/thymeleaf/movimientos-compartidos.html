@@ -37,14 +37,13 @@
     </div>
     <div class="card-body" th:if="${not #lists.isEmpty(amigos)}">
         <ul class="list-group" id="lista-amigos">
-            <li th:each="amigo : ${amigos}" class="list-group-item item d-flex justify-content-between">
-                <span th:text="${amigo.getEmail()}"></span>
-                <a th:href="@{/movimiento/panel}" class="btn btn-primary">Ver Movimientos</a>
+            <li th:each="notificacion : ${notificaciones}"
+                th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
+                class="list-group-item item d-flex justify-content-between">
+                <span th:text="${notificacion.usuario.getEmail()}"></span>
+                <span th:if="${notificacion.estado == 'Pendiente'}">Solicitud pendiente</span>
+                <a th:if="${notificacion.estado != 'Pendiente'}" th:href="@{/movimiento/panel}" class="btn btn-primary">Ver Movimientos</a>
             </li>
-
-            <div class="d-flex gap-3">
-
-            </div>
         </ul>
     </div>
 

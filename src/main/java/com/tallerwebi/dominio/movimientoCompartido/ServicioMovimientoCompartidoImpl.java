@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
     @Override
     public List<Usuario> obtenerAmigos(Long idUsuario) throws ExcepcionBaseDeDatos { //ID DE USUARIO
         return repositorioMovimientoCompartido.obtenerAmigos(idUsuario);
+    }
+
+    @Transactional
+    @Override
+    public List<Notificacion> obtenerNotificacionesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimientoCompartido.obtenerNotificacionesEnviadas(idUsuario);
     }
 
     @Transactional

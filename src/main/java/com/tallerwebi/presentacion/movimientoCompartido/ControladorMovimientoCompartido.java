@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class ControladorMovimientoCompartido {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        List<Notificacion> notificaciones = servicioMovimientoCompartido.obtenerNotificacionesEnviadas(idUsuario);
+        modelo.put("notificaciones", notificaciones);
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
         modelo.put("amigos", amigos);
         return new ModelAndView("movimientos-compartidos", modelo);
