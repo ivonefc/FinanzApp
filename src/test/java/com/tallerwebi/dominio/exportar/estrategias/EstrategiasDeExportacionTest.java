@@ -28,12 +28,14 @@ public class EstrategiasDeExportacionTest {
     @BeforeEach
     public void init(){
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        estrategiaDeExportacion = new EstrategiaDeExportacionPDF(servicioMovimientoMock);
     }
+
+    //EXPORTAR COMO PDF
 
     @Test
     public void queAlSolicitarGenerarArchivoPDFDevuelvaUnArrayDeBytes() throws ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, DocumentException {
         //preparacion
+        estrategiaDeExportacion = new EstrategiaDeExportacionPDF(servicioMovimientoMock);
         Long idUsuario = 1L;
         Usuario usuario = new Usuario();
         CategoriaMovimiento categoria = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
@@ -55,9 +57,8 @@ public class EstrategiasDeExportacionTest {
     @Test
     public void queAlSolicitarGenerarArchivoPDFYNoExistanMovimientosLanceExcepcionDeExportacionDeArchivo() throws ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, DocumentException {
         //preparacion
+        estrategiaDeExportacion = new EstrategiaDeExportacionPDF(servicioMovimientoMock);
         Long idUsuario = 1L;
-        Usuario usuario = new Usuario();
-        CategoriaMovimiento categoria = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
         List<Movimiento> movimientos = Collections.emptyList();
         when(servicioMovimientoMock.obtenerMovimientos(idUsuario)).thenReturn(movimientos);
 
@@ -67,4 +68,40 @@ public class EstrategiasDeExportacionTest {
         }, "No se pudo exportar archivo");
     }
 
+    //EXPORTAR COMO XLSX
+
+    @Test
+    public void queAlSolicitarGenerarArchivoXLSXDevuelvaUnArrayDeBytes() throws ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, DocumentException {
+        //preparacion
+        estrategiaDeExportacion = new EstrategiaDeExportacionXlsx(servicioMovimientoMock);
+        Long idUsuario = 1L;
+        Usuario usuario = new Usuario();
+        CategoriaMovimiento categoria = new CategoriaMovimiento("RESTAURANTE", new TipoMovimiento("EGRESO"));
+        List<Movimiento> movimientos = List.of(
+                new Movimiento("Descripcion", 100.0, LocalDate.now(), categoria, usuario)
+        );
+        when(servicioMovimientoMock.obtenerMovimientos(idUsuario)).thenReturn(movimientos);
+
+        //ejecucion
+        byte[] byteArray = estrategiaDeExportacion.generarArchivo(idUsuario);
+
+        //validacion
+        verify(servicioMovimientoMock, times(1)).obtenerMovimientos(idUsuario);
+        assertThat(byteArray, notNullValue());
+        assertThat(byteArray.length, greaterThan(0));
+    }
+
+    @Test
+    public void queAlSolicitarGenerarArchivoXLSXYNoExistanMovimientosLanceExcepcionDeExportacionDeArchivo() throws ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, DocumentException {
+        //preparacion
+        estrategiaDeExportacion = new EstrategiaDeExportacionXlsx(servicioMovimientoMock);
+        Long idUsuario = 1L;
+        List<Movimiento> movimientos = Collections.emptyList();
+        when(servicioMovimientoMock.obtenerMovimientos(idUsuario)).thenReturn(movimientos);
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionExportacionDeArchivo.class, () ->{
+            estrategiaDeExportacion.generarArchivo(idUsuario);
+        }, "No se pudo exportar archivo");
+    }
 }

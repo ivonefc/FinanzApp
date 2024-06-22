@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +19,7 @@ public class EstrategiaDeExportacionXlsx implements EstrategiaDeExportacion{
 
     ServicioMovimiento servicioMovimiento;
 
+    @Autowired
     public EstrategiaDeExportacionXlsx(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
@@ -33,7 +35,7 @@ public class EstrategiaDeExportacionXlsx implements EstrategiaDeExportacion{
         Workbook workbook = new XSSFWorkbook();
 
         try {
-            //Creo una hoja llamada Movimeintos
+            //Creo una hoja llamada Movimientos
             Sheet hoja = workbook.createSheet("Movimientos");
 
             List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientos(idUsuario);
