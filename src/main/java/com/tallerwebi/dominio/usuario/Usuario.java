@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio.usuario;
 
+import org.hibernate.Session;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -125,6 +126,10 @@ public class Usuario {
         this.activo = activo;
     }
 
+    public boolean existeAmigo(Usuario amigo) {
+        return amigos.contains(amigo);
+    }
+
     public void activar() {
         activo = true;
     }
@@ -148,4 +153,6 @@ public class Usuario {
                 ", activo=" + activo +
                 '}';
     }
+
+
 }

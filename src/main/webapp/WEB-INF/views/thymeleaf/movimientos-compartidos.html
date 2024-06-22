@@ -30,9 +30,10 @@
 <aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
 
 <main id="main" class="main">
-
-    <h1 class="pt-3 text-center">Amigos</h1>
-    <div th:if="${#lists.isEmpty(notificaciones)}">
+    <div th:if="${not #lists.isEmpty(amigos)}">
+        <h1 class="pt-3 text-center">Amigos</h1>
+    </div>
+    <div th:if="${#lists.isEmpty(amigos)}">
         <div class="pagetitle">
             <h1>No tienes ningún amigo aún.</h1> <br> <br>
         </div>
@@ -43,8 +44,26 @@
     <div class="d-flex justify-content-end mb-3">
         <a th:href="@{/movimientos-compartidos/agregar-amigo}" class="btn btn-primary">Agregar Amigo</a>
     </div>
-    <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
+
+    <div class="card-body" th:if="${not #lists.isEmpty(amigos)}">
         <ul class="list-group" id="lista-amigos">
+            <li th:each="amigo : ${amigos}"
+                class="list-group-item item d-flex justify-content-between">
+                <span th:text="${amigo.getEmail()}"></span>
+                <div>
+                    <a th:href="@{/movimiento/panel}" class="btn btn-primary mr-2">Ver Movimientos</a>
+                    <button  class="btn btn-danger">Eliminar Amigo</button>
+                </div>
+
+            </li>
+        </ul>
+    </div> <br>
+    <div th:if="${not #lists.isEmpty(notificaciones)}">
+        <h2 class="pt-3 text-center">Solicitudes pendientes</h2> <br>
+    </div>
+
+    <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
+        <ul class="list-group" id="lista-pendientes">
             <li th:each="notificacion : ${notificaciones}"
                 th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
                 class="list-group-item item d-flex justify-content-between">
@@ -54,12 +73,9 @@
                         <button type="submit" th:if="${notificacion.estado == 'Pendiente'}" class="btn btn-danger">Eliminar Solicitud</button>
                     </form>
                 </div>
-                <a th:if="${notificacion.estado != 'Pendiente'}" th:href="@{/movimiento/panel}" class="btn btn-primary">Ver Movimientos</a>
-                <button th:if="${notificacion.estado != 'Pendiente'}" class="btn btn-danger">Eliminar Amigo</button>
             </li>
         </ul>
     </div>
-
 </main>
 
 <!-- Footer -->

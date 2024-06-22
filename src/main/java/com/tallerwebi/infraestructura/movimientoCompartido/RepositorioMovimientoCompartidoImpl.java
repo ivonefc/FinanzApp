@@ -65,11 +65,25 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                 throw new ExcepcionBaseDeDatos("No se encontró un usuario con el id proporcionado");
             }
 
+            // Verificar si el usuario ya es amigo
+            if (usuario.existeAmigo(amigo)) {
+                throw new ExcepcionBaseDeDatos("El usuario ya es tu amigo");
+            }
+
+            // Verificar si ya se ha enviado una solicitud de amistad
+            Long count = (Long) session.createQuery("SELECT COUNT(n) FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario AND n.usuario.id = :idAmigo AND n.estado = :estado")
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("idAmigo", amigo.getId())
+                    .setParameter("estado", "Pendiente")
+                    .uniqueResult();
+
+            if (count > 0) {
+                throw new ExcepcionBaseDeDatos("Ya has enviado una solicitud de amistad a este usuario");
+            }
+
             if(email.equals(usuario.getEmail())){
                 throw new ExcepcionBaseDeDatos("No se puede agregar a si mismo");
             }
-            // Agregar el amigo a la lista de amigos del usuario
-            usuario.agregarAmigo(amigo);
 
             // Crear una nueva notificación
             Notificacion notificacion = new Notificacion();
@@ -91,9 +105,10 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos{
         try{
             Session session = sessionFactory.getCurrentSession();
-            return session.createQuery("FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario AND n.tipo = :tipoNotificacion", Notificacion.class)
+            return session.createQuery("FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario AND n.tipo = :tipoNotificacion AND n.estado = :estadoNotificacion", Notificacion.class)
                     .setParameter("idUsuario", idUsuario)
                     .setParameter("tipoNotificacion", "Solicitud de amistad")
+                    .setParameter("estadoNotificacion", "Pendiente")
                     .getResultList();
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
