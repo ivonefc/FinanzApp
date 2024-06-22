@@ -1,9 +1,6 @@
 package com.tallerwebi.presentacion.meta;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
-import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
@@ -93,6 +90,10 @@ public class ControladorMeta {
             return new ModelAndView("agregar-meta", modelo);
         } catch (ExcepcionCategoriaConMetaExistente e) {
             modelo.put("error", e.getMessage());
+            modelo.put("meta", new DatosMeta());
+            return new ModelAndView("agregar-meta", modelo);
+        } catch (UsuarioInexistente e) {
+            modelo.put("error", "El usuario no existe");
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
         }

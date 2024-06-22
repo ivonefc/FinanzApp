@@ -11,18 +11,34 @@ public class ControladorAjustes {
 
     @GetMapping("/ajustes")
     public ModelAndView irAAjustes(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         return new ModelAndView("ajustes");
     }
 
     @GetMapping("/ajustes/panel")
     public ModelAndView volverAPanel(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         return new ModelAndView("redirect:/panel");
+    }
+
+    @GetMapping("/ajustes/mi-perfil")
+    public ModelAndView irAMiPerfil(HttpServletRequest request){
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+
+        return new ModelAndView("redirect:/mi-perfil");
+    }
+
+    @GetMapping("/ajustes/categorias/editar-colores")
+    public ModelAndView irAEditarColores(HttpServletRequest request){
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+
+        return new ModelAndView("redirect:/categorias/editar-colores");
     }
 
 }

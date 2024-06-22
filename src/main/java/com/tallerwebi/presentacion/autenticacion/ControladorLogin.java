@@ -28,7 +28,6 @@ public class ControladorLogin {
 
     @RequestMapping("/login")
     public ModelAndView irALogin() {
-
         ModelMap modelo = new ModelMap();
         modelo.put("datosLogin", new DatosLogin());
         return new ModelAndView("login", modelo);
@@ -40,10 +39,13 @@ public class ControladorLogin {
         try {
             Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
             request.getSession().setAttribute("idUsuario", usuarioBuscado.getId());
+            request.getSession().setAttribute("nombreUsuario", usuarioBuscado.getNombreUsuario());
             return new ModelAndView("redirect:/panel");
         } catch (UsuarioInexistente e) {
             model.put("error", e.getMessage());
             return new ModelAndView("login", model);
+        } catch (ExcepcionCamposInvalidos e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -60,6 +62,9 @@ public class ControladorLogin {
         } catch (ExcepcionCamposInvalidos e) {
             model.put("errores", e.getErrores());
             return new ModelAndView("nuevo-usuario", model);
+        } catch (UsuarioInexistente e) {
+            model.put("error", "");
+            return new ModelAndView("nuevo-usuario", model);
         }
     }
 
@@ -74,5 +79,6 @@ public class ControladorLogin {
     public ModelAndView inicio() {
         return new ModelAndView("redirect:/login");
     }
+
 }
 

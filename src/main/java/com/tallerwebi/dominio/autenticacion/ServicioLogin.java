@@ -9,7 +9,7 @@ import com.tallerwebi.presentacion.autenticacion.DatosRegistroUsuario;
 
 public interface ServicioLogin {
 
-    Usuario consultarUsuario(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos;
-    void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos;
+    Usuario consultarUsuario(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos;
+    void registrar(DatosRegistroUsuario datosRegistroUsuario) throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente;
 
 }

@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion.meta;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
-import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
@@ -151,7 +148,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
         doNothing().when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
@@ -163,7 +160,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -186,7 +183,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -206,7 +203,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererAgregarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererAgregarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         Map<String, String> errores = Map.of(
@@ -227,7 +224,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererCrearMetaParaUnaCategoriaQueYaTieneMetaEstablecidaRedirigirAlFormularioYMostrarUnError() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererCrearMetaParaUnaCategoriaQueYaTieneMetaEstablecidaRedirigirAlFormularioYMostrarUnError() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionCategoriaConMetaExistente excepcionCategoriaConMetaExistente = new ExcepcionCategoriaConMetaExistente();
@@ -243,7 +240,7 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente {
+    public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
@@ -455,7 +452,6 @@ public class ControladorMetaTest {
     }
 
     //eliminar
-
     @Test
     public void eliminarMetaQueAlClickearEnLaOpcionEliminarMetaEnElMenuElimineLaMetaYRedirijaAVistaMetas() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         //preparacion
@@ -513,34 +509,5 @@ public class ControladorMetaTest {
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).eliminarMeta(1L);
     }
-
-
-/*
-    @Test
-    public void deberiaDevolverMapaConNombresYMontosGastadosEnCadaCategoriaConMetaEnMesYAnioActual() throws ExcepcionBaseDeDatos {
-        //preparacion
-        Long idUsuario = 1L;
-        Map<String, Double> mapEsperado = new HashMap<>();
-        mapEsperado.put("TRANSPORTE", 30000.0);
-        mapEsperado.put("RESTAURANTE", 20000.0);
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
-        when(servicioMovimientoMock.obtenerTotalGastadoEnCategoriasConMetas(idUsuario)).thenReturn(mapEsperado);
-
-        //ejecucion
-        Map<String, Double> totalGastadoPorCategoria = controladorMeta.obtenerTotalGastadoPorCategoriasConMetas(requestMock);
-
-        //validacion
-        assertThat(totalGastadoPorCategoria, notNullValue());
-        assertThat(totalGastadoPorCategoria, aMapWithSize(2));
-        assertThat(totalGastadoPorCategoria, hasEntry("TRANSPORTE", 30000.0));
-        assertThat(totalGastadoPorCategoria, hasEntry("RESTAURANTE", 20000.0));
-
-        verify(requestMock, times(1)).getSession(false);
-        verify(sessionMock, times(1)).getAttribute("idUsuario");
-        verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
-    }
-
- */
 
 }

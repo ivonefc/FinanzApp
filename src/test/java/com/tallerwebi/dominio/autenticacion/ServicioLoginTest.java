@@ -9,14 +9,13 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.autenticacion.DatosRegistroUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,15 +34,34 @@ public class ServicioLoginTest {
     //Crear usuario de forma exitosa
     @Test
     public void registrarmeQueAlQuererRegistarUnUsuarioPermitaRegistrar() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, UsuarioExistente, UsuarioInexistente {
-        //preparacion
-        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("nombre", "email@test", "password");
-        UsuarioInexistente usuarioInexistente = new UsuarioInexistente();
-        doThrow(usuarioInexistente).when(repositorioUsuarioMock).buscarUsuarioPorEmail(anyString());
+        LocalDate fechaNacimiento = LocalDate.of(2024, 06, 11);
+        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario(
+                "nombre",
+                "email@test.com",
+                "password",
+                "apellido",
+                "nombreUsuario",
+                fechaNacimiento,
+                "pais",
+                1234567890L
+        );
+        when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenReturn(null);
+
         //ejecucion
         servicioLogin.registrar(datosRegistroUsuario);
 
         // validación
-        verify(repositorioUsuarioMock, times(1)).guardar(any(Usuario.class));
+        ArgumentCaptor<Usuario> argumentCaptor = ArgumentCaptor.forClass(Usuario.class);
+        verify(repositorioUsuarioMock, times(1)).guardar(argumentCaptor.capture());
+        Usuario usuarioGuardado = argumentCaptor.getValue();
+        assertEquals("nombre", usuarioGuardado.getNombre());
+        assertEquals("email@test.com", usuarioGuardado.getEmail());
+        assertEquals("password", usuarioGuardado.getPassword());
+        assertEquals("apellido", usuarioGuardado.getApellido());
+        assertEquals("nombreUsuario", usuarioGuardado.getNombreUsuario());
+        assertEquals(fechaNacimiento, usuarioGuardado.getFechaNacimiento());
+        assertEquals("pais", usuarioGuardado.getPais());
+        assertEquals(1234567890L, usuarioGuardado.getTelefono());
     }
 
     //Error al crear un usuario con datos existentes en bdd
@@ -51,7 +69,17 @@ public class ServicioLoginTest {
     public void registrarmeQueAlQuererRegistrarUnUsuarioConDatosExistentesRedirigirAlFormularioYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos, UsuarioExistente {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenReturn(usuarioMock);
-        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("nombre", "email@test", "password");
+        LocalDate fechaNacimiento = LocalDate.of(2024, 06, 11);
+        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario(
+                "nombre",
+                "email@test.com",
+                "password",
+                "apellido",
+                "nombreUsuario",
+                fechaNacimiento,
+                "pais",
+                1234567890L
+        );
 
         //ejecucion
         UsuarioExistente usuarioExistente = assertThrows(UsuarioExistente.class, ()->{
@@ -67,8 +95,18 @@ public class ServicioLoginTest {
     @Test
     public void registrarmeQueAlQuererRegistrarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos, UsuarioExistente {
         //preparacion
+        LocalDate fechaNacimiento = LocalDate.of(2024, 06, 11);
+        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario(
+                "nombre",
+                "email@test.com",
+                "password",
+                "apellido",
+                "nombreUsuario",
+                fechaNacimiento,
+                "pais",
+                1234567890L
+        );
         when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenThrow(new ExcepcionBaseDeDatos("Error en la base de datos"));
-        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("nombre", "email@test", "password");
 
         //ejecucion
         ExcepcionBaseDeDatos excepcionBaseDeDatos = assertThrows(ExcepcionBaseDeDatos.class, ()->{
@@ -84,7 +122,7 @@ public class ServicioLoginTest {
     @Test
     public void registrarmeQueAlQuererRegistrarUnUsuarioConCamposInvalidosLanceError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos, UsuarioExistente {
         //preparacion
-        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("", "email@test", "password");
+        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario("n", "apellido", "nombreUsuario", "email@test", "password", LocalDate.of(2024, 06, 11), "pais", 1234567890L);
 
         //ejecucion
         ExcepcionCamposInvalidos excepcionCamposInvalidos = assertThrows(ExcepcionCamposInvalidos.class, ()->{
@@ -98,7 +136,7 @@ public class ServicioLoginTest {
 
     //Consultar usuario de forma exitosa
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioExistenteRetorneElUsuario() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioExistenteRetorneElUsuario() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenReturn(usuarioMock);
         when(usuarioMock.getEmail()).thenReturn("email@test");
@@ -115,7 +153,7 @@ public class ServicioLoginTest {
 
     //Error al consultar un usuario inexistente
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioInexistenteLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioInexistenteLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenThrow(new UsuarioInexistente());
 
@@ -130,7 +168,7 @@ public class ServicioLoginTest {
 
     //Error al consultar un usuario por caida de la base de datos
     @Test
-    public void consultarUsuarioQueAlConsultarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos {
+    public void consultarUsuarioQueAlConsultarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos {
         //preparacion
         when(repositorioUsuarioMock.buscarUsuarioPorEmailYPassword(anyString(), anyString())).thenThrow(new ExcepcionBaseDeDatos("Error en la base de datos"));
 

@@ -14,8 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -35,9 +34,10 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel() throws ExcepcionBaseDeDatos {
+    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel() {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("nombreUsuario")).thenReturn("nombreUsuario");
 
         //ejecucion
         ModelAndView modelAndView = controladorPanel.irAPanel(requestMock);
@@ -47,7 +47,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
+    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -55,6 +55,34 @@ public class ControladorPanelTest {
         ModelAndView modelAndView = controladorPanel.irAPanel(requestMock);
 
         //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlQuererIrALaOpcionPanelMeMuestreDeFormaCorrectaElNombreDeUsuario() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("nombreUsuario")).thenReturn("nombreUsuario");
+
+        //ejecucion
+        ModelAndView modelAndView = controladorPanel.irAPanel(requestMock);
+
+        //validacion
+        assertNotNull(modelAndView);
+        assertThat(modelAndView.getModel().get("nombreUsuario").toString(), equalToIgnoringCase("nombreUsuario"));
+    }
+
+    @Test
+    public void queAlQuererIrALaOpcionPanelYNoExistaNombreDeUsuarioMeRedirijaAlLoguin() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("nombreUsuario")).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorPanel.irAPanel(requestMock);
+
+        //validacion
+        assertNotNull(modelAndView);
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 
