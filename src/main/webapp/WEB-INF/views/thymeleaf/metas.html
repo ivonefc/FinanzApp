@@ -43,38 +43,34 @@
         <div class="card w-100" th:if="${not #lists.isEmpty(metas)}">
             <div class="card-body">
 
-                <div class="meta-botonAgregar">
-                    <h2 class="card-title text-center border-bottom">Metas</h2>
-                    <div class="agregarNMeta" th:if="${not #lists.isEmpty(metas)}">
-                        <a th:href="@{/metas/agregar}" class="btn btn-primary"><i class="bi bi-plus"></i><p class="text-meta-b">Agregar nueva meta</p></a>
+                <div class="d-flex justify-content-around border-bottom align-items-center p-3" th:if="${not #lists.isEmpty(metas)}">
+                        <h2 class="card-title">Metas</h2>
+                        <a th:href="@{/metas/agregar}" class="btn btn-primary fw-semibold">Agregar</a>
                     </div>
-                </div>
 
-
-
-                <!-- Default Table -->
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Meta</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody th:each="meta: ${metas}">
-                    <tr>
-                        <td th:style="'background-color:' + (${meta.categoriaMovimiento.getColor()}) + '; color: white;'">
+                    <!-- Default Table -->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Meta</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="meta: ${metas}">
+                        <tr>
+                            <td th:style="'background-color:' + (${meta.categoriaMovimiento.getColor()}) + '; color: white;'">
                             <span>
                                  <i th:classappend="${meta.categoriaMovimiento.getIcono()}"></i>
                                 <span th:text="${meta.categoriaMovimiento.getNombre()}" class="px-2fw-semibold"></span>
                             </span>
-                        </td>
-                        <td th:text="'$ ' + (${meta.montoMeta})" class="fw-semibold"></td>
-                        <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                            </td>
+                            <td th:text="'$ ' + (${meta.montoMeta})" class="fw-semibold"></td>
+                            <td><a th:href="@{/metas/editar/{id}(id=${meta.id})}"><i class="bi bi-pencil"></i></a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
         </div>
 
         <!--SEGUIMIENTO DE METAS-->
