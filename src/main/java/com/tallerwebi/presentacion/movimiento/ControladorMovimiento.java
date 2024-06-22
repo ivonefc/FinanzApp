@@ -143,6 +143,10 @@ public class ControladorMovimiento {
             modelo.put("errores", e.getErrores());
             modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
             return new ModelAndView("agregar-movimiento", modelo);
+        } catch (UsuarioInexistente e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
+            return new ModelAndView("agregar-movimiento", modelo);
         }
         return new ModelAndView("redirect:/movimientos");
     }
