@@ -2,10 +2,7 @@ package com.tallerwebi.dominio.movimientoCompartido;
 
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
-import com.tallerwebi.dominio.movimiento.Movimiento;
-import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -39,8 +36,8 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
 
     @Transactional
     @Override
-    public List<Notificacion> obtenerNotificacionesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos {
-        return repositorioMovimientoCompartido.obtenerNotificacionesEnviadas(idUsuario);
+    public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimientoCompartido.obtenerSolicitudesEnviadas(idUsuario);
     }
 
     @Transactional

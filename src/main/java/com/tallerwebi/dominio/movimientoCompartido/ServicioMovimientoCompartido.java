@@ -12,7 +12,7 @@ public interface ServicioMovimientoCompartido {
 
     void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos;
 
-    public List<Notificacion> obtenerNotificacionesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos;
+    public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     void eliminarSolicitud(Long id) throws ExcepcionBaseDeDatos;
 }

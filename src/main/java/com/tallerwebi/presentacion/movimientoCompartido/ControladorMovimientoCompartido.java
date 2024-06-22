@@ -1,14 +1,9 @@
 package com.tallerwebi.presentacion.movimientoCompartido;
 
-import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
-import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,9 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ControladorMovimientoCompartido {
@@ -42,7 +35,7 @@ public class ControladorMovimientoCompartido {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        List<Notificacion> notificaciones = servicioMovimientoCompartido.obtenerNotificacionesEnviadas(idUsuario);
+        List<Notificacion> notificaciones = servicioMovimientoCompartido.obtenerSolicitudesEnviadas(idUsuario);
         modelo.put("notificaciones", notificaciones);
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
         modelo.put("amigos", amigos);

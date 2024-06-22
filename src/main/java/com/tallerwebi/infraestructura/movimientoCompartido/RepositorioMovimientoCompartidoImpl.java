@@ -87,13 +87,13 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
         }
     }
 
-    @Transactional
     @Override
-    public List<Notificacion> obtenerNotificacionesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos{
+    public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos{
         try{
             Session session = sessionFactory.getCurrentSession();
-            return session.createQuery("FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario", Notificacion.class)
+            return session.createQuery("FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario AND n.tipo = :tipoNotificacion", Notificacion.class)
                     .setParameter("idUsuario", idUsuario)
+                    .setParameter("tipoNotificacion", "Solicitud de amistad")
                     .getResultList();
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");

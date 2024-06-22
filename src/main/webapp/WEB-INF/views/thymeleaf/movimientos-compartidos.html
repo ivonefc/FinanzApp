@@ -32,10 +32,18 @@
 <main id="main" class="main">
 
     <h1 class="pt-3 text-center">Amigos</h1>
+    <div th:if="${#lists.isEmpty(notificaciones)}">
+        <div class="pagetitle">
+            <h1>No tienes ningún amigo aún.</h1> <br> <br>
+        </div>
+        <div class="pt-3">
+            <a th:href="@{/ajustes/panel}" class="btn btn-primary">Volver a página de inicio</a>
+        </div>
+    </div>
     <div class="d-flex justify-content-end mb-3">
         <a th:href="@{/movimientos-compartidos/agregar-amigo}" class="btn btn-primary">Agregar Amigo</a>
     </div>
-    <div class="card-body" th:if="${not #lists.isEmpty(amigos)}">
+    <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
         <ul class="list-group" id="lista-amigos">
             <li th:each="notificacion : ${notificaciones}"
                 th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
