@@ -62,9 +62,9 @@
             <div th:if="${#lists.isEmpty(movimientos)}">
                 <p>No hay movimientos disponibles.</p>
             </div>
-            <ul th:if="${not #lists.isEmpty(movimientos)}">
-                <li>
-                    <button name="exportar" data-tipo-doc="PDF">Exportar PDF</button>
+            <ul th:if="${not #lists.isEmpty(movimientos)}" class="list-group">
+                <li class="list-group-item">
+                    <button style="color:white;" type="button" class="btn btn-info" name="exportar" data-tipo-doc="PDF">Exportar PDF</button>
                 </li>
             </ul>
         </div>

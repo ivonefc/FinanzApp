@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface ServicioCategoria {
     CategoriaMovimiento obtenerCategoriaPorNombre(String nombre) throws ExcepcionBaseDeDatos;
-    List<CategoriaMovimiento> obtenerCategorias() throws ExcepcionBaseDeDatos;
-    void actualizarColor(String nombre, String color) throws Exception;
 }

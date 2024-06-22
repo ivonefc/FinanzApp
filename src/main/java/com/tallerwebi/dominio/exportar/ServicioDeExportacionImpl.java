@@ -1,6 +1,5 @@
 package com.tallerwebi.dominio.exportar;
 
-import com.itextpdf.text.DocumentException;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionExportacionDeArchivo;
 import com.tallerwebi.dominio.exportar.estrategias.EstrategiaDeExportacion;
@@ -21,6 +20,10 @@ public class ServicioDeExportacionImpl implements ServicioDeExportacion {
         estrategiasDeExportacion.forEach(estrategia ->{
             this.estrategiasDeExportacion.put(estrategia.obtenerTipoDeArchivo(), estrategia);
         });
+    }
+
+    public Map<TipoDeArchivo, EstrategiaDeExportacion> obtenerEstrategiasDeExportacion() {
+        return estrategiasDeExportacion;
     }
 
     @Override

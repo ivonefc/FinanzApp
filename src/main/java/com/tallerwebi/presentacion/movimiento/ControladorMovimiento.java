@@ -159,7 +159,6 @@ public class ControladorMovimiento {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(bytesDelArchivo);
-
     }
 }
 

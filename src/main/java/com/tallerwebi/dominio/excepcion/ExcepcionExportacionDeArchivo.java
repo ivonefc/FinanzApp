@@ -7,4 +7,7 @@ public class ExcepcionExportacionDeArchivo extends Throwable {
     public ExcepcionExportacionDeArchivo(DocumentException e) {
         super(mensaje);
     }
+    public ExcepcionExportacionDeArchivo(String mensaje) {
+        super(mensaje);
+    }
 }

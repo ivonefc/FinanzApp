@@ -1,7 +1,6 @@
 package com.tallerwebi.dominio.exportar.estrategias;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 @Component
@@ -68,6 +66,8 @@ public class EstrategiaDeExportacionPDF implements EstrategiaDeExportacion{
 
                 // Añadir tabla al documento
                 document.add(tabla);
+            }else{
+                throw new ExcepcionExportacionDeArchivo("No se pudo exportar archivo");
             }
             document.close();
             return stream.toByteArray();
@@ -88,8 +88,8 @@ public class EstrategiaDeExportacionPDF implements EstrategiaDeExportacion{
 
     private void agregarFila(PdfPTable tabla, Movimiento movimiento) {
         tabla.addCell(new PdfPCell(new Phrase(movimiento.getFechayHora().toString(), FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK))));
-        tabla.addCell(new PdfPCell(new Phrase(movimiento.getCategoria().getTipo().getNombre(), FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.WHITE)))).setBackgroundColor(movimiento.getCategoria().getTipo().obtenerBaseColor());
-        tabla.addCell(new PdfPCell(new Phrase(movimiento.getCategoria().getNombre(), FontFactory.getFont(FontFactory.COURIER, 8, Font.BOLD, movimiento.getCategoria().getBaseColor()))));
+        tabla.addCell(new PdfPCell(new Phrase(movimiento.getCategoria().getTipo().getNombre(), FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.WHITE)))).setBackgroundColor(movimiento.getCategoria().getTipo().getNombre().equals("EGRESO")? BaseColor.RED : BaseColor.GREEN);
+        tabla.addCell(new PdfPCell(new Phrase(movimiento.getCategoria().getNombre(), FontFactory.getFont(FontFactory.COURIER, 8, Font.BOLD))));
         tabla.addCell(new PdfPCell(new Phrase(movimiento.getDescripcion(), FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK))));
         tabla.addCell(new PdfPCell(new Phrase(movimiento.getCategoria().getTipo().getNombre().equals("EGRESO")?"- $" +String.format("%.0f", movimiento.getMonto()) : "+ $" +String.format("%.0f", movimiento.getMonto()), FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK))));
     }
