@@ -1,12 +1,14 @@
 package com.tallerwebi.presentacion.movimiento;
 
-
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.PaginaInexistente;
+import com.itextpdf.text.DocumentException;
+import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
+import com.tallerwebi.dominio.exportar.TipoDeArchivo;
 import com.tallerwebi.dominio.movimiento.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,18 @@ import java.util.List;
 public class ControladorMovimiento {
 
     private ServicioMovimiento servicioMovimiento;
+    private ServicioDeExportacion servicioDeExportacion;
 
-    @Autowired
+
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
 
+    @Autowired
+    public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioDeExportacion servicioDeExportacion) {
+        this.servicioMovimiento = servicioMovimiento;
+        this.servicioDeExportacion = servicioDeExportacion;
+    }
 
     @GetMapping("/movimientos")
     public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {
@@ -42,12 +50,16 @@ public class ControladorMovimiento {
         int tamanioDePagina = 10;
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
         model.put("movimientos", movimientos);
-        int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(idUsuario, tamanioDePagina);
-        if (pagina > cantidadDePaginas && !movimientos.isEmpty()) {
-            throw new PaginaInexistente();
+
+        //Verifico que movimientos no sea vacio, para obtener cantidad de paginas
+        if(!movimientos.isEmpty()){
+            int cantidadDePaginas = servicioMovimiento.calcularCantidadDePaginas(idUsuario, tamanioDePagina);
+            if (pagina > cantidadDePaginas) {
+                throw new PaginaInexistente();
+            }
+            model.put("cantidadDePaginas", cantidadDePaginas);
+            model.put("paginaActual", pagina);
         }
-        model.put("cantidadDePaginas", cantidadDePaginas);
-        model.put("paginaActual", pagina);
         return new ModelAndView("movimientos", model);
     }
 
@@ -136,6 +148,18 @@ public class ControladorMovimiento {
     }
 
 
+    @GetMapping("/movimientos/exportar/{tipoDeDoc}")
+    @ResponseBody
+    public ResponseEntity<byte[]> descargarDocumentoDeMovimentos(@PathVariable TipoDeArchivo tipoDeDoc, HttpServletRequest request) throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo {
+        Long idUsuario = (Long) request.getSession(false).getAttribute("idUsuario");
+
+        byte[] bytesDelArchivo = servicioDeExportacion.generarArchivo(idUsuario, tipoDeDoc);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(bytesDelArchivo);
+    }
 }
 
 

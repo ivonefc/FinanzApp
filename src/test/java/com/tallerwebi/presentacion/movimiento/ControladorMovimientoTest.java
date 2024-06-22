@@ -1,10 +1,10 @@
 package com.tallerwebi.presentacion.movimiento;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.itextpdf.text.DocumentException;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
-import com.tallerwebi.dominio.excepcion.PaginaInexistente;
+import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
+import com.tallerwebi.dominio.exportar.TipoDeArchivo;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
@@ -17,6 +17,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +28,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 public class ControladorMovimientoTest {
@@ -37,11 +42,13 @@ public class ControladorMovimientoTest {
     HttpSession httpSessionMock;
     DatosEditarMovimiento datosEditarMovimientoMock;
     DatosAgregarMovimiento datosAgregarMovimientoMock;
+    ServicioDeExportacion servicioDeExportacionMock;
 
     @BeforeEach
     public void init(){
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock);
+        servicioDeExportacionMock = mock(ServicioDeExportacion.class);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioDeExportacionMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
         datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
@@ -412,6 +419,27 @@ public class ControladorMovimientoTest {
         Assertions.assertThrows(PaginaInexistente.class, ()->{
             controladorMovimiento.obtenerMovimientosPorPagina(httpServletRequestMock, 3);
         }, "La pagina no existe");
+    }
+
+    //DESCARGA DE ARCHIVO PDF
+    @Test
+    public void queAlHacerClickEnElBotonExportarPDFDebeDescargarArchivoPDFConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException {
+        //preparacion
+        Long idUsuario = 1L;
+        byte[] bytesDelArchivo = "contenido del archivo".getBytes();
+
+        when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        TipoDeArchivo tipoDeArchivo = TipoDeArchivo.PDF;
+        when(servicioDeExportacionMock.generarArchivo(idUsuario, tipoDeArchivo)).thenReturn(bytesDelArchivo);
+
+        //ejecucion
+        ResponseEntity<byte[]> respuesta = controladorMovimiento.descargarDocumentoDeMovimentos(tipoDeArchivo, httpServletRequestMock);
+
+        //validacion
+        assertThat(respuesta.getStatusCode(), equalTo(HttpStatus.OK));
+        assertThat(respuesta.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_OCTET_STREAM));
+        assertThat(respuesta.getBody(), equalTo(bytesDelArchivo));
     }
 
     //METODOS PRIVADOS
