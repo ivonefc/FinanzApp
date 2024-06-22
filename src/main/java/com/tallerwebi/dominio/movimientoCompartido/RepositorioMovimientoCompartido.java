@@ -13,4 +13,8 @@ public interface RepositorioMovimientoCompartido {
     void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos;
 
     public List<Notificacion> obtenerNotificacionesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    Notificacion obtenerNotificacionPorId(Long idNotificacion) throws ExcepcionBaseDeDatos;
+
+    void eliminarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos;
 }

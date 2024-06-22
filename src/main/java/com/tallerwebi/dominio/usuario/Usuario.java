@@ -32,7 +32,7 @@ public class Usuario {
 
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "amigos",
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -134,6 +134,10 @@ public class Usuario {
         this.amigos.add(amigo);
     }
 
+    public void eliminarAmigo(Usuario amigo) {
+        amigos.remove(amigo);
+
+    }
     @Override
     public String toString() {
         return "Usuario{" +

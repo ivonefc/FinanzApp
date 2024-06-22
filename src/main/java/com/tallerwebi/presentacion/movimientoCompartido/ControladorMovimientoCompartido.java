@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.movimientoCompartido;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -80,6 +82,16 @@ public class ControladorMovimientoCompartido {
             modelo.put("errores", ExcepcionBaseDeDatos.getMensaje());
             return new ModelAndView("agregar-amigo", modelo);
         }
+        return new ModelAndView("redirect:/movimientos-compartidos");
+    }
+
+    @PostMapping("/movimientos-compartidos/eliminarSolicitud/{id}")
+    public ModelAndView eliminarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        servicioMovimientoCompartido.eliminarSolicitud(id);
         return new ModelAndView("redirect:/movimientos-compartidos");
     }
 }

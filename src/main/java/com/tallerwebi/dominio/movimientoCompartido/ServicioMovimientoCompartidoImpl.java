@@ -2,6 +2,7 @@ package com.tallerwebi.dominio.movimientoCompartido;
 
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
@@ -46,6 +47,15 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
     @Override
    public void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos{
         repositorioMovimientoCompartido.agregarNuevoAmigo(idUsuario, email);
+    }
+
+    @Transactional
+    @Override
+    public void eliminarSolicitud(Long idNotificacion) throws ExcepcionBaseDeDatos {
+        Notificacion notificacion = repositorioMovimientoCompartido.obtenerNotificacionPorId(idNotificacion);
+        if (notificacion == null)
+            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+        repositorioMovimientoCompartido.eliminarSolicitud(notificacion);
     }
 
 }

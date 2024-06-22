@@ -41,8 +41,13 @@
                 th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
                 class="list-group-item item d-flex justify-content-between">
                 <span th:text="${notificacion.usuario.getEmail()}"></span>
-                <span th:if="${notificacion.estado == 'Pendiente'}">Solicitud pendiente</span>
+                <div class="d-flex">
+                    <form th:object="${notificacion}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                        <button type="submit" th:if="${notificacion.estado == 'Pendiente'}" class="btn btn-danger">Eliminar Solicitud</button>
+                    </form>
+                </div>
                 <a th:if="${notificacion.estado != 'Pendiente'}" th:href="@{/movimiento/panel}" class="btn btn-primary">Ver Movimientos</a>
+                <button th:if="${notificacion.estado != 'Pendiente'}" class="btn btn-danger">Eliminar Amigo</button>
             </li>
         </ul>
     </div>

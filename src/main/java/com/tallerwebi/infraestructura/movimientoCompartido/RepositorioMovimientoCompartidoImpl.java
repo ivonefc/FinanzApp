@@ -1,11 +1,13 @@
 package com.tallerwebi.infraestructura.movimientoCompartido;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimientoCompartido.RepositorioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +97,45 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .getResultList();
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
+    @Override
+    public Notificacion obtenerNotificacionPorId(Long id) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Notificacion notificacion = session.createQuery("FROM Notificacion N WHERE N.id = :idNotificacion", Notificacion.class)
+                    .setParameter("idNotificacion", id)
+                    .uniqueResult();
+            if(notificacion==null)
+                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+            return notificacion;
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
+        }
+    }
+
+    @Override
+    public void eliminarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos{
+        if (notificacion == null || notificacion.getId() == null)
+            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Notificacion notificacionExistente = session.get(Notificacion.class, notificacion.getId());
+
+            if (notificacionExistente == null)
+                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+
+            // Obtener la referencia al usuario y al amigo
+            Usuario usuario = notificacionExistente.getUsuarioSolicitante();
+            Usuario amigo = notificacionExistente.getUsuario();
+
+            // Eliminar la relación de amistad
+            usuario.eliminarAmigo(amigo);
+
+            session.delete(notificacion);
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
         }
     }
 
