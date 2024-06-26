@@ -151,7 +151,6 @@ public class ControladorMovimiento {
         return new ModelAndView("redirect:/movimientos");
     }
 
-
     @GetMapping("/movimientos/exportar/{tipoDeDoc}")
     @ResponseBody
     public ResponseEntity<byte[]> descargarDocumentoDeMovimentos(@PathVariable TipoDeArchivo tipoDeDoc, HttpServletRequest request) throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo {
