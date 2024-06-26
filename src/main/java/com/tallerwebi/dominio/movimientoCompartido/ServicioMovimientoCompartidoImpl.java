@@ -55,4 +55,17 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
         repositorioMovimientoCompartido.eliminarSolicitud(notificacion);
     }
 
+    @Override
+    public List<Notificacion> obtenerSolicitudesRecibidas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
+    }
+
+    @Override
+    public void aceptarSolicitud(Long id) throws ExcepcionBaseDeDatos {
+        Notificacion notificacion = repositorioMovimientoCompartido.obtenerNotificacionPorId(id);
+        if (notificacion == null)
+            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+        repositorioMovimientoCompartido.aceptarSolicitud(notificacion);
+    }
+
 }

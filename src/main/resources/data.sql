@@ -1,5 +1,5 @@
 INSERT INTO usuarios(email, password, rol, activo, nombre, apellido, nombreUsuario, fechaNacimiento, pais, telefono) VALUES('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Messi', 'Grupo 10', 'grupo_10', '2024/05/15', 'Argentina', '1122334455');
-INSERT INTO usuarios(email, password, rol, activo) VALUES('test1@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO usuarios(email, password, rol, activo, nombre, apellido, nombreUsuario, fechaNacimiento, pais, telefono) VALUES('test1@unlam.edu.ar', 'test', 'ADMIN', true, 'Messi', 'Grupo 10', 'grupo', '2024/05/15', 'Argentina', '1122334455');
 INSERT INTO usuarios(email, password, rol, activo) VALUES('test2@unlam.edu.ar', 'test', 'ADMIN', true);
 INSERT INTO usuarios(email, password, rol, activo) VALUES('test3@unlam.edu.ar', 'test', 'ADMIN', true);
 

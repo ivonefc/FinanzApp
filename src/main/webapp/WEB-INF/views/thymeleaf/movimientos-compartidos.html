@@ -58,19 +58,19 @@
             </li>
         </ul>
     </div> <br>
-    <div th:if="${not #lists.isEmpty(notificaciones)}">
+    <div th:if="${not #lists.isEmpty(solicitudesEnviadas)}">
         <h2 class="pt-3 text-center">Solicitudes pendientes</h2> <br>
     </div>
 
-    <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
+    <div class="card-body" th:if="${not #lists.isEmpty(solicitudesEnviadas)}">
         <ul class="list-group" id="lista-pendientes">
-            <li th:each="notificacion : ${notificaciones}"
-                th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
+            <li th:each="solicitudEnviada : ${solicitudesEnviadas}"
+                th:classappend="${solicitudEnviada.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
                 class="list-group-item item d-flex justify-content-between">
-                <span th:text="${notificacion.usuario.getEmail()}"></span>
+                <span th:text="${solicitudEnviada.usuario.getEmail()}"></span>
                 <div class="d-flex">
-                    <form th:object="${notificacion}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
-                        <button type="submit" th:if="${notificacion.estado == 'Pendiente'}" class="btn btn-danger">Eliminar Solicitud</button>
+                    <form th:object="${solicitudEnviada}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${solicitudEnviada.id})}" method="POST">
+                        <button type="submit" th:if="${solicitudEnviada.estado == 'Pendiente'}" class="btn btn-danger">Eliminar Solicitud</button>
                     </form>
                 </div>
             </li>

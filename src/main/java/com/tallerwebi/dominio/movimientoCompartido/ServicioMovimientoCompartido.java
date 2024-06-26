@@ -15,4 +15,8 @@ public interface ServicioMovimientoCompartido {
     public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     void eliminarSolicitud(Long id) throws ExcepcionBaseDeDatos;
+
+    List<Notificacion> obtenerSolicitudesRecibidas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    void aceptarSolicitud(Long id) throws ExcepcionBaseDeDatos;
 }

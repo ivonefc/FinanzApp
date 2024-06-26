@@ -154,4 +154,46 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
         }
     }
 
+    @Override
+    public List<Notificacion> obtenerSolicitudesRecibidas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        try{
+            Session session = sessionFactory.getCurrentSession();
+            return session.createQuery("FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.tipo = :tipoNotificacion AND n.estado = :estadoNotificacion", Notificacion.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("tipoNotificacion", "Solicitud de amistad")
+                    .setParameter("estadoNotificacion", "Pendiente")
+                    .getResultList();
+        }catch (Exception he){
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
+    @Override
+    public void aceptarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos {
+        if (notificacion == null || notificacion.getId() == null)
+            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Notificacion notificacionExistente = session.get(Notificacion.class, notificacion.getId());
+
+            if (notificacionExistente == null)
+                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+
+            // Obtener la referencia al usuario y al amigo
+            Usuario usuario = notificacionExistente.getUsuario();
+            Usuario amigo = notificacionExistente.getUsuarioSolicitante();
+
+            // Agregar la relación de amistad
+            usuario.agregarAmigo(amigo);
+            amigo.agregarAmigo(usuario);
+
+            // Cambiar el estado de la notificación
+            notificacionExistente.setEstado("Aceptada");
+
+            session.update(notificacionExistente);
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
+        }
+    }
+
 }

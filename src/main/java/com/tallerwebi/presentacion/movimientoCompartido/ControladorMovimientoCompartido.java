@@ -35,8 +35,8 @@ public class ControladorMovimientoCompartido {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        List<Notificacion> notificaciones = servicioMovimientoCompartido.obtenerSolicitudesEnviadas(idUsuario);
-        modelo.put("notificaciones", notificaciones);
+        List<Notificacion> solicitudesEnviadas = servicioMovimientoCompartido.obtenerSolicitudesEnviadas(idUsuario);
+        modelo.put("solicitudesEnviadas", solicitudesEnviadas);
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
         modelo.put("amigos", amigos);
         return new ModelAndView("movimientos-compartidos", modelo);
@@ -86,5 +86,15 @@ public class ControladorMovimientoCompartido {
 
         servicioMovimientoCompartido.eliminarSolicitud(id);
         return new ModelAndView("redirect:/movimientos-compartidos");
+    }
+
+    @PostMapping("/movimientos-compartidos/aceptarSolicitud/{id}")
+    public ModelAndView aceptarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        servicioMovimientoCompartido.aceptarSolicitud(id);
+        return new ModelAndView("redirect:/notificaciones");
     }
 }

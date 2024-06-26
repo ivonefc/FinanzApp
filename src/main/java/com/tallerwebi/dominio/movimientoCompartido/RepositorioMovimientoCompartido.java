@@ -17,4 +17,8 @@ public interface RepositorioMovimientoCompartido {
     Notificacion obtenerNotificacionPorId(Long idNotificacion) throws ExcepcionBaseDeDatos;
 
     void eliminarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos;
+
+    List<Notificacion> obtenerSolicitudesRecibidas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    void aceptarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos;
 }
