@@ -112,3 +112,22 @@
 .header-nav .profile .dropdown-item:hover {
     background-color: var(--background);
 }
+
+.nav-icon {
+    color: white;
+    margin-right: 20px;
+    font-size: 24px; /* Ajusta este valor para cambiar el tamaño del icono */
+    position: relative;
+}
+.bi-bell-fill {
+    color: white;
+}
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}

@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
@@ -14,7 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.mockito.Mockito.*;
 
@@ -204,6 +209,31 @@ public class ControladorMovimientoCompartidoTest {
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/movimientos-compartidos"));
         verify(servicioMovimientoCompartidoMock, times(1)).eliminarAmigo(idAmigo, 1L);
+    }
+
+    @Test
+    public void queAlLlegarNotificacionSeAgregueALista() throws ExcepcionBaseDeDatos {
+        // Simulación de una sesión activa
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+
+        // Simulación de una notificación recibida
+        Notificacion notificacion = new Notificacion();
+        notificacion.setId(1L);
+        notificacion.setDescripcion("Nueva solicitud de amistad");
+
+        List<Notificacion> notificacionesRecibidas = new ArrayList<>();
+        notificacionesRecibidas.add(notificacion);
+
+        // Mock del servicio para devolver la notificación simulada
+        when(servicioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(1L)).thenReturn(notificacionesRecibidas);
+
+        // Ejecución del método bajo prueba
+        List<Notificacion> notificacionesEnLista = servicioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(1L);
+
+        // Verificación
+        assertThat(notificacionesEnLista.size(), equalTo(1));
+        assertThat(notificacionesEnLista.get(0).getDescripcion(), equalTo("Nueva solicitud de amistad"));
     }
 
 
