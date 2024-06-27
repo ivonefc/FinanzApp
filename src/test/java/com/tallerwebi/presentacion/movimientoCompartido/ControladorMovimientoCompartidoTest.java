@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,13 +24,14 @@ public class ControladorMovimientoCompartidoTest {
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
+    private ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
-        controladorMovimientoCompartido = new ControladorMovimientoCompartido(servicioMovimientoCompartidoMock);
+        controladorMovimientoCompartido = new ControladorMovimientoCompartido(servicioMovimientoCompartidoMock, servicioUsuarioMock);
     }
 
     @Test

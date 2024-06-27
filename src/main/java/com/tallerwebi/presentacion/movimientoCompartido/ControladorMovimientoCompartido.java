@@ -1,8 +1,11 @@
 package com.tallerwebi.presentacion.movimientoCompartido;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,10 +24,12 @@ import java.util.List;
 public class ControladorMovimientoCompartido {
 
     private ServicioMovimientoCompartido servicioMovimientoCompartido;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
-    public ControladorMovimientoCompartido(ServicioMovimientoCompartido servicioMovimientoCompartido) {
+    public ControladorMovimientoCompartido(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario) {
         this.servicioMovimientoCompartido = servicioMovimientoCompartido;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @GetMapping("/movimientos-compartidos")
@@ -101,11 +106,27 @@ public class ControladorMovimientoCompartido {
     @PostMapping("/movimientos-compartidos/eliminarAmigo/{idAmigo}")
     public ModelAndView eliminarAmigo(@PathVariable Long idAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
         HttpSession httpSession = httpServletRequest.getSession(false);
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
 
         servicioMovimientoCompartido.eliminarAmigo(idAmigo, idUsuario);
         return new ModelAndView("redirect:/movimientos-compartidos");
+    }
+
+    @PostMapping("/movimientos-compartidos/verMovimientosCompartidos/{idAmigo}")
+    public ModelAndView verMovimientosCompartidos(@PathVariable Long idAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        ModelMap modelo = new ModelMap();
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        List<Movimiento> movimientosCompartidos = servicioMovimientoCompartido.obtenerMovimientosCompartidos(idAmigo, idUsuario);
+        Usuario amigo = servicioUsuario.obtenerUsuarioPorId(idAmigo);
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        modelo.put("amigo", amigo);
+        modelo.put("usuario", usuario);
+        modelo.put("movimientosCompartidos", movimientosCompartidos);
+        return new ModelAndView("movimientos-compartidos-amigo", modelo);
     }
 }

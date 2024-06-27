@@ -3,6 +3,7 @@ package com.tallerwebi.dominio.movimientoCompartido;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
+import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -71,6 +72,11 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
     @Override
     public void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
         repositorioMovimientoCompartido.eliminarAmigo(idAmigo, idUsuario);
+    }
+
+    @Override
+    public List<Movimiento> obtenerMovimientosCompartidos(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimientoCompartido.obtenerMovimientosCompartidos(idAmigo, idUsuario);
     }
 
 }

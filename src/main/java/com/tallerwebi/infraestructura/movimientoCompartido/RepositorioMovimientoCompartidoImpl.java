@@ -222,4 +222,17 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
         }
     }
 
+    @Override
+    public List<Movimiento> obtenerMovimientosCompartidos(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
+        try{
+            Session session = sessionFactory.getCurrentSession();
+            return session.createQuery("FROM Movimiento m WHERE m.usuario.id = :idUsuario AND m.amigo.id = :idAmigo", Movimiento.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("idAmigo", idAmigo)
+                    .getResultList();
+        }catch (Exception he){
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
 }

@@ -253,7 +253,7 @@ public class ServicioMovimientoTest {
         servicioMovimiento.nuevoMovimiento(1L, datosAgregarMovimiento);
 
         //validacion
-        verify(repositorioMovimientoMock).guardarMovimiento(any());
+        verify(repositorioMovimientoMock, times(2)).guardarMovimiento(any());
     }
 
     @Test

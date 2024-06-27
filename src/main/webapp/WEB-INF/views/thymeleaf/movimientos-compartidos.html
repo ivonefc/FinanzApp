@@ -51,7 +51,9 @@
                 class="list-group-item item d-flex justify-content-between">
                 <span th:text="${amigo.getEmail()}"></span>
                 <div class="d-flex">
-                    <a th:href="@{/movimiento/panel}" class="btn btn-primary mr-2">Ver Movimientos</a>
+                    <form th:object="${amigo}" th:action="@{/movimientos-compartidos/verMovimientosCompartidos/{idAmigo}(idAmigo=${amigo.id})}" method="POST">
+                        <button type="submit" class="btn btn-primary mr-2">Ver Movimientos</button>
+                    </form>
                     <form th:object="${amigo}" th:action="@{/movimientos-compartidos/eliminarAmigo/{idAmigo}(idAmigo=${amigo.id})}" method="POST">
                         <button type="submit" class="btn btn-danger">Eliminar Amigo</button>
                     </form>

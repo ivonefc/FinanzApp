@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.movimientoCompartido;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
 
@@ -21,4 +22,6 @@ public interface ServicioMovimientoCompartido {
     void aceptarSolicitud(Long id) throws ExcepcionBaseDeDatos;
 
     void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    List<Movimiento> obtenerMovimientosCompartidos(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos;
 }

@@ -96,30 +96,49 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Transactional
     @Override
     public void nuevoMovimiento(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
-       datosAgregarMovimiento.validarCampos();
+        datosAgregarMovimiento.validarCampos();
 
-       String descripcion = datosAgregarMovimiento.getDescripcion();
-       Double monto = datosAgregarMovimiento.getMonto();
-       String categoria = datosAgregarMovimiento.getCategoria();
-       Long idAmigo = datosAgregarMovimiento.getIdAmigo();
-       Double montoAmigo = datosAgregarMovimiento.getMontoAmigo();
+        String descripcion = datosAgregarMovimiento.getDescripcion();
+        Double monto = datosAgregarMovimiento.getMonto();
+        String categoria = datosAgregarMovimiento.getCategoria();
+        Long idAmigo = datosAgregarMovimiento.getIdAmigo();
+        Double montoAmigo = datosAgregarMovimiento.getMontoAmigo();
 
-       Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
+        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
+        Usuario amigo = null;
+        if(idAmigo != null){
+            amigo = repositorioUsuario.obtenerUsuarioPorId(idAmigo);
+        }
 
-       CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
-       Movimiento movimiento = new Movimiento(
-               descripcion,
-               monto,
-               LocalDate.now(),
-               categoriaMovimiento,
-               usuario
-       );
+        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
 
-       if(idAmigo != null){
-           movimiento.setAmigo(repositorioUsuario.obtenerUsuarioPorId(idAmigo));
-           movimiento.setMontoAmigo(montoAmigo);
-       }
-       repositorioMovimiento.guardarMovimiento(movimiento);
+        // Movimiento para el usuario actual
+        Movimiento movimientoUsuario = new Movimiento(
+                descripcion,
+                monto,
+                LocalDate.now(),
+                categoriaMovimiento,
+                usuario
+        );
+        if(amigo != null){
+            movimientoUsuario.setAmigo(amigo);
+            movimientoUsuario.setMontoAmigo(montoAmigo);
+        }
+        repositorioMovimiento.guardarMovimiento(movimientoUsuario);
+
+        // Movimiento para el amigo
+        if(amigo != null){
+            Movimiento movimientoAmigo = new Movimiento(
+                    descripcion,
+                    montoAmigo,
+                    LocalDate.now(),
+                    categoriaMovimiento,
+                    amigo
+            );
+            movimientoAmigo.setAmigo(usuario);
+            movimientoAmigo.setMontoAmigo(monto);
+            repositorioMovimiento.guardarMovimiento(movimientoAmigo);
+        }
     }
 
     @Transactional
