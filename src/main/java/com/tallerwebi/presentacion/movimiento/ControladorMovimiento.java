@@ -5,6 +5,8 @@ import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
 import com.tallerwebi.dominio.exportar.TipoDeArchivo;
 import com.tallerwebi.dominio.movimiento.*;
+import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class ControladorMovimiento {
     private ServicioMovimiento servicioMovimiento;
     private ServicioDeExportacion servicioDeExportacion;
     private ServicioUsuario servicioUsuario;
+    private ServicioMovimientoCompartido servicioMovimientoCompartido;
 
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
@@ -41,10 +44,17 @@ public class ControladorMovimiento {
     }
 
     @Autowired
-    public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioDeExportacion servicioDeExportacion, ServicioUsuario servicioUsuario) {
+    public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioDeExportacion servicioDeExportacion, ServicioUsuario servicioUsuario, ServicioMovimientoCompartido servicioMovimientoCompartido) {
         this.servicioMovimiento = servicioMovimiento;
         this.servicioDeExportacion = servicioDeExportacion;
         this.servicioUsuario = servicioUsuario;
+        this.servicioMovimientoCompartido = servicioMovimientoCompartido;
+    }
+
+    public ControladorMovimiento(ServicioMovimiento servicioMovimientoMock, ServicioDeExportacion servicioDeExportacionMock, ServicioMovimientoCompartido servicioMovimientoCompartidoMock) {
+        this.servicioMovimiento = servicioMovimientoMock;
+        this.servicioDeExportacion = servicioDeExportacionMock;
+        this.servicioMovimientoCompartido = servicioMovimientoCompartidoMock;
     }
 
     @GetMapping("/movimientos")
@@ -125,14 +135,18 @@ public class ControladorMovimiento {
     }
 
     @RequestMapping("/agregar-movimiento")
-    public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) {
+    public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-
-        if (httpSession == null)
+        if (httpServletRequest.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
-
+        }
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
+        List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
+        if (amigos != null) {
+            modelo.put("amigos", amigos);
+        }
         return new ModelAndView("agregar-movimiento", modelo);
     }
 

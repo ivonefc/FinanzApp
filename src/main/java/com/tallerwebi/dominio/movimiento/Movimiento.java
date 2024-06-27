@@ -117,6 +117,22 @@ public class Movimiento {
         this.usuario = usuario;
     }
 
+    public Usuario getAmigo() {
+        return amigo;
+    }
+
+    public void setAmigo(Usuario amigo) {
+        this.amigo = amigo;
+    }
+
+    public Double getMontoAmigo() {
+        return montoAmigo;
+    }
+
+    public void setMontoAmigo(Double montoAmigo) {
+        this.montoAmigo = montoAmigo;
+    }
+
     @Override
     public String toString() {
         return "Movimiento{" +

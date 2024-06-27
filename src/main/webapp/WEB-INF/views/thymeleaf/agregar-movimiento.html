@@ -72,16 +72,15 @@
                         <div id="compartirDetalles" style="display: none;">
                             <div class="mb-3">
                                 <label for="amigo" class="form-label">Amigo:</label>
-                                <select id="amigo" class="form-select">
-                                    <!-- Las opciones de amigos se generarán dinámicamente -->
+                                <select th:field="*{idAmigo}" id="amigo" class="form-select">
+                                    <option value="">Seleccione un amigo</option>
+                                    <option th:each="amigo : ${amigos}" th:value="${amigo.id}" th:text="${amigo.nombre}"></option>
                                 </select>
-<!--                                <p th:if="${errores != null && errores.get('idAmigo') != null}" class="alert alert-danger" th:text="${errores.get('idAmigo')}"></p>-->
                             </div>
 
                             <div class="mb-3">
-                                <label for="montoAmigo" class="form-label">Monto:</label>
-                                <input id="montoAmigo" type="number" class="form-control">
-<!--                                <p th:if="${errores != null && errores.get('montoAmigo') != null}" class="alert alert-danger" th:text="${errores.get('montoAmigo')}"></p>-->
+                                <label for="montoAmigo" class="form-label">Monto de amigo:</label>
+                                <input th:field="*{montoAmigo}" id="montoAmigo" type="number" class="form-control">
                             </div>
                         </div>
                     </div>

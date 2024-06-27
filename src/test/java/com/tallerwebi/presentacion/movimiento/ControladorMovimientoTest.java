@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
 import com.tallerwebi.dominio.exportar.TipoDeArchivo;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
 import org.hamcrest.Matchers;
@@ -43,12 +44,14 @@ public class ControladorMovimientoTest {
     DatosEditarMovimiento datosEditarMovimientoMock;
     DatosAgregarMovimiento datosAgregarMovimientoMock;
     ServicioDeExportacion servicioDeExportacionMock;
+    ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
 
     @BeforeEach
     public void init(){
+        servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
         servicioMovimientoMock = mock(ServicioMovimiento.class);
         servicioDeExportacionMock = mock(ServicioDeExportacion.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioDeExportacionMock);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioDeExportacionMock, servicioMovimientoCompartidoMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
         datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
@@ -217,10 +220,11 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoTeLleveALaPaginaAgregarMovimiento() {
+    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoTeLleveALaPaginaAgregarMovimiento() throws ExcepcionBaseDeDatos{
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMovimientoCompartidoMock.obtenerAmigos(anyLong())).thenReturn(Collections.emptyList());
 
         //ejecucion
         ModelAndView modelAndView = controladorMovimiento.irAAgregarMovimiento(httpServletRequestMock);
@@ -230,7 +234,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLogin()  {
+    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos  {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 

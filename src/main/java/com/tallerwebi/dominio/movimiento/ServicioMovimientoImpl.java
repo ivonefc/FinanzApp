@@ -101,8 +101,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
        String descripcion = datosAgregarMovimiento.getDescripcion();
        Double monto = datosAgregarMovimiento.getMonto();
        String categoria = datosAgregarMovimiento.getCategoria();
+       Long idAmigo = datosAgregarMovimiento.getIdAmigo();
+       Double montoAmigo = datosAgregarMovimiento.getMontoAmigo();
 
        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
+
        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
        Movimiento movimiento = new Movimiento(
                descripcion,
@@ -111,6 +114,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
                categoriaMovimiento,
                usuario
        );
+
+       if(idAmigo != null){
+           movimiento.setAmigo(repositorioUsuario.obtenerUsuarioPorId(idAmigo));
+           movimiento.setMontoAmigo(montoAmigo);
+       }
        repositorioMovimiento.guardarMovimiento(movimiento);
     }
 
