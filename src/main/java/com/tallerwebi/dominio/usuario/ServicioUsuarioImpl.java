@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service("servicioUsuario")
 @Transactional
@@ -71,5 +72,13 @@ public class ServicioUsuarioImpl implements ServicioUsuario{
     @Override
     public Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         return repositorioUsuario.obtenerUsuarioPorId(id);
+    }
+
+    @Override
+    public List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        if (idUsuario == null || idUsuario == 0)
+            throw new UsuarioInexistente();
+
+        return repositorioUsuario.obtenerAmigosDeUnUsuario(idUsuario);
     }
 }

@@ -5,6 +5,8 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -28,6 +30,12 @@ public class Movimiento {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "amigo_id")
+    private Usuario amigo;
+
+    private Double montoAmigo;
+
     public Movimiento(CategoriaMovimiento categoria, String descripcion, Double monto) {
         this.categoria = categoria;
         this.descripcion = descripcion;
@@ -46,6 +54,17 @@ public class Movimiento {
         this.fechayHora = fechayHora;
         this.categoria = categoria;
         this.usuario = usuario;
+    }
+
+    //mov compartido con amigo
+    public Movimiento(String descripcion, Double monto, LocalDate fechayHora, CategoriaMovimiento categoria, Usuario usuario, Usuario amigo, Double montoAmigo) {
+        this.descripcion = descripcion;
+        this.monto = monto;
+        this.fechayHora = fechayHora;
+        this.categoria = categoria;
+        this.usuario = usuario;
+        this.amigo = amigo;
+        this.montoAmigo = montoAmigo;
     }
 
     public Movimiento(){}

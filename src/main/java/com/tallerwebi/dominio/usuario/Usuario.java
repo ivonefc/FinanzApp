@@ -1,10 +1,13 @@
 package com.tallerwebi.dominio.usuario;
 
+import com.tallerwebi.dominio.movimiento.Movimiento;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -22,6 +25,9 @@ public class Usuario {
     private String password;
     private String rol;
     private Boolean activo = false;
+
+    @OneToMany(mappedBy = "amigo")
+    private Set<Movimiento> movimientos = new HashSet<>();
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;

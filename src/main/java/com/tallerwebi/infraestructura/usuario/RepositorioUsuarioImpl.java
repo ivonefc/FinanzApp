@@ -8,8 +8,11 @@ import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
@@ -64,10 +67,26 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
             Usuario usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
                     .setParameter("email", email)
                     .uniqueResult();
+
             if(usuario == null)
                 throw new UsuarioInexistente();
 
             return usuario;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
+        }
+    }
+
+    @Override
+    public List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+
+            NativeQuery query = session.createNativeQuery("SELECT * FROM usuarios u WHERE u.id IN (SELECT a.amigo_id FROM amigos a WHERE a.usuario_id = '1')", Usuario.class);
+            query.setParameter("idUsuario", idUsuario);
+            List<Usuario> amigos = query.getResultList();
+
+            return amigos;
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos(e);
         }

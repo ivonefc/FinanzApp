@@ -6,6 +6,8 @@ import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.presentacion.perfil.DatosEditarPerfil;
 
+import java.util.List;
+
 public interface ServicioUsuario {
     Usuario buscarUsuarioPorEmailYPassword(String email, String password) throws UsuarioInexistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos;
 
@@ -16,4 +18,6 @@ public interface ServicioUsuario {
     void modificar(DatosEditarPerfil datosEditarPerfil) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos; //DATOS EDITAR USUARIO
 
     Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos, UsuarioInexistente;
+
+    List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos, UsuarioInexistente;
 }
