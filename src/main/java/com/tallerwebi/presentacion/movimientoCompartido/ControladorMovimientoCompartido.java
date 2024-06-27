@@ -129,4 +129,19 @@ public class ControladorMovimientoCompartido {
         modelo.put("movimientosCompartidos", movimientosCompartidos);
         return new ModelAndView("movimientos-compartidos-amigo", modelo);
     }
+
+
+    @PostMapping("/notificaciones")
+    public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null) {
+            return null;
+        }
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+
+        List<Notificacion> notificacionesRecibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
+
+        return notificacionesRecibidas;
+    }
 }

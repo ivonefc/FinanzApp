@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+
+</head>
 
 <body>
 <header th:fragment="header" id="header" class="header fixed-top d-flex align-items-center">
@@ -16,6 +20,33 @@
     <!-- Navigation -->
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
+            <!-- Notificaciones -->
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-bell-fill"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                    <li class="dropdown-header">
+                        <h6>Notificaciones</h6>
+                    </li>
+                    <li th:each="notificacion : ${notificacionesRecibidas}">
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item d-flex align-items-center" th:href="@{/notificaciones}">
+                            <span th:text="${notificacion.descripcion}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" th:href="@{/notificaciones}">
+                            <span>Ver todo</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <!-- Usuario -->
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#menu-colapsado" data-bs-toggle="dropdown">
@@ -52,5 +83,6 @@
         </ul>
     </nav>
 </header>
+
 </body>
 </html>
