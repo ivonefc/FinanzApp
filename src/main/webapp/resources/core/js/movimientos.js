@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function (){
                                 </span>
                                 <span>
                                     <span class="${tipo.nombre==='INGRESO'?'tipo-ingreso':'tipo-egreso'}" >  ${tipo.nombre === 'INGRESO' ? `+ $${monto}` : `- $${monto}` }</span>
-                                    <a href="/spring/movimientos/editar/${id}"><i class="bi bi-pencil"></i></a>
+                                    <a href="/spring/movimientos/editar/${id}"><i class="bi bi-pencil btn btn-outline-dark mx-1"></i></a>
                                 </span>
                     </li>`})
                  .join("")
