@@ -196,4 +196,30 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
         }
     }
 
+    @Override
+    public void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+
+            // Buscar el usuario y el amigo por id
+            Usuario usuario = session.get(Usuario.class, idUsuario);
+            Usuario amigo = session.get(Usuario.class, idAmigo);
+
+            // Si el usuario o el amigo no existen, lanzar una excepción
+            if (usuario == null || amigo == null) {
+                throw new ExcepcionBaseDeDatos("No se encontró el usuario o el amigo");
+            }
+
+            // Eliminar la relación de amistad
+            usuario.eliminarAmigo(amigo);
+            amigo.eliminarAmigo(usuario);
+
+            // Actualizar los usuarios en la base de datos
+            session.update(usuario);
+            session.update(amigo);
+        } catch (Exception e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
+        }
+    }
+
 }

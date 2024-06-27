@@ -97,4 +97,15 @@ public class ControladorMovimientoCompartido {
         servicioMovimientoCompartido.aceptarSolicitud(id);
         return new ModelAndView("redirect:/notificaciones");
     }
+
+    @PostMapping("/movimientos-compartidos/eliminarAmigo/{idAmigo}")
+    public ModelAndView eliminarAmigo(@PathVariable Long idAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
+        servicioMovimientoCompartido.eliminarAmigo(idAmigo, idUsuario);
+        return new ModelAndView("redirect:/movimientos-compartidos");
+    }
 }

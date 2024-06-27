@@ -50,11 +50,12 @@
             <li th:each="amigo : ${amigos}"
                 class="list-group-item item d-flex justify-content-between">
                 <span th:text="${amigo.getEmail()}"></span>
-                <div>
+                <div class="d-flex">
                     <a th:href="@{/movimiento/panel}" class="btn btn-primary mr-2">Ver Movimientos</a>
-                    <button  class="btn btn-danger">Eliminar Amigo</button>
+                    <form th:object="${amigo}" th:action="@{/movimientos-compartidos/eliminarAmigo/{idAmigo}(idAmigo=${amigo.id})}" method="POST">
+                        <button type="submit" class="btn btn-danger">Eliminar Amigo</button>
+                    </form>
                 </div>
-
             </li>
         </ul>
     </div> <br>

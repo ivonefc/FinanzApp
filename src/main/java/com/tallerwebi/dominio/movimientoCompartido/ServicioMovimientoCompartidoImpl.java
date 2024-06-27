@@ -68,4 +68,9 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
         repositorioMovimientoCompartido.aceptarSolicitud(notificacion);
     }
 
+    @Override
+    public void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
+        repositorioMovimientoCompartido.eliminarAmigo(idAmigo, idUsuario);
+    }
+
 }
