@@ -10,10 +10,7 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -130,18 +127,4 @@ public class ControladorMovimientoCompartido {
         return new ModelAndView("movimientos-compartidos-amigo", modelo);
     }
 
-
-    @PostMapping("/notificaciones")
-    public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
-            return null;
-        }
-
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-
-        List<Notificacion> notificacionesRecibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
-
-        return notificacionesRecibidas;
-    }
 }
