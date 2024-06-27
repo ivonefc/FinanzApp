@@ -27,5 +27,6 @@ public interface ServicioMovimiento {
     int calcularCantidadDePaginas(Long idUsuario, int tamanioDePaginas) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
+
     Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 }

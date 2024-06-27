@@ -5,6 +5,8 @@ import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
 import com.tallerwebi.dominio.exportar.TipoDeArchivo;
 import com.tallerwebi.dominio.movimiento.*;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,16 +29,22 @@ public class ControladorMovimiento {
 
     private ServicioMovimiento servicioMovimiento;
     private ServicioDeExportacion servicioDeExportacion;
-
+    private ServicioUsuario servicioUsuario;
 
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento) {
         this.servicioMovimiento = servicioMovimiento;
     }
 
-    @Autowired
     public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioDeExportacion servicioDeExportacion) {
         this.servicioMovimiento = servicioMovimiento;
         this.servicioDeExportacion = servicioDeExportacion;
+    }
+
+    @Autowired
+    public ControladorMovimiento(ServicioMovimiento servicioMovimiento, ServicioDeExportacion servicioDeExportacion, ServicioUsuario servicioUsuario) {
+        this.servicioMovimiento = servicioMovimiento;
+        this.servicioDeExportacion = servicioDeExportacion;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @GetMapping("/movimientos")
@@ -149,6 +157,20 @@ public class ControladorMovimiento {
             return new ModelAndView("agregar-movimiento", modelo);
         }
         return new ModelAndView("redirect:/movimientos");
+    }
+
+    @GetMapping("/usuarios/amigos")
+    @ResponseBody
+    public List<Usuario> obtenerAmigos(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null)
+            throw new UsuarioInexistente();
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        if(idUsuario == null)
+            throw new UsuarioInexistente();
+
+        return servicioUsuario.obtenerAmigosDeUnUsuario(idUsuario);
     }
 
     @GetMapping("/movimientos/exportar/{tipoDeDoc}")
