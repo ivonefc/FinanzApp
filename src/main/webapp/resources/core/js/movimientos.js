@@ -73,8 +73,12 @@ document.addEventListener("DOMContentLoaded", function (){
     }
 
     function actualizarGrafico(totalIngresos, totalEgresos) {
-        chart.data.datasets[0].data = [totalIngresos, totalEgresos]
-        chart.update()
+        const coloresIngreso = '#39cb29'; // Color verde para ingresos
+        const coloresEgreso = '#c33838'; // Color rojo para egresos
+
+        chart.data.datasets[0].backgroundColor = [coloresIngreso, coloresEgreso];
+        chart.data.datasets[0].data = [totalIngresos, totalEgresos];
+        chart.update();
     }
 
     async function exportarDatos(e) {
