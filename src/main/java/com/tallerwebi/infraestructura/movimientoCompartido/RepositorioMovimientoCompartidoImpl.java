@@ -70,13 +70,11 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("estado", "Pendiente")
                     .uniqueResult();
 
-            if (count > 0) {
+            if (count > 0)
                 throw new ExcepcionSolicitudEnviada("Ya has enviado una solicitud de amistad a este usuario");
-            }
 
-            if(email.equals(usuario.getEmail())){
+            if(email.equals(usuario.getEmail()))
                 throw new ExcepcionAutoAmistad("No se puede agregar a si mismo");
-            }
 
             // Crear una nueva notificación
             Notificacion notificacion = new Notificacion();
@@ -88,7 +86,6 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
 
             // Guardar la notificación en la base de datos
             repositorioNotificacion.guardar(notificacion);
-
         } catch (Exception e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }

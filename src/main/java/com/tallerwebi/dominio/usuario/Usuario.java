@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ public class Usuario {
         this.password = password;
         this.rol = rol;
         this.activo = activo;
+        this.amigos = new ArrayList<>();
     }
 
     public Usuario(String nombre, String email, String password, String rol, Boolean activo) {
@@ -61,6 +63,7 @@ public class Usuario {
         this.password = password;
         this.rol = rol;
         this.activo = activo;
+        this.amigos = new ArrayList<>();
     }
 
     public Usuario(){}
@@ -76,6 +79,7 @@ public class Usuario {
         this.pais = pais;
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
+        this.amigos = new ArrayList<>();
     }
 
     public Long getId() {
@@ -132,6 +136,9 @@ public class Usuario {
     }
 
     public boolean existeAmigo(Usuario amigo) {
+        if (amigo == null || amigos == null)
+            return false;
+
         return amigos.contains(amigo);
     }
 

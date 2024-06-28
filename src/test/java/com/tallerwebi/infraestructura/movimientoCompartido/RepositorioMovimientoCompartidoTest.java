@@ -130,7 +130,6 @@ public class RepositorioMovimientoCompartidoTest {
 //        // Crear un usuario y un amigo
 //        Usuario usuario = new Usuario();
 //        usuario.setNombre("Usuario de prueba");
-//        usuario.setId(1L);
 //
 //        Usuario amigo = new Usuario();
 //        amigo.setNombre("Amigo de prueba");
@@ -140,6 +139,13 @@ public class RepositorioMovimientoCompartidoTest {
 //        Session session = sessionFactory.getCurrentSession();
 //        session.save(usuario);
 //        session.save(amigo);
+//
+//        // Forzar la sincronización para obtener los IDs
+//        session.flush();
+//
+//        // Ahora los IDs deberían estar disponibles
+//        assertNotNull(usuario.getId());
+//        assertNotNull(amigo.getId());
 //
 //        //ejecucion
 //        repositorioMovimientoCompartido.agregarNuevoAmigo(usuario.getId(), amigo.getEmail());
