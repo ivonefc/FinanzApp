@@ -11,8 +11,17 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class ControladorPremium {
 
+    @GetMapping("/premium")
+    public ModelAndView irAPremium(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null)
+            return new ModelAndView("redirect:/login");
+
+        return new ModelAndView("premium");
+    }
+
     @GetMapping("/metodo-pago")
-    public ModelAndView irAMetodoPagoPremium(HttpServletRequest request) throws ExcepcionBaseDeDatos {
+    public ModelAndView irAMetodoPagoPremium(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null)
             return new ModelAndView("redirect:/login");
