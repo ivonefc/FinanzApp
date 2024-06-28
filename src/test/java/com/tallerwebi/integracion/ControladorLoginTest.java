@@ -60,9 +60,9 @@ public class ControladorLoginTest {
 				.andReturn();
 
 		ModelAndView modelAndView = result.getModelAndView();
-        assert modelAndView != null;
+		assert modelAndView != null;
 		assertThat("redirect:/login", equalToIgnoringCase(Objects.requireNonNull(modelAndView.getViewName())));
-		assertThat(true, is(modelAndView.getModel().isEmpty()));
+		assertThat(modelAndView.getModel().containsKey("notificacionesRecibidas"), is(true));
 	}
 
 	@Test

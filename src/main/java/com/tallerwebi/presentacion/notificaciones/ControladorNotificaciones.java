@@ -36,7 +36,9 @@ public class ControladorNotificaciones {
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         List<Notificacion> solicitudesRecibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
+        List<Notificacion> solicitudesAceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
         modelo.put("solicitudesRecibidas", solicitudesRecibidas);
+        modelo.put("solicitudesAceptadas", solicitudesAceptadas);
         return new ModelAndView("notificaciones", modelo);
     }
 

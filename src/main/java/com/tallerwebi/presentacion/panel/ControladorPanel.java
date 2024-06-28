@@ -66,14 +66,4 @@ public class ControladorPanel {
         return ingresos;
     }
 
-    /*@GetMapping("/panel/montosPorCategoria")
-    @ResponseBody
-    public Map<String, Double> obtenerMontosPorCategoria(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null)
-            return null;
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-        Map<String, Double> montos = servicioPanel.obtenerMontosPorCategoria(idUsuario);
-        return montos;
-    }*/
 }

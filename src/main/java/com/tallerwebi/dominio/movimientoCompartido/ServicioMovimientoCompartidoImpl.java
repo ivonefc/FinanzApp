@@ -79,4 +79,9 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
         return repositorioMovimientoCompartido.obtenerMovimientosCompartidos(idAmigo, idUsuario);
     }
 
+    @Override
+    public List<Notificacion> obtenerSolicitudesAceptadas(Long idUsuario) {
+        return repositorioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
+    }
+
 }

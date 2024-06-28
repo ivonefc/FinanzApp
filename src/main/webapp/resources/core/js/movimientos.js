@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function (){
                                 </span>
                                 <span>
                                     <span class="${tipo.nombre==='INGRESO'?'tipo-ingreso':'tipo-egreso'}" >  ${tipo.nombre === 'INGRESO' ? `+ $${monto}` : `- $${monto}` }</span>
-                                    <a href="/spring/movimientos/editar/${id}"><i class="bi bi-pencil"></i></a>
+                                    <a href="/spring/movimientos/editar/${id}"><i class="bi bi-pencil btn btn-outline-dark mx-1"></i></a>
                                 </span>
                     </li>`})
                  .join("")
@@ -73,8 +73,12 @@ document.addEventListener("DOMContentLoaded", function (){
     }
 
     function actualizarGrafico(totalIngresos, totalEgresos) {
-        chart.data.datasets[0].data = [totalIngresos, totalEgresos]
-        chart.update()
+        const coloresIngreso = '#39cb29'; // Color verde para ingresos
+        const coloresEgreso = '#c33838'; // Color rojo para egresos
+
+        chart.data.datasets[0].backgroundColor = [coloresIngreso, coloresEgreso];
+        chart.data.datasets[0].data = [totalIngresos, totalEgresos];
+        chart.update();
     }
 
     async function exportarDatos(e) {

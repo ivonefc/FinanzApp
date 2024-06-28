@@ -180,6 +180,15 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             // Cambiar el estado de la notificación
             notificacionExistente.setEstado("Aceptada");
 
+            // Crear una nueva notificación para el usuario que envió la solicitud
+            Notificacion notificacionAceptada = new Notificacion();
+            notificacionAceptada.setUsuario(amigo); // El usuario que recibe la notificación es el que envió la solicitud
+            notificacionAceptada.setUsuarioSolicitante(usuario); // El usuario que aceptó la solicitud
+            notificacionAceptada.setEstado("Aceptada");
+            notificacionAceptada.setDescripcion("El usuario " + usuario.getNombre() + " ha aceptado tu solicitud de amistad!");
+            notificacionAceptada.setTipo("Solicitud de amistad");
+
+            session.save(notificacionAceptada);
             session.update(notificacionExistente);
         } catch (HibernateException he) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
@@ -223,6 +232,16 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
         }catch (Exception he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
+    }
+
+    @Override
+    public List<Notificacion> obtenerSolicitudesAceptadas(Long idUsuario) {
+            Session session = sessionFactory.getCurrentSession();
+            return session.createQuery("FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.tipo = :tipoNotificacion AND n.estado = :estadoNotificacion", Notificacion.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("tipoNotificacion", "Solicitud de amistad")
+                    .setParameter("estadoNotificacion", "Aceptada")
+                    .getResultList();
     }
 
 }

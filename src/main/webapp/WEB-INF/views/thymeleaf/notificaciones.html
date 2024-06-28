@@ -48,6 +48,18 @@
             </li>
         </ul>
     </div>
+    <div class="card-body" th:if="${not #lists.isEmpty(solicitudesAceptadas)}">
+        <ul class="list-group" id="lista-solicitudesAceptadas">
+            <li th:each="solicitudAceptada : ${solicitudesAceptadas}"
+                th:classappend="${solicitudAceptada.estado == 'Aceptada' ? 'amigo-aceptado' : ''}"
+                class="list-group-item item d-flex justify-content-between">
+                <span th:text="${solicitudAceptada.getDescripcion()}"></span>
+                <div class="d-flex">
+                    Amigo agregado exitosamente!
+                </div>
+            </li>
+        </ul>
+    </div>
 </main>
 
 <!-- Footer -->

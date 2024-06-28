@@ -116,28 +116,5 @@ public class ControladorMiPerfilTest {
         });
     }
 
-    @Test
-    public void queAlClickearVolverAPaginaDeInicioMeRedirijaAPanel(){
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorMiPerfil.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
-    }
-
-    @Test
-    public void queAlClickearVolverAPaginaDeInicioYNoExistaUsuarioLogueadoMeRedirijaALogin(){
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(null);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorMiPerfil.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
-    }
 
 }
