@@ -1,7 +1,6 @@
 package com.tallerwebi.infraestructura.movimientoCompartido;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimientoCompartido.RepositorioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
@@ -24,7 +23,6 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
 
     @Autowired
     public RepositorioMovimientoCompartidoImpl(SessionFactory sessionFactory, RepositorioNotificacion repositorioNotificacion) {
-
         this.sessionFactory = sessionFactory;
         this.repositorioNotificacion = repositorioNotificacion;
     }
@@ -37,7 +35,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             return session.createQuery("SELECT a FROM Usuario u JOIN u.amigos a WHERE u.id = :idUsuario", Usuario.class)
                     .setParameter("idUsuario", idUsuario)
                     .getResultList();
-        }catch (Exception he){
+        }catch (HibernateException he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
@@ -52,23 +50,18 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("email", email)
                     .uniqueResult();
 
-            // Si el usuario con el email proporcionado no existe, lanzar una excepción
-            if (amigo == null) {
-                throw new ExcepcionBaseDeDatos("No se encontró un usuario con el email proporcionado");
-            }
+            if (amigo == null)
+                throw new UsuarioInexistente();
 
             // Buscar el usuario por id
             Usuario usuario = session.get(Usuario.class, idUsuario);
 
-            // Si el usuario con el id proporcionado no existe, lanzar una excepción
-            if (usuario == null) {
-                throw new ExcepcionBaseDeDatos("No se encontró un usuario con el id proporcionado");
-            }
+            if (usuario == null)
+                throw new UsuarioInexistente();
 
             // Verificar si el usuario ya es amigo
-            if (usuario.existeAmigo(amigo)) {
-                throw new ExcepcionBaseDeDatos("El usuario ya es tu amigo");
-            }
+            if (usuario.existeAmigo(amigo))
+                throw new ExcepcionAmigoYaExistente("El usuario ya es tu amigo");
 
             // Verificar si ya se ha enviado una solicitud de amistad
             Long count = (Long) session.createQuery("SELECT COUNT(n) FROM Notificacion n WHERE n.usuarioSolicitante.id = :idUsuario AND n.usuario.id = :idAmigo AND n.estado = :estado")
@@ -77,13 +70,11 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("estado", "Pendiente")
                     .uniqueResult();
 
-            if (count > 0) {
-                throw new ExcepcionBaseDeDatos("Ya has enviado una solicitud de amistad a este usuario");
-            }
+            if (count > 0)
+                throw new ExcepcionSolicitudEnviada("Ya has enviado una solicitud de amistad a este usuario");
 
-            if(email.equals(usuario.getEmail())){
-                throw new ExcepcionBaseDeDatos("No se puede agregar a si mismo");
-            }
+            if(email.equals(usuario.getEmail()))
+                throw new ExcepcionAutoAmistad("No se puede agregar a si mismo");
 
             // Crear una nueva notificación
             Notificacion notificacion = new Notificacion();
@@ -95,7 +86,6 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
 
             // Guardar la notificación en la base de datos
             repositorioNotificacion.guardar(notificacion);
-
         } catch (Exception e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }

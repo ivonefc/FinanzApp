@@ -3,6 +3,7 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
         try {
             Session session = sessionFactory.getCurrentSession();
             session.save(notificacion);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }
     }
