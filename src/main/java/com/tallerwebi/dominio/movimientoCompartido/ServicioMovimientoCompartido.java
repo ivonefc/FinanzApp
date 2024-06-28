@@ -24,4 +24,6 @@ public interface ServicioMovimientoCompartido {
     void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos;
 
     List<Movimiento> obtenerMovimientosCompartidos(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    List<Notificacion> obtenerSolicitudesAceptadas(Long idUsuario);
 }

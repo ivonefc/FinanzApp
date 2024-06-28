@@ -40,4 +40,20 @@ public class ControladorNotificacionHeader {
 
         return servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
     }
+
+    @ModelAttribute("notificacionesAceptadas")
+    public List<Notificacion> obtenerNotificacionesAceptadas(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null) {
+            return Collections.emptyList();
+        }
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+
+        if(idUsuario == null) {
+            return Collections.emptyList();
+        }
+
+        return servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
+    }
 }

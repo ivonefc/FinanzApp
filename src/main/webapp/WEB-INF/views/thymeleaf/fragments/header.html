@@ -30,13 +30,18 @@
             <li class="dropdown-header">
                 <h6>Notificaciones</h6>
             </li>
-            <li th:if="${#lists.isEmpty(notificacionesRecibidas)}">
-                <hr class="dropdown-divider">
+            <li th:if="${#lists.isEmpty(notificacionesRecibidas) and #lists.isEmpty(notificacionesAceptadas)}">                <hr class="dropdown-divider">
                 <a class="dropdown-item d-flex align-items-center">
                     <span>No hay notificaciones</span>
                 </a>
             </li>
             <li th:each="notificacion, stat : ${notificacionesRecibidas}">
+                <hr class="dropdown-divider">
+                <a class="dropdown-item d-flex align-items-center">
+                    <span th:text="${notificacion.descripcion}"></span>
+                </a>
+            </li>
+            <li th:each="notificacion, stat : ${notificacionesAceptadas}">
                 <hr class="dropdown-divider">
                 <a class="dropdown-item d-flex align-items-center">
                     <span th:text="${notificacion.descripcion}"></span>
