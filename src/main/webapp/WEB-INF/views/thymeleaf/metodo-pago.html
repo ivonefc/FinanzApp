@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Metodo de Pago</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Bootstrap css / Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Mi CSS-->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/metodo-pago.css}"> !!!!
 </head>
+
 <body>
+<!-- Header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Menu Lateral -->
+<aside th:replace="fragments/menu-lateral :: menu-lateral"></aside>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Metodo de Pago</h1>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Tarjeta</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="apellidoYNombre" class="form-label">Apellido y Nombre:</label>
+                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="numero" class="form-label">Numero de Tarjeta:</label>
+                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fecha" class="form-label">Fecha de Vencimiento</label>
+                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="number" class="form-control" id="cvv" placeholder="***">
+                            </div>
+
+                            <div class="mb-3 button-container">
+                                <button type="submit" class="btn btn-primary">Pagar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Script -->
+<script th:src="@{/js/principal.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/panel.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
 
 </body>
+
 </html>

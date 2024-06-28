@@ -44,14 +44,7 @@ public class ControladorPanel {
         return new ModelAndView("panel", model);
     }
 
-    @GetMapping("/premium")
-    public ModelAndView irAPremium(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null)
-            return new ModelAndView("redirect:/login");
 
-        return new ModelAndView("premium");
-    }
 
     @GetMapping("/panel/egresos")
     @ResponseBody
