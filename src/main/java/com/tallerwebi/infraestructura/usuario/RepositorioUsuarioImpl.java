@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.usuario;
 
+import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
@@ -12,10 +13,15 @@ import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private SessionFactory sessionFactory;
 
@@ -120,6 +126,15 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
             return usuario;
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos(e);
+        }
+    }
+
+    public void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos {
+
+        try {
+            entityManager.merge(usuario);
+        } catch (Exception e) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 

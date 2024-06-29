@@ -20,4 +20,6 @@ public interface ServicioUsuario {
     Usuario obtenerUsuarioPorId(Long id) throws ExcepcionBaseDeDatos, UsuarioInexistente;
 
     List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos, UsuarioInexistente;
+
+    void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos;
 }

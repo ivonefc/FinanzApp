@@ -50,7 +50,9 @@
                             <li>Compartir movimientos con amigos para poder compartir los gastos.</li>
                         </ul>
                         <div class="mb-3 button-container">
-                            <a th:href="@{/metodo-pago}" class="btn btn-primary">Adquirir Plan</a>
+                           <a th:href="@{/metodo-pago}" th:if="${usuario.rol != 'PREMIUM'}" class="btn btn-primary">Adquirir Plan</a>
+                            <a th:href="@{/cancelar-plan}" th:if="${usuario.rol == 'PREMIUM'}" class="btn btn-primary">Cancelar Plan</a>
+
                         </div>
                     </div>
                 </div>

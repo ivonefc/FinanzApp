@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion.premium;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +28,7 @@ public class ControladorPremiumTest {
     }
 
     @Test
-    public void queAlClickearLaOpcionPremiumEnElHeaderDirijaALaVistaPremium(){
+    public void queAlClickearLaOpcionPremiumEnElHeaderDirijaALaVistaPremium() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -38,7 +40,7 @@ public class ControladorPremiumTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPremiumYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionPremiumYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

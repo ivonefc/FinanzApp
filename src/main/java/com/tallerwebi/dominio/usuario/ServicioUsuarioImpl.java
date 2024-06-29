@@ -81,4 +81,9 @@ public class ServicioUsuarioImpl implements ServicioUsuario{
 
         return repositorioUsuario.obtenerAmigosDeUnUsuario(idUsuario);
     }
+
+    @Override
+    public void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos {
+        repositorioUsuario.actualizarPlan(usuario);
+    }
 }
