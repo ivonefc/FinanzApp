@@ -41,7 +41,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
     @Override
-    public void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos {
+    public void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad{
         try {
             Session session = sessionFactory.getCurrentSession();
 
@@ -77,17 +77,13 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                 throw new ExcepcionAutoAmistad("No se puede agregar a si mismo");
 
             // Crear una nueva notificación
-            Notificacion notificacion = new Notificacion();
-            notificacion.setUsuario(amigo);
-            notificacion.setUsuarioSolicitante(usuario);
-            notificacion.setEstado("Pendiente");
-            notificacion.setDescripcion("El usuario " + usuario.getNombre() + " quiere ser tu amigo!");
-            notificacion.setTipo("Solicitud de amistad");
+            Notificacion notificacion = new Notificacion(1L, "El usuario " + usuario.getNombre() + " quiere ser tu amigo!", "Pendiente", "Solicitud de amistad", usuario, amigo);
 
             // Guardar la notificación en la base de datos
             repositorioNotificacion.guardar(notificacion);
-        } catch (Exception e) {
-            throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
+
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 
@@ -100,20 +96,22 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("tipoNotificacion", "Solicitud de amistad")
                     .setParameter("estadoNotificacion", "Pendiente")
                     .getResultList();
-        }catch (Exception he){
+        }catch (HibernateException he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 
     @Override
-    public Notificacion obtenerNotificacionPorId(Long id) throws ExcepcionBaseDeDatos {
+    public Notificacion obtenerNotificacionPorId(Long id) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente{
         try {
             Session session = sessionFactory.getCurrentSession();
             Notificacion notificacion = session.createQuery("FROM Notificacion N WHERE N.id = :idNotificacion", Notificacion.class)
                     .setParameter("idNotificacion", id)
                     .uniqueResult();
+
             if(notificacion==null)
-                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+                throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
+
             return notificacion;
         } catch (HibernateException he) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", he);
@@ -121,15 +119,16 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
     @Override
-    public void eliminarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos{
+    public void eliminarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente{
         if (notificacion == null || notificacion.getId() == null)
-            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+            throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
+
         try {
             Session session = sessionFactory.getCurrentSession();
             Notificacion notificacionExistente = session.get(Notificacion.class, notificacion.getId());
 
             if (notificacionExistente == null)
-                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+                throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
 
             // Obtener la referencia al usuario y al amigo
             Usuario usuario = notificacionExistente.getUsuarioSolicitante();
@@ -159,15 +158,15 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
     @Override
-    public void aceptarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos {
+    public void aceptarSolicitud(Notificacion notificacion) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         if (notificacion == null || notificacion.getId() == null)
-            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+            throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
         try {
             Session session = sessionFactory.getCurrentSession();
             Notificacion notificacionExistente = session.get(Notificacion.class, notificacion.getId());
 
             if (notificacionExistente == null)
-                throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+                throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
 
             // Obtener la referencia al usuario y al amigo
             Usuario usuario = notificacionExistente.getUsuario();
@@ -196,7 +195,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
     @Override
-    public void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos {
+    public void eliminarAmigo(Long idAmigo, Long idUsuario) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         try {
             Session session = sessionFactory.getCurrentSession();
 
@@ -205,9 +204,8 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             Usuario amigo = session.get(Usuario.class, idAmigo);
 
             // Si el usuario o el amigo no existen, lanzar una excepción
-            if (usuario == null || amigo == null) {
-                throw new ExcepcionBaseDeDatos("No se encontró el usuario o el amigo");
-            }
+            if (usuario == null || amigo == null)
+                throw new UsuarioInexistente();
 
             // Eliminar la relación de amistad
             usuario.eliminarAmigo(amigo);
@@ -216,7 +214,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             // Actualizar los usuarios en la base de datos
             session.update(usuario);
             session.update(amigo);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }
     }
@@ -229,19 +227,30 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("idUsuario", idUsuario)
                     .setParameter("idAmigo", idAmigo)
                     .getResultList();
-        }catch (Exception he){
+        }catch (HibernateException he){
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
 
     @Override
-    public List<Notificacion> obtenerSolicitudesAceptadas(Long idUsuario) {
+    public List<Notificacion> obtenerSolicitudesAceptadas(Long idUsuario) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        if (idUsuario == null)
+            throw new UsuarioInexistente();
+
+        try {
             Session session = sessionFactory.getCurrentSession();
+            Usuario usuario = session.get(Usuario.class, idUsuario);
+            if (usuario == null)
+                throw new UsuarioInexistente();
+
             return session.createQuery("FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.tipo = :tipoNotificacion AND n.estado = :estadoNotificacion", Notificacion.class)
                     .setParameter("idUsuario", idUsuario)
                     .setParameter("tipoNotificacion", "Solicitud de amistad")
                     .setParameter("estadoNotificacion", "Aceptada")
                     .getResultList();
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
     }
 
 }

@@ -2,10 +2,7 @@ package com.tallerwebi.dominio.movimientoCompartido;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
@@ -106,7 +103,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
+    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
         //preparacion
         Long idUsuario = 1L;
         Usuario amigoMock = mock(Usuario.class);
@@ -120,7 +117,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
+    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
         //preparacion
         Notificacion solicitud = mock(Notificacion.class);
         when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);
@@ -133,7 +130,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioEliminarUnAmigoElimineElAmigo() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
+    public void queAlSolicitarAlServicioEliminarUnAmigoElimineElAmigo() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, UsuarioInexistente {
         //preparacion
         Usuario amigo = mock(Usuario.class);
         Long idAmigo = 1L;
@@ -149,7 +146,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAceptarUnaSolicitudAcepteLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado {
+    public void queAlSolicitarAlServicioAceptarUnaSolicitudAcepteLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
         //preparacion
         Notificacion solicitud = mock(Notificacion.class);
         when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);

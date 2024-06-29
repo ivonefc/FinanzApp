@@ -1,7 +1,6 @@
 package com.tallerwebi.presentacion.movimientoCompartido;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
@@ -64,7 +63,7 @@ public class ControladorMovimientoCompartido {
     }
 
     @PostMapping("/movimientos-compartidos/agregar-nuevo-amigo")
-    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
         if (httpSession == null)
@@ -81,7 +80,7 @@ public class ControladorMovimientoCompartido {
     }
 
     @PostMapping("/movimientos-compartidos/eliminarSolicitud/{id}")
-    public ModelAndView eliminarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+    public ModelAndView eliminarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
@@ -91,7 +90,7 @@ public class ControladorMovimientoCompartido {
     }
 
     @PostMapping("/movimientos-compartidos/aceptarSolicitud/{id}")
-    public ModelAndView aceptarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+    public ModelAndView aceptarSolicitud(@PathVariable Long id, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
@@ -101,7 +100,7 @@ public class ControladorMovimientoCompartido {
     }
 
     @PostMapping("/movimientos-compartidos/eliminarAmigo/{idAmigo}")
-    public ModelAndView eliminarAmigo(@PathVariable Long idAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos{
+    public ModelAndView eliminarAmigo(@PathVariable Long idAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
