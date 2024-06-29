@@ -5,10 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -174,5 +171,21 @@ public class Usuario {
                 ", rol='" + rol + '\'' +
                 ", activo=" + activo +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(email, usuario.email) &&
+                Objects.equals(password, usuario.password) &&
+                Objects.equals(rol, usuario.rol) &&
+                Objects.equals(activo, usuario.activo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, rol, activo);
     }
 }
