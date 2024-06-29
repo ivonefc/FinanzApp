@@ -36,6 +36,15 @@ public class Notificacion {
         this.estado = estado;
     }
 
+    public Notificacion(Long id, String descripcion, String estado, String tipo, Usuario usuario, Usuario usuarioSolicitante) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.tipo = tipo;
+        this.usuario = usuario;
+        this.usuarioSolicitante = usuarioSolicitante;
+    }
+
     public Notificacion() {
 
     }

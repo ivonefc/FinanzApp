@@ -1,8 +1,6 @@
 package com.tallerwebi.presentacion.movimientoCompartido;
 
-import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
-import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
-import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
@@ -100,7 +98,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnAmigoSePuedaAgregarAmigo() throws ExcepcionBaseDeDatos{
+    public void queAlQuererAgregarUnAmigoSePuedaAgregarAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
         //preparacion
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -115,7 +113,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws ExcepcionBaseDeDatos {
+    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -132,7 +130,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws ExcepcionBaseDeDatos {
+    public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -149,7 +147,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarDosVecesDeAmigoAlMismoUsuario() throws ExcepcionBaseDeDatos {
+    public void queNoSePuedaAgregarDosVecesDeAmigoAlMismoUsuario() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -166,7 +164,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queSePuedaEliminarUnaSolicitudDeAmistadEnviada() throws ExcepcionBaseDeDatos {
+    public void queSePuedaEliminarUnaSolicitudDeAmistadEnviada() throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         // Preparación
         Long id = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -182,7 +180,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queSePuedaAceptarUnaSolicitudDeAmistad() throws ExcepcionBaseDeDatos {
+    public void queSePuedaAceptarUnaSolicitudDeAmistad() throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         // Preparación
         Long id = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -197,7 +195,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queSePuedaEliminarAmigo() throws ExcepcionBaseDeDatos {
+    public void queSePuedaEliminarAmigo() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparación
         Long idAmigo = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);

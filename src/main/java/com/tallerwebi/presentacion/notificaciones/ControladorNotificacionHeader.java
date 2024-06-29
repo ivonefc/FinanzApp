@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion.notificaciones;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class ControladorNotificacionHeader {
     }
 
     @ModelAttribute("notificacionesAceptadas")
-    public List<Notificacion> obtenerNotificacionesAceptadas(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+    public List<Notificacion> obtenerNotificacionesAceptadas(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null) {
             return Collections.emptyList();

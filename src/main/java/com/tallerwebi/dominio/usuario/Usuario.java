@@ -35,10 +35,6 @@ public class Usuario {
     private String pais;
     private Long telefono;
 
-    //private String foto;
-
-
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "amigos",
@@ -46,7 +42,6 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )
     private List<Usuario> amigos;
-
 
 
     public Usuario(String email, String password, String rol, Boolean activo) {
@@ -66,7 +61,9 @@ public class Usuario {
         this.amigos = new ArrayList<>();
     }
 
-    public Usuario(){}
+    public Usuario(){
+        this.amigos = new ArrayList<>();
+    }
 
     public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password, LocalDate fechaNacimiento, String pais, Long telefono, String rol, boolean activo) {
         this.nombre = nombre;
@@ -135,6 +132,20 @@ public class Usuario {
         this.activo = activo;
     }
 
+    public Set<Movimiento> getMovimientos() {
+        return movimientos;
+    }
+    public void setMovimientos(Set<Movimiento> movimientos) {
+        this.movimientos = movimientos;
+    }
+
+    public List<Usuario> getAmigos() {
+        return amigos;
+    }
+    public void setAmigos(List<Usuario> amigos) {
+        this.amigos = amigos;
+    }
+
     public boolean existeAmigo(Usuario amigo) {
         if (amigo == null || amigos == null)
             return false;
@@ -146,15 +157,14 @@ public class Usuario {
         activo = true;
     }
 
-
     public void agregarAmigo(Usuario amigo) {
         this.amigos.add(amigo);
     }
 
     public void eliminarAmigo(Usuario amigo) {
         amigos.remove(amigo);
-
     }
+
     @Override
     public String toString() {
         return "Usuario{" +

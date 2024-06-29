@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion.notificaciones;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -28,7 +29,7 @@ public class ControladorNotificaciones {
     }
 
     @GetMapping("/notificaciones")
-    public ModelAndView irANotificaciones(HttpServletRequest request) throws ExcepcionBaseDeDatos {
+    public ModelAndView irANotificaciones(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
         if (request.getSession(false) == null) {
