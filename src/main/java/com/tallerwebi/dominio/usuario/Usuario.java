@@ -132,6 +132,7 @@ public class Usuario {
         this.activo = activo;
     }
 
+/*
     public Set<Movimiento> getMovimientos() {
         return movimientos;
     }
@@ -144,7 +145,7 @@ public class Usuario {
     }
     public void setAmigos(List<Usuario> amigos) {
         this.amigos = amigos;
-    }
+    }*/
 
     public boolean existeAmigo(Usuario amigo) {
         if (amigo == null || amigos == null)
