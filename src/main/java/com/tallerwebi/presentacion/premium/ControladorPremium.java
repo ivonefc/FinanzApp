@@ -18,8 +18,12 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class ControladorPremium {
 
-    @Autowired
     private ServicioUsuario servicioUsuario;
+
+    @Autowired
+    public ControladorPremium(ServicioUsuario servicioUsuario) {
+        this.servicioUsuario = servicioUsuario;
+    }
 
     @GetMapping("/premium")
     public ModelAndView irAPremium(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
@@ -36,12 +40,16 @@ public class ControladorPremium {
     }
 
     @GetMapping("/metodo-pago")
-    public ModelAndView irAMetodoPagoPremium(HttpServletRequest request) {
+    public ModelAndView irAMetodoPagoPremium(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession session = request.getSession(false);
         if (session == null)
             return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) session.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        ModelMap modelo = new ModelMap();
+        modelo.put("usuario", usuario);
 
-        return new ModelAndView("metodo-pago");
+        return new ModelAndView("metodo-pago", modelo);
     }
 
     @PostMapping("/pagar")

@@ -33,12 +33,13 @@ public class ControladorMovimientoCompartidoTest {
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
         controladorMovimientoCompartido = new ControladorMovimientoCompartido(servicioMovimientoCompartidoMock, servicioUsuarioMock);
     }
 
     @Test
-    public void queAlClickearLaOpcionMovimientosCompartidosEnElMenuDirijaALaVistaMovimientosCompartidos() throws ExcepcionBaseDeDatos {
+    public void queAlClickearLaOpcionMovimientosCompartidosEnElMenuDirijaALaVistaMovimientosCompartidos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -50,7 +51,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionCuentasCompartidasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos{
+    public void queAlQuererIrALaOpcionCuentasCompartidasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -86,7 +87,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlClickearAgregarAmigoMeRedirijaALaVistaDeAgregarAmigo() throws ExcepcionBaseDeDatos {
+    public void queAlClickearAgregarAmigoMeRedirijaALaVistaDeAgregarAmigo() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 

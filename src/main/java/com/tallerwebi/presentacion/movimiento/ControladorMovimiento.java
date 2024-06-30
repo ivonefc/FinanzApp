@@ -58,16 +58,18 @@ public class ControladorMovimiento {
     }
 
     @GetMapping("/movimientos")
-    public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public ModelAndView obtenerMovimientosPorPagina(HttpServletRequest httpServletRequest, @RequestParam(defaultValue = "1") int pagina) throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         ModelMap model = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         int tamanioDePagina = 10;
         List<Movimiento> movimientos = servicioMovimiento.obtenerMovimientosPorPagina(idUsuario, pagina, tamanioDePagina);
         model.put("movimientos", movimientos);
+        model.put("usuario", usuario);
 
         //Verifico que movimientos no sea vacio, para obtener cantidad de paginas
         if(!movimientos.isEmpty()){
@@ -95,15 +97,18 @@ public class ControladorMovimiento {
     }
 
     @GetMapping("/movimientos/editar/{id}")
-    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+    public ModelAndView irAFormularioEditarMovimiento(HttpServletRequest httpServletRequest, @PathVariable Long id) throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
 
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         Movimiento movimiento = servicioMovimiento.obtenerMovimientoPorId(id);
         DatosEditarMovimiento datosEditarMovimiento = DatosEditarMovimiento.contruirDesdeMovimiento(movimiento);
         modelo.put("movimiento", datosEditarMovimiento);
+        modelo.put("usuario", usuario);
         return new ModelAndView("editar-movimiento", modelo);
     }
 
@@ -135,18 +140,20 @@ public class ControladorMovimiento {
     }
 
     @RequestMapping("/agregar-movimiento")
-    public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+    public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpServletRequest.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
         if (amigos != null) {
             modelo.put("amigos", amigos);
         }
+        modelo.put("usuario", usuario);
         return new ModelAndView("agregar-movimiento", modelo);
     }
 

@@ -2,9 +2,12 @@ package com.tallerwebi.presentacion.panel;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.panel.*;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,25 +24,29 @@ import java.util.Map;
 public class ControladorPanel {
 
     private ServicioPanel servicioPanel;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
-    public ControladorPanel(ServicioPanel servicioPanel) {
+    public ControladorPanel(ServicioPanel servicioPanel, ServicioUsuario servicioUsuario) {
         this.servicioPanel = servicioPanel;
+        this.servicioUsuario = servicioUsuario;
     }
-    public ControladorPanel(){}
 
 
     @GetMapping("/panel")
-    public ModelAndView irAPanel(HttpServletRequest request){
+    public ModelAndView irAPanel(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession session = request.getSession(false);
         if (session == null)
             return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) session.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
 
         String nombreUsuario = (String) session.getAttribute("nombreUsuario");
         if (nombreUsuario == null)
             return new ModelAndView("redirect:/login");
 
         ModelMap model = new ModelMap();
+        model.put("usuario", usuario);
         model.addAttribute("nombreUsuario", nombreUsuario);
         return new ModelAndView("panel", model);
     }

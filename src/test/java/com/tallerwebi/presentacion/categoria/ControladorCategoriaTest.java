@@ -5,8 +5,10 @@ import com.tallerwebi.dominio.categoria.ServicioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,19 +33,21 @@ public class ControladorCategoriaTest {
     ServicioCategoria servicioCategoriaMock;
     HttpServletRequest httpServletRequestMock;
     HttpSession httpSessionMock;
+    ServicioUsuario servicioUsuarioMock;
 
 
     @BeforeEach
     public void init() {
+        servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioCategoriaMock = mock(ServicioCategoria.class);
-        controladorCategoria = new ControladorCategoria(servicioCategoriaMock);
+        controladorCategoria = new ControladorCategoria(servicioCategoriaMock, servicioUsuarioMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
      }
 
 
     @Test
-    public void queAlQuererIrAVistaEditarColorCategoriaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos {
+    public void queAlQuererIrAVistaEditarColorCategoriaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -57,7 +61,7 @@ public class ControladorCategoriaTest {
 
 
     @Test
-    public void queAlQuererIrAVistaEditarColorYExistaUsuarioLogueadoMeDirijaALaVistaDeEdicion() throws ExcepcionBaseDeDatos {
+    public void queAlQuererIrAVistaEditarColorYExistaUsuarioLogueadoMeDirijaALaVistaDeEdicion() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
 

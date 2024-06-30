@@ -5,6 +5,9 @@ import com.tallerwebi.dominio.categoria.ServicioCategoriaImpl;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,18 +26,27 @@ import java.util.Map;
 public class ControladorCategoria {
 
     private ServicioCategoria servicioCategoria;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
+    public ControladorCategoria(ServicioCategoria servicioCategoria, ServicioUsuario servicioUsuario) {
+        this.servicioCategoria = servicioCategoria;
+        this.servicioUsuario = servicioUsuario;
+    }
+
     public ControladorCategoria(ServicioCategoria servicioCategoria){
         this.servicioCategoria = servicioCategoria;
     }
 
     @GetMapping("/categorias/editar-colores")
-    public ModelAndView irAVistaEditarColores(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+    public ModelAndView irAVistaEditarColores(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        modelo.put("usuario", usuario);
 
         List<CategoriaMovimiento> categorias = servicioCategoria.obtenerCategorias();
         modelo.put("categorias", categorias);

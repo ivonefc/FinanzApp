@@ -1,5 +1,8 @@
 package com.tallerwebi.presentacion.ajustes;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,16 +19,18 @@ public class ControladorAjustesTest {
     private ControladorAjustes controladorAjustes;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
-        controladorAjustes = new ControladorAjustes();
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        controladorAjustes = new ControladorAjustes(servicioUsuarioMock);
     }
 
     @Test
-    public void queAlClickearLaOpcionAjustesEnElMenuDirijaALaVistaAjustes(){
+    public void queAlClickearLaOpcionAjustesEnElMenuDirijaALaVistaAjustes() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -37,7 +42,7 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionAjustesYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionAjustesYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -73,7 +78,7 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlClickearIrAMiPerfilMeRedirijaAMiPerfil(){
+    public void queAlClickearIrAMiPerfilMeRedirijaAMiPerfil() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -85,7 +90,7 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlQuererIrAMiPerfilYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrAMiPerfilYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -97,7 +102,7 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlClickearEditarColoresDeCategoriaMeRedirijaAEditarColores(){
+    public void queAlClickearEditarColoresDeCategoriaMeRedirijaAEditarColores() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -109,7 +114,7 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlQuererIrAEditarColoresDeCategoriaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrAEditarColoresDeCategoriaYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

@@ -1,8 +1,10 @@
 package com.tallerwebi.presentacion.panel;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.panel.ServicioPanel;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import org.junit.jupiter.api.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,17 +26,19 @@ public class ControladorPanelTest {
     private ServicioPanel servicioPanelMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
         servicioPanelMock = mock(ServicioPanel.class);
-        controladorPanel = new ControladorPanel(servicioPanelMock);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        controladorPanel = new ControladorPanel(servicioPanelMock, servicioUsuarioMock);
     }
 
     @Test
-    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel() {
+    public void queAlClickearLaOpcionPanelEnElMenuDirijaALaVistaPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("nombreUsuario")).thenReturn("nombreUsuario");
@@ -47,7 +51,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
+    public void queAlQuererIrALaOpcionPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -59,7 +63,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPanelMeMuestreDeFormaCorrectaElNombreDeUsuario() {
+    public void queAlQuererIrALaOpcionPanelMeMuestreDeFormaCorrectaElNombreDeUsuario() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("nombreUsuario")).thenReturn("nombreUsuario");
@@ -73,7 +77,7 @@ public class ControladorPanelTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPanelYNoExistaNombreDeUsuarioMeRedirijaAlLoguin() {
+    public void queAlQuererIrALaOpcionPanelYNoExistaNombreDeUsuarioMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("nombreUsuario")).thenReturn(null);
