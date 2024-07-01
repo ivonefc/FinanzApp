@@ -43,7 +43,7 @@
                         <h5 class="card-title">Tarjeta</h5>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form th:action="@{/pagar}" method="post">
                             <div class="mb-3">
                                 <label for="apellidoYNombre" class="form-label">Apellido y Nombre:</label>
                                 <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre">

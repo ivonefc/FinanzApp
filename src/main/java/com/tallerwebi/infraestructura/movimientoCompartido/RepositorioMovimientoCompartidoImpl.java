@@ -77,7 +77,12 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                 throw new ExcepcionAutoAmistad("No se puede agregar a si mismo");
 
             // Crear una nueva notificación
-            Notificacion notificacion = new Notificacion(1L, "El usuario " + usuario.getNombre() + " quiere ser tu amigo!", "Pendiente", "Solicitud de amistad", usuario, amigo);
+            Notificacion notificacion = new Notificacion();
+            notificacion.setUsuario(amigo);
+            notificacion.setUsuarioSolicitante(usuario);
+            notificacion.setEstado("Pendiente");
+            notificacion.setDescripcion("El usuario " + usuario.getNombre() + " quiere ser tu amigo!");
+            notificacion.setTipo("Solicitud de amistad");
 
             // Guardar la notificación en la base de datos
             repositorioNotificacion.guardar(notificacion);
@@ -254,3 +259,5 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
 }
+
+

@@ -16,14 +16,14 @@
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
-
+    <!-- Premium -->
+    <div th:if="${usuario.rol != 'PREMIUM'}" class="mb-3 button-container" style="position: fixed;margin-left: 40%;">
+        <a th:href="@{/premium}"><img th:src="@{/img/publi.png}" alt="" style="width: 100%;height: 70px;"></a>
+    </div>
     <!-- Navigation -->
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
-            <!-- Premium -->
-            <div class="mb-3 button-container">
-                <a th:href="@{/premium}" class="btn btn-primary">PREMIUM</a>
-            </div>
+
 
             <!-- Notificaciones -->
             <li class="nav-item dropdown pe-3">

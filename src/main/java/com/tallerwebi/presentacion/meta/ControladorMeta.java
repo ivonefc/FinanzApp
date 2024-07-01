@@ -4,6 +4,8 @@ import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,24 +22,30 @@ public class ControladorMeta {
 
     private ServicioMovimiento servicioMovimiento;
     private ServicioMeta servicioMeta;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
-    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento) {
+    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento, ServicioUsuario servicioUsuario) {
         this.servicioMeta = servicioMeta;
         this.servicioMovimiento = servicioMovimiento;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @GetMapping("/metas")
-    public ModelAndView irAMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos {
+    public ModelAndView irAMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
         if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
         modelo.put("metas", metas);
-
+        modelo.put("usuario", usuario);
         Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
         modelo.put("totales", totalGastadoPorCategoria);
         return new ModelAndView("metas", modelo);
@@ -64,12 +72,16 @@ public class ControladorMeta {
     }
 
     @GetMapping("/metas/agregar")
-    public ModelAndView irAAgregarMetas(HttpServletRequest request) {
+    public ModelAndView irAAgregarMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
         ModelMap modelo = new ModelMap();
         modelo.put("meta", new DatosMeta());
         if (request.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
         }
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        modelo.put("usuario", usuario);
         return new ModelAndView("agregar-meta", modelo);
     }
 
@@ -100,16 +112,20 @@ public class ControladorMeta {
     }
 
     @GetMapping("/metas/editar/{id}")
-    public ModelAndView irAFormularioEditarMetas(HttpServletRequest request, @PathVariable Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public ModelAndView irAFormularioEditarMetas(HttpServletRequest request, @PathVariable Long id) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
         //obtenerModelo y Sesión iniciada
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
+
 
         //Verificacion de sesion
         if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
 
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        modelo.put("usuario", usuario);
         Meta meta = servicioMeta.obtenerMetaPorId(id);
 
         DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
@@ -119,12 +135,15 @@ public class ControladorMeta {
     }
 
     @PostMapping("/metas/editar")
-    public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos {
+    public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
 
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        modelo.put("usuario", usuario);
 
         try {
             servicioMeta.actualizarMeta(datosEditarMeta);

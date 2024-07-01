@@ -1,5 +1,8 @@
 package com.tallerwebi.presentacion.premium;
 
+import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,16 +20,18 @@ public class ControladorPremiumTest {
     private ControladorPremium controladorPremium;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init(){
-        controladorPremium = new ControladorPremium();
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        controladorPremium = new ControladorPremium(servicioUsuarioMock);
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
     }
 
     @Test
-    public void queAlClickearLaOpcionPremiumEnElHeaderDirijaALaVistaPremium(){
+    public void queAlClickearLaOpcionPremiumEnElHeaderDirijaALaVistaPremium() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -38,7 +43,7 @@ public class ControladorPremiumTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionPremiumYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionPremiumYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -50,7 +55,7 @@ public class ControladorPremiumTest {
     }
 
     @Test
-    public void queAlClickearLaOpcioAdquirirPlanEnLaVistaPremiumDirijaAVistaMetodoDePago(){
+    public void queAlClickearLaOpcioAdquirirPlanEnLaVistaPremiumDirijaAVistaMetodoDePago() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
 
@@ -62,7 +67,7 @@ public class ControladorPremiumTest {
     }
 
     @Test
-    public void queAlQuererIrALaOpcionAdquirirPlanYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
+    public void queAlQuererIrALaOpcionAdquirirPlanYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

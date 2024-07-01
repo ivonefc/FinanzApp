@@ -20,5 +20,7 @@ public interface RepositorioUsuario {
     Usuario buscarUsuarioPorEmail(String email) throws UsuarioInexistente, ExcepcionBaseDeDatos;
 
     List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos;
 }
 

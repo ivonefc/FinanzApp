@@ -46,19 +46,20 @@ public class ControladorMovimientoTest {
     DatosAgregarMovimiento datosAgregarMovimientoMock;
     ServicioDeExportacion servicioDeExportacionMock;
     ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
-    ServicioUsuario servicioUsuario;
+    ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init(){
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
         servicioMovimientoMock = mock(ServicioMovimiento.class);
         servicioDeExportacionMock = mock(ServicioDeExportacion.class);
-        servicioUsuario = mock(ServicioUsuario.class);
-        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioDeExportacionMock, servicioUsuario,servicioMovimientoCompartidoMock);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        controladorMovimiento = new ControladorMovimiento(servicioMovimientoMock, servicioDeExportacionMock,servicioUsuarioMock, servicioMovimientoCompartidoMock);
         httpServletRequestMock = mock(HttpServletRequest.class);
         httpSessionMock = mock(HttpSession.class);
         datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
         datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
+
     }
 
     @Test
@@ -185,7 +186,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+    public void queAlQuererIrAVistaEditarUnMovimientoYExistaUsuarioLogueadoMeDirijaAlFormularioDeEdicion() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         Movimiento movimientoMock = mock(Movimiento.class);
         when(servicioMovimientoMock.obtenerMovimientoPorId(anyLong())).thenReturn(movimientoMock);
@@ -211,7 +212,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos {
+    public void queAlQuererIrAVistaEditarUnMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMovimientoNoEncontrado, ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -405,7 +406,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoTeLleveALaPaginaAgregarMovimiento() throws ExcepcionBaseDeDatos{
+    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoTeLleveALaPaginaAgregarMovimiento() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -419,7 +420,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos  {
+    public void queAlClickearEnLaBarraDeNavegacionEnAgregarMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -515,7 +516,7 @@ public class ControladorMovimientoTest {
 
     //Testando método de paginación
     @Test
-    public void queAlQuererIraVerMovimientosYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public void queAlQuererIraVerMovimientosYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -528,7 +529,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlIrAVerMovimientosMuestreLosMovimientosDeLaPaginaUno() throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public void queAlIrAVerMovimientosMuestreLosMovimientosDeLaPaginaUno() throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         //preparación
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -546,7 +547,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlClickearEnUnNumeroDePaginaMuestreLosMovimientosEnLaPaginaSeleccionada() throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public void queAlClickearEnUnNumeroDePaginaMuestreLosMovimientosEnLaPaginaSeleccionada() throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         //preparación
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);

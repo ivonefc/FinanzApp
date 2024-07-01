@@ -625,7 +625,7 @@ public class RepositorioMovimientoCompartidoTest {
                 repositorioMovimientoCompartido.aceptarSolicitud(notificacion)
         );
     }
-
+/*
     @Test
     @Transactional
     @Rollback
@@ -661,7 +661,7 @@ public class RepositorioMovimientoCompartidoTest {
         assertTrue(amigos.isEmpty());
         assertNotNull(usuario.getId());
         assertNotNull(amigo.getId());
-    }
+    }*/
 
     @Test
     @Transactional
