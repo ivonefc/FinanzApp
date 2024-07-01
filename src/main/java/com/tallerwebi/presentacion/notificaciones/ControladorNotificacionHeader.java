@@ -19,10 +19,9 @@ public class ControladorNotificacionHeader {
 
     @Autowired
     public ControladorNotificacionHeader(ServicioMovimientoCompartido servicioMovimientoCompartido) {
-
-    this.servicioMovimientoCompartido = servicioMovimientoCompartido;
-
+        this.servicioMovimientoCompartido = servicioMovimientoCompartido;
     }
+
     public ControladorNotificacionHeader() {
     }
 
