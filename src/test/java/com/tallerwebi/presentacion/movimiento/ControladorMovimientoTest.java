@@ -63,7 +63,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorPaginaYExistaUsuarioLogueadoRetorneLosMovimientosPorPagina() throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public void queAlQuererObtenerMovimientosPorPaginaYExistaUsuarioLogueadoRetorneLosMovimientosPorPagina() throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -82,7 +82,7 @@ public class ControladorMovimientoTest {
     }
 
     @Test
-    public void queAlQuererObtenerMovimientosPorPaginaYNoExistaUsuarioLogueadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos, PaginaInexistente {
+    public void queAlQuererObtenerMovimientosPorPaginaYNoExistaUsuarioLogueadoMeRedirijaAlLogin() throws ExcepcionBaseDeDatos, PaginaInexistente, UsuarioInexistente {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(null);
 
@@ -629,7 +629,7 @@ public class ControladorMovimientoTest {
         List<Usuario> amigos = new ArrayList<>();
         amigos.add(new Usuario("amigo1", "1234", "usuario", true));
         amigos.add(new Usuario("amigo2", "1234", "usuario", true));
-        when(servicioUsuario.obtenerAmigosDeUnUsuario(anyLong())).thenReturn(amigos);
+        when(servicioUsuarioMock.obtenerAmigosDeUnUsuario(anyLong())).thenReturn(amigos);
 
         //ejecucion
         List<Usuario> amigosObtenidos = controladorMovimiento.obtenerAmigos(httpServletRequestMock);
@@ -643,7 +643,7 @@ public class ControladorMovimientoTest {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioUsuario.obtenerAmigosDeUnUsuario(anyLong())).thenReturn(Collections.emptyList());
+        when(servicioUsuarioMock.obtenerAmigosDeUnUsuario(anyLong())).thenReturn(Collections.emptyList());
 
         //ejecucion
         List<Usuario> amigosObtenidos = controladorMovimiento.obtenerAmigos(httpServletRequestMock);
@@ -658,7 +658,7 @@ public class ControladorMovimientoTest {
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L); // Añade un usuario ficticio
         ExcepcionBaseDeDatos excepcion = new ExcepcionBaseDeDatos("Base de datos no disponible");
-        doThrow(excepcion).when(servicioUsuario).obtenerAmigosDeUnUsuario(anyLong());
+        doThrow(excepcion).when(servicioUsuarioMock).obtenerAmigosDeUnUsuario(anyLong());
 
         //ejecucion y validacion
         ExcepcionBaseDeDatos excepcionBaseDeDatos = assertThrows(ExcepcionBaseDeDatos.class, ()->{
@@ -672,7 +672,7 @@ public class ControladorMovimientoTest {
         //preparacion
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
         UsuarioInexistente excepcion = new UsuarioInexistente();
-        doThrow(excepcion).when(servicioUsuario).obtenerAmigosDeUnUsuario(anyLong());
+        doThrow(excepcion).when(servicioUsuarioMock).obtenerAmigosDeUnUsuario(anyLong());
 
         //ejecucion y validacion
         assertThrows(UsuarioInexistente.class, ()->{

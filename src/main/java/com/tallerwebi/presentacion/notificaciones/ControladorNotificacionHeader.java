@@ -29,15 +29,12 @@ public class ControladorNotificacionHeader {
     @ModelAttribute("notificacionesRecibidas")
     public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return Collections.emptyList();
-        }
 
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-
-        if(idUsuario == null) {
+        if(idUsuario == null)
             return Collections.emptyList();
-        }
 
         return servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
     }
@@ -45,15 +42,12 @@ public class ControladorNotificacionHeader {
     @ModelAttribute("notificacionesAceptadas")
     public List<Notificacion> obtenerNotificacionesAceptadas(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return Collections.emptyList();
-        }
 
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-
-        if(idUsuario == null) {
+        if(idUsuario == null)
             return Collections.emptyList();
-        }
 
         return servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
     }

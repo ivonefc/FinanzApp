@@ -83,8 +83,12 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNombre() {return nombre;}
-    public void setNombre(String nombre) {this.nombre = nombre;}
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public String getEmail() {
         return email;
@@ -128,21 +132,6 @@ public class Usuario {
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }
-
-/*
-    public Set<Movimiento> getMovimientos() {
-        return movimientos;
-    }
-    public void setMovimientos(Set<Movimiento> movimientos) {
-        this.movimientos = movimientos;
-    }
-
-    public List<Usuario> getAmigos() {
-        return amigos;
-    }
-    public void setAmigos(List<Usuario> amigos) {
-        this.amigos = amigos;
-    }*/
 
     public boolean existeAmigo(Usuario amigo) {
         if (amigo == null || amigos == null)
