@@ -43,7 +43,7 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
 
     @Transactional
     @Override
-    public void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
+    public void agregarNuevoAmigo(Long idUsuario, String email) throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium {
         repositorioMovimientoCompartido.agregarNuevoAmigo(idUsuario, email);
     }
 

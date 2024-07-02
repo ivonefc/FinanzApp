@@ -99,7 +99,7 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlQuererAgregarUnAmigoSePuedaAgregarAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
+    public void queAlQuererAgregarUnAmigoSePuedaAgregarAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
         //preparacion
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -114,13 +114,13 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
+    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
         Usuario amigo = new Usuario();
-        doThrow(new ExcepcionBaseDeDatos("El usuario ya es tu amigo")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
+        doThrow(new Excepcion("El usuario ya es tu amigo")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
         // Ejecución
         ModelAndView modelAndView = controladorMovimientoCompartido.agregarNuevoAmigo(amigo, requestMock);
@@ -131,13 +131,13 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
+    public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
         Usuario amigo = new Usuario();
-        doThrow(new ExcepcionBaseDeDatos("No se encontró un usuario con el email proporcionado")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
+        doThrow(new Excepcion("No se encontró un usuario con el email proporcionado")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
         // Ejecución
         ModelAndView modelAndView = controladorMovimientoCompartido.agregarNuevoAmigo(amigo, requestMock);
@@ -148,13 +148,13 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarDosVecesDeAmigoAlMismoUsuario() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
+    public void queNoSePuedaAgregarDosVecesDeAmigoAlMismoUsuario() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
         Usuario amigo = new Usuario();
-        doThrow(new ExcepcionBaseDeDatos("Ya has enviado una solicitud de amistad a este usuario")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
+        doThrow(new Excepcion("Ya has enviado una solicitud de amistad a este usuario")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
         // Ejecución
         ModelAndView modelAndView = controladorMovimientoCompartido.agregarNuevoAmigo(amigo, requestMock);

@@ -103,7 +103,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, Excepcion {
         //preparacion
         Long idUsuario = 1L;
         Usuario amigoMock = mock(Usuario.class);
