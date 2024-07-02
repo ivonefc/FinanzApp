@@ -41,7 +41,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
     }
 
     @Override
-    public void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad{
+    public void agregarNuevoAmigo(Long idUsuario, String email) throws Excepcion, ExcepcionBaseDeDatos, ExcepcionUsuarioNoPremium, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad{
         try {
             Session session = sessionFactory.getCurrentSession();
 
@@ -50,8 +50,8 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("email", email)
                     .uniqueResult();
 
-            if (amigo == null)
-                throw new UsuarioInexistente();
+            if(amigo.getRol().equals("FREE"))
+                throw new ExcepcionUsuarioNoPremium("El usuario debe ser Premium para agregar como amigo");
 
             // Buscar el usuario por id
             Usuario usuario = session.get(Usuario.class, idUsuario);

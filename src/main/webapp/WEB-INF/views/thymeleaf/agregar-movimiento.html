@@ -61,7 +61,7 @@
                         <input th:field="*{monto}" id="monto" type="number" class="form-control">
                         <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" th:if="${usuario.rol != 'FREE'}">
                         <label class="form-label">¿Desea compartir este movimiento con un amigo?</label>
                         <div class="mb-3">
                             <input type="radio" id="compartirNo" name="compartirMovimiento" value="no" checked>

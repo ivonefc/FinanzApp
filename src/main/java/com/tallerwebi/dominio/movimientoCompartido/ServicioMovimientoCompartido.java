@@ -11,7 +11,7 @@ public interface ServicioMovimientoCompartido {
 
     public List<Usuario> obtenerAmigos(Long idUsuario) throws ExcepcionBaseDeDatos;
 
-    void agregarNuevoAmigo(Long idUsuario, String email) throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad;
+    void agregarNuevoAmigo(Long idUsuario, String email) throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium;
 
     public List<Notificacion> obtenerSolicitudesEnviadas(Long idUsuario) throws ExcepcionBaseDeDatos;
 

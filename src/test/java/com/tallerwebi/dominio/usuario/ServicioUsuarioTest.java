@@ -316,4 +316,20 @@ public class ServicioUsuarioTest {
         verify(repositorioUsuarioMock).obtenerUsuarioPorId(1L);
     }
 
+//    @Test
+//    public void queAlSolicitarAlServicioActualizarPlanPremiumLoHagaCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+//        // preparacion
+//        when(repositorioUsuarioMock.obtenerUsuarioPorId(1L)).thenReturn(usuarioMock);
+//        Usuario usuario = new Usuario();
+//        usuario.setPlan("free");
+//        when(usuarioMock.getPlan()).thenReturn(usuario.getPlan());
+//
+//        // ejecucion
+//        servicioUsuario.actualizarPlan(usuario);
+//
+//        // validacion
+//        verify(repositorioUsuarioMock).modificar(usuarioMock);
+//        assertEquals("premium", usuarioMock.getPlan());
+//    }
+
 }

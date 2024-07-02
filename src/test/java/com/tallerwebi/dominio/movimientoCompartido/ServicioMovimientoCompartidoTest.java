@@ -135,7 +135,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, Excepcion {
         // Preparación
         Usuario amigoMock = mock(Usuario.class);
         when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
@@ -149,7 +149,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionSoliciutdEnviada() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionSoliciutdEnviada() throws ExcepcionBaseDeDatos, Excepcion {
         // Preparación
         Usuario amigoMock = mock(Usuario.class);
         when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
@@ -163,7 +163,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionAutoAmistad() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionAutoAmistad() throws ExcepcionBaseDeDatos, Excepcion {
         // Preparación
         Usuario amigoMock = mock(Usuario.class);
         when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
@@ -177,7 +177,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, Excepcion {
         // Preparación
         Usuario amigoMock = mock(Usuario.class);
         when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
@@ -191,7 +191,7 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         //preparacion
         Notificacion solicitud = mock(Notificacion.class);
         when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);
@@ -246,6 +246,7 @@ public class ServicioMovimientoCompartidoTest {
 
     @Test
     public void queAlSolicitarAlServicioObtenerLasSolicitudesRecibidasDevuelvaUnaListaVacíaDeSolicitudesRecibidas() throws ExcepcionBaseDeDatos {
+//    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, Excepcion {
         //preparacion
         when(repositorioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(anyLong())).thenReturn(Arrays.asList());
 

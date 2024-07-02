@@ -61,7 +61,7 @@ public class ControladorMovimientoCompartido {
     }
 
     @PostMapping("/movimientos-compartidos/agregar-nuevo-amigo")
-    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws Excepcion, ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
         if (httpSession == null)
@@ -70,8 +70,11 @@ public class ControladorMovimientoCompartido {
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         try {
             servicioMovimientoCompartido.agregarNuevoAmigo(idUsuario, nuevoAmigo.getEmail());
-        } catch (ExcepcionBaseDeDatos e) {
-            modelo.put("errores", ExcepcionBaseDeDatos.getMensaje());
+        } catch (Excepcion e) {
+            modelo.put("errores", e.getMessage());
+            Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+            modelo.put("usuario", usuario);
+            modelo.put("nuevoAmigo", new Usuario());
             return new ModelAndView("agregar-amigo", modelo);
         }
         return new ModelAndView("redirect:/movimientos-compartidos");
