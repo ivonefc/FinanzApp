@@ -52,7 +52,8 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
     public void eliminarSolicitud(Long idNotificacion) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         Notificacion notificacion = repositorioMovimientoCompartido.obtenerNotificacionPorId(idNotificacion);
         if (notificacion == null)
-            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+            throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
+
         repositorioMovimientoCompartido.eliminarSolicitud(notificacion);
     }
 
@@ -65,7 +66,8 @@ public class ServicioMovimientoCompartidoImpl implements ServicioMovimientoCompa
     public void aceptarSolicitud(Long id) throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         Notificacion notificacion = repositorioMovimientoCompartido.obtenerNotificacionPorId(id);
         if (notificacion == null)
-            throw new ExcepcionBaseDeDatos("No se encontro la notificacion");
+            throw new ExcepcionNotificacionInexistente("No se encontro la notificacion");
+
         repositorioMovimientoCompartido.aceptarSolicitud(notificacion);
     }
 
