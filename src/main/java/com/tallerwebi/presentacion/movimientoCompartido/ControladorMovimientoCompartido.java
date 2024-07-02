@@ -32,9 +32,9 @@ public class ControladorMovimientoCompartido {
     public ModelAndView irAMovimientosCompartidos(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("usuario", usuario);
@@ -45,30 +45,23 @@ public class ControladorMovimientoCompartido {
         return new ModelAndView("movimientos-compartidos", modelo);
     }
 
-    @GetMapping("/movimiento/panel")
-    public ModelAndView volverAPanel(HttpServletRequest request) {
-        if (request.getSession(false) == null) {
-            return new ModelAndView("redirect:/login");
-        }
-        return new ModelAndView("redirect:/panel");
-    }
-
     @GetMapping("/movimientos-compartidos/agregar-amigo")
     public ModelAndView irAAgregarAmigo(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = request.getSession(false);
+        if (httpSession == null)
+            return new ModelAndView("redirect:/login");
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         ModelMap modelo = new ModelMap();
-        if (request.getSession(false) == null) {
-            return new ModelAndView("redirect:/login");
-        }
+
         modelo.put("usuario", usuario);
         modelo.put("nuevoAmigo", new Usuario());
         return new ModelAndView("agregar-amigo", modelo);
     }
 
     @PostMapping("/movimientos-compartidos/agregar-nuevo-amigo")
-    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
+    public ModelAndView agregarNuevoAmigo(@ModelAttribute("nuevoAmigo") Usuario nuevoAmigo, HttpServletRequest httpServletRequest) throws UsuarioInexistente, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, ExcepcionAutoAmistad {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
         if (httpSession == null)
@@ -109,6 +102,7 @@ public class ControladorMovimientoCompartido {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
 
         servicioMovimientoCompartido.eliminarAmigo(idAmigo, idUsuario);
@@ -121,6 +115,7 @@ public class ControladorMovimientoCompartido {
         ModelMap modelo = new ModelMap();
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         List<Movimiento> movimientosCompartidos = servicioMovimientoCompartido.obtenerMovimientosCompartidos(idAmigo, idUsuario);
         Usuario amigo = servicioUsuario.obtenerUsuarioPorId(idAmigo);
