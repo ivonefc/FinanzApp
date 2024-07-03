@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,7 +16,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
+@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura"})
+@PropertySource("classpath:application.properties")
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
@@ -28,7 +30,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/img/**").addResourceLocations("/resources/core/img/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
-        registry.addResourceHandler("/src/**").addResourceLocations("/resources/application.properties");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
