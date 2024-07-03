@@ -5,10 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -86,8 +83,12 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNombre() {return nombre;}
-    public void setNombre(String nombre) {this.nombre = nombre;}
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public String getEmail() {
         return email;
@@ -132,21 +133,6 @@ public class Usuario {
         this.activo = activo;
     }
 
-/*
-    public Set<Movimiento> getMovimientos() {
-        return movimientos;
-    }
-    public void setMovimientos(Set<Movimiento> movimientos) {
-        this.movimientos = movimientos;
-    }
-
-    public List<Usuario> getAmigos() {
-        return amigos;
-    }
-    public void setAmigos(List<Usuario> amigos) {
-        this.amigos = amigos;
-    }*/
-
     public boolean existeAmigo(Usuario amigo) {
         if (amigo == null || amigos == null)
             return false;
@@ -175,5 +161,21 @@ public class Usuario {
                 ", rol='" + rol + '\'' +
                 ", activo=" + activo +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(email, usuario.email) &&
+                Objects.equals(password, usuario.password) &&
+                Objects.equals(rol, usuario.rol) &&
+                Objects.equals(activo, usuario.activo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, rol, activo);
     }
 }

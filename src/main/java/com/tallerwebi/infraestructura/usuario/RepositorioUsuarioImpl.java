@@ -130,7 +130,6 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     public void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos {
-
         try {
             entityManager.merge(usuario);
         } catch (Exception e) {

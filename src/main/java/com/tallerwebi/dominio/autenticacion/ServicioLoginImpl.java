@@ -40,7 +40,7 @@ public class ServicioLoginImpl implements ServicioLogin {
                 datosRegistroUsuario.getFechaNacimiento(),
                 datosRegistroUsuario.getPais(),
                 datosRegistroUsuario.getTelefono(),
-                "USER",
+                "FREE",
                 true
         );
 

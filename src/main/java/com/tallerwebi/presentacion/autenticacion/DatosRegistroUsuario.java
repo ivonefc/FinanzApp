@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion.autenticacion;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ public class DatosRegistroUsuario {
     private String password;
     private String apellido;
     private String nombreUsuario;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
     private String pais;
     private Long telefono;

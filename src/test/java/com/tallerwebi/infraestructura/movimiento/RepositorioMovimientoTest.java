@@ -528,6 +528,21 @@ public class RepositorioMovimientoTest {
         assertThat(totalPorCategoria, closeTo(190.0, 0.0));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+    public void queAlSolicitarElMontoTotalGastadoEnUnaCategoriaEnElMesYAnioActualLantaUnaExcepcionDeBDD(){
+        //preparacion
+        repositorioMovimiento = new RepositorioMovimientoImpl(sessionFactoryMock);
+        when(sessionFactoryMock.getCurrentSession()).thenThrow(HibernateException.class);
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class,  () -> {
+            repositorioMovimiento.obtenerTotalPorCategoriaEnMesYAnioActual(1L, 1, 2021);
+        }, "Base de datos no disponible");
+    }
+
 
     // METODOS PRIVADOS
     private void guardarCategoria(CategoriaMovimiento categoria) {
