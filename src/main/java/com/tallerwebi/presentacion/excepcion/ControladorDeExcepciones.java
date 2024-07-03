@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
 public class ControladorDeExcepciones {
-    @ExceptionHandler({ExcepcionBaseDeDatos.class, ExcepcionMovimientoNoEncontrado.class, PaginaInexistente.class, ExcepcionMetaNoExistente.class})
+    @ExceptionHandler({ExcepcionBaseDeDatos.class, ExcepcionMovimientoNoEncontrado.class, PaginaInexistente.class, ExcepcionMetaNoExistente.class, ErrorEmail.class})
     public ModelAndView excepcion(Exception ex){
         ModelMap modelo = new ModelMap();
         modelo.put("error", ex.getMessage());

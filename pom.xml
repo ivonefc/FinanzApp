@@ -22,6 +22,7 @@
         <jackson.version>2.17.1</jackson.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
         <apachepoi.version>5.2.5</apachepoi.version>
+        <sendgrid.version>4.10.2</sendgrid.version>
     </properties>
 
     <dependencies>
@@ -145,6 +146,12 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apachepoi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>${sendgrid.version}</version>
         </dependency>
         <!-- compile only, deployed container will provide this -->
         <!--
