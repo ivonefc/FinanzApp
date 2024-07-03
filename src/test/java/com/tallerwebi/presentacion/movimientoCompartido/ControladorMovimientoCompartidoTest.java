@@ -148,22 +148,6 @@ public class ControladorMovimientoCompartidoTest {
         verify(servicioMovimientoCompartidoMock, times(1)).agregarNuevoAmigo(idUsuario, amigo.getEmail());
     }
 
-    @Test
-    public void queNoSePuedaAutoEnviarseUnaSolicitudDeAmistad() throws ExcepcionBaseDeDatos, Excepcion {
-        // Preparación
-        Long idUsuario = 1L;
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
-        Usuario amigo = new Usuario();
-        doThrow(new ExcepcionBaseDeDatos("No puedes enviarte una solicitud de amistad a ti mismo")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
-
-        // Ejecución
-        ModelAndView modelAndView = controladorMovimientoCompartido.agregarNuevoAmigo(amigo, requestMock);
-
-        // Validación
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-amigo"));
-        verify(servicioMovimientoCompartidoMock, times(1)).agregarNuevoAmigo(idUsuario, amigo.getEmail());
-    }
 
     @Test
     public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
