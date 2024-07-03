@@ -26,7 +26,6 @@ public class ServicioEmailSendGrid implements ServicioEmail{
         SendGrid sendGrid = new SendGrid(APIKey);
         Request request = new Request();
         Mail mail = new Mail(fromEmail, subject, toEmail, content);
-        System.out.println(APIKey);
         try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
