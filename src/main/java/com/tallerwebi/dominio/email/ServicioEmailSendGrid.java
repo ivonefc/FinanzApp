@@ -7,6 +7,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.tallerwebi.dominio.excepcion.ErrorEmail;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,7 +15,8 @@ import java.io.IOException;
 @Service
 public class ServicioEmailSendGrid implements ServicioEmail{
 
-    String APIKey = "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";
+    @Value("${sendgrid.apikey}")
+    private String APIKey;
 
     @Override
     public Response enviarEmail(String from, String subject, String to, String contentType, String message, String responseMessage) throws ErrorEmail {
@@ -24,7 +26,7 @@ public class ServicioEmailSendGrid implements ServicioEmail{
         SendGrid sendGrid = new SendGrid(APIKey);
         Request request = new Request();
         Mail mail = new Mail(fromEmail, subject, toEmail, content);
-
+        System.out.println(APIKey);
         try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
