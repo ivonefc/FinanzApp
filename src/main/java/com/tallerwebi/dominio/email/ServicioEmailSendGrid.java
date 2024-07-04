@@ -9,10 +9,12 @@ import com.sendgrid.helpers.mail.objects.Email;
 import com.tallerwebi.dominio.excepcion.ErrorEmail;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
 @Service
+@Transactional
 public class ServicioEmailSendGrid implements ServicioEmail{
 
     @Value("${sendgrid.apikey}")

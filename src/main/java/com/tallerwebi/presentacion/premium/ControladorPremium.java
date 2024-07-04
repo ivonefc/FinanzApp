@@ -23,10 +23,6 @@ public class ControladorPremium {
     private ServicioUsuario servicioUsuario;
     private ServicioEmail servicioEmail;
 
-    public ControladorPremium(ServicioUsuario servicioUsuario) {
-        this.servicioUsuario = servicioUsuario;
-    }
-
     @Autowired
     public ControladorPremium(ServicioUsuario servicioUsuario, ServicioEmail servicioEmail) {
         this.servicioUsuario = servicioUsuario;
