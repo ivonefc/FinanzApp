@@ -75,7 +75,8 @@
             <div th:if="${#lists.isEmpty(movimientos)}">
                 <p>No hay movimientos disponibles.</p>
             </div>
-            <ul th:if="${not #lists.isEmpty(movimientos)}" class="list-group">
+
+            <ul th:if="${not #lists.isEmpty(movimientos) and usuario.rol != 'FREE'}" class="list-group">
                 <li class="list-group-item">
                     <button style="color:white;" type="button" class="btn btn-info" name="exportar" data-tipo-doc="PDF">Exportar PDF</button>
                     <button style="color:white;" type="button" class="btn btn-info" name="exportar" data-tipo-doc="XLSX">Exportar EXCEL</button>

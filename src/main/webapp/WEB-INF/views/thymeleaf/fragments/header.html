@@ -16,6 +16,8 @@
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
+
+
     <!-- Premium -->
     <div th:if="${usuario.rol != 'PREMIUM'}" class="mb-3 button-container" style="position: fixed;margin-left: 40%;">
         <a th:href="@{/premium}"><img th:src="@{/img/publi.png}" alt="" style="width: 100%;height: 70px;"></a>
@@ -30,6 +32,7 @@
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-bell-fill"></i>
                 </a>
+
 
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
             <li class="dropdown-header">
@@ -62,6 +65,16 @@
             </li>
         </ul>
             </li>
+
+
+            <!-- Diamante Premium -->
+
+                    <div class="nav-icon">
+                    <a th:if="${usuario.rol == 'PREMIUM'}" th:href="@{/premium}" style="margin-left: 10%;">
+                <i class="bi bi-gem"></i>
+            </a>
+                </div>
+
 
             <!-- Usuario -->
             <li class="nav-item dropdown pe-3">
