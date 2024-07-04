@@ -80,13 +80,13 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYVolverAlLogin() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
+	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYMostrarMensajeDeExito() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
 		//preparacion
 		doNothing().when(servicioLoginMock).registrar(datosRegistroUsuarioMock);
 		//ejecucion
 		ModelAndView modelAndView =  controladorLogin.registrarme(datosRegistroUsuarioMock);
 		//validacion
-		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/registro-exitoso"));
 		verify(servicioLoginMock, times(1)).registrar(datosRegistroUsuarioMock);
 	}
 
