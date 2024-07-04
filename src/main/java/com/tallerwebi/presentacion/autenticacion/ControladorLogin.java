@@ -55,7 +55,7 @@ public class ControladorLogin {
 
         try {
             servicioLogin.registrar(datosRegistroUsuario);
-            return new ModelAndView("redirect:/login");
+            return new ModelAndView("redirect:/registro-exitoso");
         } catch (UsuarioExistente e) {
             model.put("error", e.getMessage());
             return new ModelAndView("nuevo-usuario", model);
@@ -66,6 +66,11 @@ public class ControladorLogin {
             model.put("error", "");
             return new ModelAndView("nuevo-usuario", model);
         }
+    }
+
+    @RequestMapping(path = "/registro-exitoso", method = RequestMethod.GET)
+    public ModelAndView registroExitoso() {
+        return new ModelAndView("registro-exitoso");
     }
 
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)

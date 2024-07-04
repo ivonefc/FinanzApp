@@ -68,7 +68,7 @@ public class ServicioLoginTest {
     @Test
     public void registrarmeQueAlQuererRegistrarUnUsuarioConDatosExistentesRedirigirAlFormularioYMostrarError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos, UsuarioExistente {
         //preparacion
-        when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenReturn(usuarioMock);
+        when(repositorioUsuarioMock.validarQueUsuarioNoExista(anyString())).thenReturn(true);
         LocalDate fechaNacimiento = LocalDate.of(2024, 06, 11);
         DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario(
                 "nombre",
@@ -91,32 +91,6 @@ public class ServicioLoginTest {
         verify(repositorioUsuarioMock, times(0)).guardar(any(Usuario.class));
     }
 
-    //Error al crear un usuario por caida de la base de datos
-    @Test
-    public void registrarmeQueAlQuererRegistrarUnUsuarioConErrorEnLaBaseDeDatosLanceError() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionCamposInvalidos, UsuarioExistente {
-        //preparacion
-        LocalDate fechaNacimiento = LocalDate.of(2024, 06, 11);
-        DatosRegistroUsuario datosRegistroUsuario = new DatosRegistroUsuario(
-                "nombre",
-                "email@test.com",
-                "password",
-                "apellido",
-                "nombreUsuario",
-                fechaNacimiento,
-                "pais",
-                1234567890L
-        );
-        when(repositorioUsuarioMock.buscarUsuarioPorEmail(anyString())).thenThrow(new ExcepcionBaseDeDatos("Error en la base de datos"));
-
-        //ejecucion
-        ExcepcionBaseDeDatos excepcionBaseDeDatos = assertThrows(ExcepcionBaseDeDatos.class, ()->{
-            servicioLogin.registrar(datosRegistroUsuario);
-        });
-
-        //validacion
-        assertThat(excepcionBaseDeDatos.getMessage(), equalToIgnoringCase("Error en la base de datos"));
-        verify(repositorioUsuarioMock, times(0)).guardar(any(Usuario.class));
-    }
 
     //Error al crear un usuario por campos invalidos
     @Test

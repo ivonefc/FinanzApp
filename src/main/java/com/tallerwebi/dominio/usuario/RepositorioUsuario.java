@@ -22,5 +22,8 @@ public interface RepositorioUsuario {
     List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos;
-}
+
+    public boolean validarQueUsuarioNoExista(String email);
+
+    }
 

@@ -84,6 +84,21 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
+    public boolean validarQueUsuarioNoExista(String email) {
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
+                    .setParameter("email", email)
+                    .uniqueResult();
+
+            if(usuario != null) {
+                return true;
+            } else {
+                return false;
+            }
+
+    }
+
+    @Override
     public List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos {
         try {
             Session session = sessionFactory.getCurrentSession();
