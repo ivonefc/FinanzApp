@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RepositorioMeta {
@@ -22,4 +23,5 @@ public interface RepositorioMeta {
     void actualizarMeta(Meta meta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
 }

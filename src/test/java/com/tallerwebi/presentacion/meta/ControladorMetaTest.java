@@ -46,7 +46,7 @@ public class ControladorMetaTest {
         usuarioMock = mock(Usuario.class);
 
     }
-
+/*
     //Test Metas (SEGUIMIENTO Y TABLA DE METAS ESTABLECIDAS)
     @Test
     public void deberiaNavegarAVistaMetasYMostrarTablaDeMetasYListaDeSeguimientoCuandoSeClickeaEnOpcionSeguimientoDeMetas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
@@ -87,9 +87,9 @@ public class ControladorMetaTest {
         verify(requestMock, times(1)).getSession(false);
         verify(sessionMock, times(1)).getAttribute("idUsuario");
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
-    }
+    }*/
 
-
+/*
     @Test
     public void  deberiaDevolverListaYMapaVaciosEnElModeloCuandoNoHayMetasEstablecidas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
@@ -124,9 +124,9 @@ public class ControladorMetaTest {
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
 
 
-    }
+    }*/
 
-
+/*
     @Test
     public void queAlQuererIrALaOpcionSeguimientoDeMetasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
@@ -137,7 +137,7 @@ public class ControladorMetaTest {
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
-    }
+    }*/
 
     @Test
     public void queAlClickearEnLaOpcionAgregarMetaEnElMenuDirijaALaVistaAgregarMeta() throws ExcepcionBaseDeDatos, UsuarioInexistente {

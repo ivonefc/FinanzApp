@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class ControladorMeta {
         List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
         modelo.put("metas", metas);
         modelo.put("usuario", usuario);
-        Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
+        Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerMetasConFecha(idUsuario);
         modelo.put("totales", totalGastadoPorCategoria);
         return new ModelAndView("metas", modelo);
     }

@@ -35,7 +35,7 @@ public class ServicioMetaImpl implements ServicioMeta{
         Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
         CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(datosMeta.getCategoria());
         repositorioMeta.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento);
-        Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto());
+        Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto(), datosMeta.getFechaInicio(), datosMeta.getFechaFin());
         repositorioMeta.guardar(meta);
     }
 

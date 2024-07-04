@@ -29,4 +29,6 @@ public interface ServicioMovimiento {
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
 
     Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    Map<String, Double> obtenerMetasConFecha(Long idUsuario) throws ExcepcionBaseDeDatos;
 }

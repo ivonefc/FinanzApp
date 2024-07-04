@@ -2,8 +2,10 @@ package com.tallerwebi.dominio.meta;
 
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.usuario.Usuario;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "metas")
@@ -18,6 +20,10 @@ public class Meta {
     @JoinColumn(name = "id_categoria")
     private CategoriaMovimiento categoriaMovimiento;
     private Double montoMeta;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechaInicio;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechaFin;
     public void setId(Long id) {
         this.id = id;
     }
@@ -27,6 +33,14 @@ public class Meta {
         this.usuario = usuario;
         this.categoriaMovimiento = categoriaMovimiento;
         this.montoMeta = montoMeta;
+    }
+
+    public Meta(Usuario usuario, CategoriaMovimiento categoriaMovimiento, Double montoMeta, Date fechaInicio, Date fechaFin) {
+        this.usuario = usuario;
+        this.categoriaMovimiento = categoriaMovimiento;
+        this.montoMeta = montoMeta;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 
     public Meta() {
@@ -64,5 +78,21 @@ public class Meta {
 
     public void setMontoMeta(Double montoMeta) {
         this.montoMeta = montoMeta;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
     }
 }

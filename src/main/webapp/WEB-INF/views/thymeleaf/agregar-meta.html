@@ -53,6 +53,15 @@
                         <input th:field="*{monto}" id="monto" type="number" class="form-control">
                         <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
                     </div>
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha de inicio:</label>
+                        <input type="date" id="fechaInicio" name="fechaInicio" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaFin">Fecha de fin:</label>
+                        <input type="date" id="fechaFin" name="fechaFin" required>
+                    </div>
                     <div class="d-flex justify-content-between">
                         <a href="/spring/metas" class="btn btn-warning" style="color:white">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Guardar</button>

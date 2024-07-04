@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ServicioMeta {
@@ -16,4 +17,5 @@ public interface ServicioMeta {
     void actualizarMeta(DatosEditarMeta datosEditarMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
 }

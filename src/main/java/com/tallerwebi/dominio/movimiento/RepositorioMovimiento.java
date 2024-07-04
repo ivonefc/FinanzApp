@@ -2,9 +2,11 @@ package com.tallerwebi.dominio.movimiento;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
+import com.tallerwebi.dominio.meta.Meta;
 
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public interface RepositorioMovimiento {
@@ -25,4 +27,6 @@ public interface RepositorioMovimiento {
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
 
     Double obtenerTotalPorCategoriaEnMesYAnioActual(Long id, int mes, int anio) throws ExcepcionBaseDeDatos;
+
+    Double obtenerTotalPorCategoriaPorFecha(Long idUsuario, Long idCategoria, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos;
 }
