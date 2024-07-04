@@ -46,22 +46,22 @@
                         <form th:action="@{/pagar}" method="post">
                             <div class="mb-3">
                                 <label for="apellidoYNombre" class="form-label">Apellido y Nombre:</label>
-                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre">
+                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="numero" class="form-label">Numero de Tarjeta:</label>
-                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta">
+                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="fecha" class="form-label">Fecha de Vencimiento</label>
-                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa">
+                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="cvv" class="form-label">CVV</label>
-                                <input type="number" class="form-control" id="cvv" placeholder="***">
+                                <input type="password" class="form-control" id="cvv" placeholder="***" required>
                             </div>
 
                             <div class="mb-3 button-container">
