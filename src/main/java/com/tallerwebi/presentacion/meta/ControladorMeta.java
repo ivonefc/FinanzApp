@@ -81,17 +81,24 @@ public class ControladorMeta {
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         modelo.put("usuario", usuario);
         return new ModelAndView("agregar-meta", modelo);
     }
 
     @PostMapping("/metas/guardar")
-    public ModelAndView crearMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
+    public ModelAndView crearMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = request.getSession(false);
         if (httpSession == null) {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         ModelMap modelo = new ModelMap();
         try {
             servicioMeta.guardarMeta(idUsuario, datosMeta);
@@ -104,11 +111,11 @@ public class ControladorMeta {
             modelo.put("error", e.getMessage());
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
-        } catch (UsuarioInexistente e) {
+        } /*catch (UsuarioInexistente e) {
             modelo.put("error", "El usuario no existe");
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
-        }
+        }*/
     }
 
     @GetMapping("/metas/editar/{id}")
@@ -125,6 +132,9 @@ public class ControladorMeta {
 
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         modelo.put("usuario", usuario);
         Meta meta = servicioMeta.obtenerMetaPorId(id);
 
@@ -143,6 +153,9 @@ public class ControladorMeta {
             return new ModelAndView("redirect:/login");
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         modelo.put("usuario", usuario);
 
         try {

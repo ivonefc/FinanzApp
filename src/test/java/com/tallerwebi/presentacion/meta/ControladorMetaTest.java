@@ -141,7 +141,11 @@ public class ControladorMetaTest {
 
     @Test
     public void queAlClickearEnLaOpcionAgregarMetaEnElMenuDirijaALaVistaAgregarMeta() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
 
         ModelAndView modelAndView = controladorMeta.irAAgregarMetas(requestMock);
 
@@ -159,7 +163,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererAgregarUnaMetaAgregueMetaYRedirijaAVistaMetas() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
         doNothing().when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
@@ -171,8 +179,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererAgregarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Map<String, String> errores = Map.of(
                 "categoria", "El campo es requerido",
                 "monto", "El campo es requerido"
@@ -194,8 +205,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererAgregarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Map<String, String> errores = Map.of(
                 "categoria", "El campo es requerido"
         );
@@ -214,8 +228,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererAgregarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Map<String, String> errores = Map.of(
                 "monto", "El campo es requerido"
         );
@@ -235,8 +252,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererCrearMetaParaUnaCategoriaQueYaTieneMetaEstablecidaRedirigirAlFormularioYMostrarUnError() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         ExcepcionCategoriaConMetaExistente excepcionCategoriaConMetaExistente = new ExcepcionCategoriaConMetaExistente();
         DatosMeta datosMeta=  new DatosMeta("categoria", 200.0);
         doThrow(excepcionCategoriaConMetaExistente).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
@@ -251,8 +271,11 @@ public class ControladorMetaTest {
 
     @Test
     public void crearMetaQueAlQuererCrearMetaLanceExcepcionBaseDeDatos() throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente {
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
         doThrow(excepcionBaseDeDatos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
@@ -269,16 +292,20 @@ public class ControladorMetaTest {
     @Test
     public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuDirijaAlFormularioEditarMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
+        Long idMeta = 1L;
         Usuario usuario = new Usuario();
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         Meta meta = new Meta(usuario, categoriaMovimiento, 200.0);
 
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioMetaMock.obtenerMetaPorId(1L)).thenReturn(meta);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
+        when(servicioMetaMock.obtenerMetaPorId(idMeta)).thenReturn(meta);
 
         //ejecucion
-        ModelAndView modelAndView = controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
+        ModelAndView modelAndView = controladorMeta.irAFormularioEditarMetas(requestMock, idMeta);
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("editar-meta"));
@@ -297,10 +324,13 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuYNoExistaMetaConEseIdMeLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuYNoExistaMetaConEseIdMeLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         when(servicioMetaMock.obtenerMetaPorId(1L)).thenThrow(new ExcepcionMetaNoExistente());
 
         //ejecucion y validacion
@@ -310,10 +340,13 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void editarMetaQueAlClickearEnLaOpcionEditarMetaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+    public void editarMetaQueAlClickearEnLaOpcionEditarMetaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         when(servicioMetaMock.obtenerMetaPorId(1L)).thenThrow(new ExcepcionBaseDeDatos());
 
         //ejecucion y validacion
@@ -325,7 +358,11 @@ public class ControladorMetaTest {
     @Test
     public void editarMetaQueAlQuererEditarUnaMetaEditeLaMetaYRedirijaAVistaMetas() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         String categoria = categoriaMovimiento.getNombre();
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria , 200.0);
@@ -354,7 +391,11 @@ public class ControladorMetaTest {
     @Test
     public void editarMetaQueAlQuererEditarUnaMetaConCamposVaciosRedirijaAlFormularioYMuestreUnErrorEnCadaCampo() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         String categoria = categoriaMovimiento.getNombre();
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
@@ -380,7 +421,11 @@ public class ControladorMetaTest {
     @Test
     public void editarMetaQueAlQuererEditarUnaMetaConCampoCategoriaVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         String categoria = categoriaMovimiento.getNombre();
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
@@ -404,7 +449,11 @@ public class ControladorMetaTest {
     @Test
     public void editarMetaQueAlQuererEditarUnaMetaConCampoMontoVacioRedirijaAlFormularioYMuestreUnErrorEnElCampo() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, "categoria", null);
         Map<String, String> errores = Map.of(
                 "monto", "El campo es requerido"
@@ -424,9 +473,13 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void editarMetaQueAlQuererEditarUnaMetaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
+    public void editarMetaQueAlQuererEditarUnaMetaLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         String categoria = categoriaMovimiento.getNombre();
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
@@ -443,9 +496,13 @@ public class ControladorMetaTest {
     }
 
     @Test
-    public void editarMetaQueAlQuererEditarUnMetaYLaMetaNoExistaLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos {
+    public void editarMetaQueAlQuererEditarUnMetaYLaMetaNoExistaLanceExcepcionMetaNoExistente() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, ExcepcionCamposInvalidos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         CategoriaMovimiento categoriaMovimiento = new CategoriaMovimiento();
         String categoria = categoriaMovimiento.getNombre();
         DatosEditarMeta datosEditarMeta = new DatosEditarMeta(1L, categoria, 200.0);
