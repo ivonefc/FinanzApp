@@ -47,6 +47,7 @@ public class ControladorMovimientoTest {
     ServicioDeExportacion servicioDeExportacionMock;
     ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
     ServicioUsuario servicioUsuarioMock;
+    Usuario usuarioMock;
 
     @BeforeEach
     public void init(){
@@ -59,6 +60,7 @@ public class ControladorMovimientoTest {
         httpSessionMock = mock(HttpSession.class);
         datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
         datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
+        usuarioMock = mock(Usuario.class);
 
     }
 
@@ -581,13 +583,15 @@ public class ControladorMovimientoTest {
 
     //DESCARGA DE ARCHIVO PDF
     @Test
-    public void queAlHacerClickEnElBotonExportarPDFDebeDescargarArchivoPDFConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException {
+    public void queAlHacerClickEnElBotonExportarPDFDebeDescargarArchivoPDFConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException, UsuarioInexistente {
         //preparacion
         Long idUsuario = 1L;
         byte[] bytesDelArchivo = "contenido del archivo".getBytes();
 
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
-        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         TipoDeArchivo tipoDeArchivo = TipoDeArchivo.PDF;
         when(servicioDeExportacionMock.generarArchivo(idUsuario, tipoDeArchivo)).thenReturn(bytesDelArchivo);
 
@@ -602,13 +606,15 @@ public class ControladorMovimientoTest {
 
     //DESCARGA DE ARCHIVO XLSX
     @Test
-    public void queAlHacerClickEnElBotonExportarXLSXDebeDescargarArchivoXLSXConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException {
+    public void queAlHacerClickEnElBotonExportarXLSXDebeDescargarArchivoXLSXConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException, UsuarioInexistente {
         //preparacion
         Long idUsuario = 1L;
         byte[] bytesDelArchivo = "contenido del archivo".getBytes();
 
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
-        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         TipoDeArchivo tipoDeArchivo = TipoDeArchivo.XLSX;
         when(servicioDeExportacionMock.generarArchivo(idUsuario, tipoDeArchivo)).thenReturn(bytesDelArchivo);
 
