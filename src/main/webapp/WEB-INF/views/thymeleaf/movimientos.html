@@ -78,8 +78,8 @@
 
             <ul th:if="${not #lists.isEmpty(movimientos) and usuario.rol != 'FREE'}" class="list-group">
                 <li class="list-group-item">
-                    <button style="color:white;" type="button" class="btn btn-info" name="exportar" data-tipo-doc="PDF">Exportar PDF</button>
-                    <button style="color:white;" type="button" class="btn btn-info" name="exportar" data-tipo-doc="XLSX">Exportar EXCEL</button>
+                    <button style="color:white; background-color: red;" type="button" class="btn" name="exportar" data-tipo-doc="PDF"><i class="bi bi-file-earmark-pdf px-2"></i>Exportar PDF</button>
+                    <button style="color:white; background-color: forestgreen" type="button" class="btn" name="exportar" data-tipo-doc="XLSX"><i class="bi bi-file-earmark-excel px-2"></i></i>Exportar EXCEL</button>
                 </li>
             </ul>
         </div>
