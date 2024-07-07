@@ -141,16 +141,16 @@ public class ControladorMovimiento {
     public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpServletRequest.getSession(false) == null) {
+        if (httpServletRequest.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
-        if (amigos != null) {
+        if (amigos != null)
             modelo.put("amigos", amigos);
-        }
+
         modelo.put("usuario", usuario);
         return new ModelAndView("agregar-movimiento", modelo);
     }
@@ -205,6 +205,7 @@ public class ControladorMovimiento {
                     .headers(headers)
                     .body(mensajeDeError.getBytes());
         }
+
         byte[] bytesDelArchivo = servicioDeExportacion.generarArchivo(idUsuario, tipoDeDoc);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok()

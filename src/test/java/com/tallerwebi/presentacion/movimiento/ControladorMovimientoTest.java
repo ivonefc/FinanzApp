@@ -627,6 +627,25 @@ public class ControladorMovimientoTest {
         assertThat(respuesta.getBody(), equalTo(bytesDelArchivo));
     }
 
+    //INTENTO DE DESCARGA DE ARCHIVO SIENDO FREE
+    @Test
+    public void queAlDescargarDocumentoSiendoUsuarioFreeRetorneForbidden() throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, UsuarioInexistente {
+        // Preparación
+        Long idUsuario = 1L;
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
+
+        // Ejecución
+        ResponseEntity<byte[]> respuesta = controladorMovimiento.descargarDocumentoDeMovimentos(TipoDeArchivo.PDF, httpServletRequestMock);
+
+        // Validación
+        assertEquals(HttpStatus.FORBIDDEN, respuesta.getStatusCode());
+        assertEquals("Los usuarios con rol FREE no pueden descargar documentos.", new String(respuesta.getBody()));
+    }
+
     @Test
     public void queAlQuererObtenerAmigosObtengaTodosLosAmigos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
