@@ -35,15 +35,17 @@ public class ServicioEmailTest {
         String to = "to@ejemplo.com";
         String contentType = "text/plain";
         String message = "Mensaje";
-        String responseMessage = "Email enviado";
+        String responseBody = "En breve recibirás un email con todos los detalles de tu suscripción.\n" +
+                "\n" +
+                "¡Gracias por elegirnos para gestionar tus finanzas!";
 
         when(sendGrid.api(request)).thenReturn(new com.sendgrid.Response(202, "Accepted", null));
 
         //ejecucion
-        Response response = servicioEmail.enviarEmail(from, subject, to, contentType, message,responseMessage);
+        Response response = servicioEmail.enviarEmailPremium(from, subject, to, contentType, message);
 
         //
-        assertThat(response.getResponseBody(), equalTo(responseMessage));
+        assertThat(response.getResponseBody(), equalTo(responseBody));
     }
 
     /*
