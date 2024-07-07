@@ -31,6 +31,7 @@ public class ControladorMovimientoCompartidoTest {
     private HttpSession sessionMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
     private ServicioUsuario servicioUsuarioMock;
+    private Usuario usuarioMock;
 
     @BeforeEach
     public void init(){
@@ -39,12 +40,17 @@ public class ControladorMovimientoCompartidoTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
         controladorMovimientoCompartido = new ControladorMovimientoCompartido(servicioMovimientoCompartidoMock, servicioUsuarioMock);
+        usuarioMock = mock(Usuario.class);
     }
 
     @Test
     public void queAlClickearLaOpcionMovimientosCompartidosEnElMenuDirijaALaVistaMovimientosCompartidos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
 
         //ejecucion
         ModelAndView modelAndView = controladorMovimientoCompartido.irAMovimientosCompartidos(requestMock);
@@ -79,9 +85,29 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlClickearAgregarAmigoMeRedirijaALaVistaDeAgregarAmigo() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlQuererIrAMovimientosCompartidosSiendoUsuarioFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(1L)).thenReturn(usuario);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMovimientoCompartido.irAMovimientosCompartidos(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlClickearAgregarAmigoMeRedirijaALaVistaDeAgregarAmigo() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Long idUsuario = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
 
         //ejecucion
         ModelAndView modelAndView = controladorMovimientoCompartido.irAAgregarAmigo(requestMock);
@@ -116,11 +142,29 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
+    public void queAlQuererIrAAgregarAmigoSiendoUsuarioFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(1L)).thenReturn(usuario);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMovimientoCompartido.irAAgregarAmigo(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
     public void queAlQuererAgregarUnAmigoSePuedaAgregarAmigo() throws ExcepcionBaseDeDatos, Excepcion {
         //preparacion
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Usuario amigo = new Usuario();
 
         //ejecucion
@@ -132,11 +176,13 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
+    public void queNoSePuedaAgregarUnAmigoQueYaEsAmigo() throws ExcepcionBaseDeDatos, Excepcion {
         // Preparación
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Usuario amigo = new Usuario();
         doThrow(new Excepcion("El usuario ya es tu amigo")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
@@ -154,6 +200,8 @@ public class ControladorMovimientoCompartidoTest {
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Usuario amigo = new Usuario();
         doThrow(new Excepcion("No se encontró un usuario con el email proporcionado")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
@@ -171,6 +219,8 @@ public class ControladorMovimientoCompartidoTest {
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         Usuario amigo = new Usuario();
         doThrow(new Excepcion("Ya has enviado una solicitud de amistad a este usuario")).when(servicioMovimientoCompartidoMock).agregarNuevoAmigo(idUsuario, amigo.getEmail());
 
@@ -180,6 +230,22 @@ public class ControladorMovimientoCompartidoTest {
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-amigo"));
         verify(servicioMovimientoCompartidoMock, times(1)).agregarNuevoAmigo(idUsuario, amigo.getEmail());
+    }
+
+    @Test
+    public void queAlQuererAgregarNuevoAmigoSiendoUsuarioFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, Excepcion {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(1L)).thenReturn(usuario);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMovimientoCompartido.agregarNuevoAmigo(new Usuario(), requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
     }
 
     @Test
@@ -289,6 +355,8 @@ public class ControladorMovimientoCompartidoTest {
         Long idAmigo = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idAmigo)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
 
         // Ejecución
         ModelAndView modelAndView = controladorMovimientoCompartido.eliminarAmigo(idAmigo, requestMock);
@@ -313,8 +381,11 @@ public class ControladorMovimientoCompartidoTest {
     @Test
     public void queAlQuererEliminarUnAmigoLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparación
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         doThrow(new UsuarioInexistente()).when(servicioMovimientoCompartidoMock).eliminarAmigo(1L, 1L);
 
         // Ejecución y validación
@@ -326,8 +397,11 @@ public class ControladorMovimientoCompartidoTest {
     @Test
     public void queAlQuererEliminarUnAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparación
+        Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         doThrow(new ExcepcionBaseDeDatos("No se encontró el amigo")).when(servicioMovimientoCompartidoMock).eliminarAmigo(1L, 1L);
 
         // Ejecución y validación
@@ -337,20 +411,40 @@ public class ControladorMovimientoCompartidoTest {
     }
 
     @Test
+    public void queAlQuererEliminarAmigoSiendoUsuarioFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        // Preparación
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(1L)).thenReturn(usuario);
+
+        // Ejecución
+        ModelAndView modelAndView = controladorMovimientoCompartido.eliminarAmigo(1L, requestMock);
+
+        // Validación
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
     public void queSePuedaVerLosMovimientosCompartidos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparación
         Long idAmigo = 1L;
+        Long idUsuario = 2L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idAmigo)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         List<Movimiento> movimientos = new ArrayList<>();
-        when(servicioMovimientoCompartidoMock.obtenerMovimientosCompartidos(idAmigo, 1L)).thenReturn(movimientos);
+        when(servicioMovimientoCompartidoMock.obtenerMovimientosCompartidos(idAmigo, idUsuario)).thenReturn(movimientos);
 
         // Ejecución
         ModelAndView modelAndView = controladorMovimientoCompartido.verMovimientosCompartidos(idAmigo, requestMock);
 
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("movimientos-compartidos-amigo"));
-        verify(servicioMovimientoCompartidoMock, times(1)).obtenerMovimientosCompartidos(idAmigo, 1L);
+        verify(servicioMovimientoCompartidoMock, times(1)).obtenerMovimientosCompartidos(idAmigo, idUsuario);
     }
 
     @Test
@@ -391,6 +485,48 @@ public class ControladorMovimientoCompartidoTest {
         assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMovimientoCompartido.verMovimientosCompartidos(1L, requestMock);
         });
+    }
+
+    @Test
+    public void queAlQuererVerMovimientosCompartidosSiendoAmigoFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        // Preparación
+        Long idAmigo = 1L;
+        Long idUsuario = 2L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        Usuario usuario = new Usuario();
+        usuario.setRol("PREMIUM");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
+        Usuario amigo = new Usuario();
+        amigo.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idAmigo)).thenReturn(amigo);
+
+        // Ejecución
+        ModelAndView modelAndView = controladorMovimientoCompartido.verMovimientosCompartidos(idAmigo, requestMock);
+
+        // Validación
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlQuererVerMovimientosCompartidosSiendoUsuarioFreeMeRedirijaAlPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        // Preparación
+        Long idAmigo = 1L;
+        Long idUsuario = 2L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
+        Usuario amigo = new Usuario();
+        amigo.setRol("PREMIUM");
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idAmigo)).thenReturn(amigo);
+
+        // Ejecución
+        ModelAndView modelAndView = controladorMovimientoCompartido.verMovimientosCompartidos(idAmigo, requestMock);
+
+        // Validación
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
     }
 
     @Test
