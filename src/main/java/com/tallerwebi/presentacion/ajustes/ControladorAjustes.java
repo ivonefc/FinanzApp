@@ -36,14 +36,6 @@ public class ControladorAjustes {
         return new ModelAndView("ajustes", modelo);
     }
 
-    @GetMapping("/ajustes/panel")
-    public ModelAndView volverAPanel(HttpServletRequest request){
-        if (request.getSession(false) == null)
-            return new ModelAndView("redirect:/login");
-
-        return new ModelAndView("redirect:/panel");
-    }
-
     @GetMapping("/ajustes/mi-perfil")
     public ModelAndView irAMiPerfil(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = request.getSession(false);
@@ -68,6 +60,32 @@ public class ControladorAjustes {
         modelo.put("usuario", usuario);
 
         return new ModelAndView("redirect:/categorias/editar-colores", modelo);
+    }
+
+    @GetMapping("/ajustes/premium")
+    public ModelAndView irAPremium(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        ModelMap modelo = new ModelMap();
+        modelo.put("usuario", usuario);
+
+        return new ModelAndView("redirect:/premium", modelo);
+    }
+
+    @GetMapping("/ajustes/movimientos/agregar-movimiento")
+    public ModelAndView irAAgregarMovimiento(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        ModelMap modelo = new ModelMap();
+        modelo.put("usuario", usuario);
+
+        return new ModelAndView("redirect:/agregar-movimiento", modelo);
     }
 
 }
