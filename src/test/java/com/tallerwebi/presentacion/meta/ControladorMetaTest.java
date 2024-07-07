@@ -75,11 +75,11 @@ public class ControladorMetaTest {
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("metas"));
-       assertThat(modelAndView.getModel().get("totales"), is(mapEsperado));
-       assertThat(modelAndView.getModel().get("metas"), is(listaEsperada));
-       assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("TRANSPORTE", 30000.0));
-       assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("RESTAURANTE", 20000.0));
-       assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasSize(2));
+        assertThat(modelAndView.getModel().get("totales"), is(mapEsperado));
+        assertThat(modelAndView.getModel().get("metas"), is(listaEsperada));
+        assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("TRANSPORTE", 30000.0));
+        assertThat((Map<String, Double>)modelAndView.getModel().get("totales"), hasEntry("RESTAURANTE", 20000.0));
+        assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasSize(2));
         assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasItem(meta1));
         assertThat((List<Meta>)modelAndView.getModel().get("metas"), hasItem(meta2));
 
@@ -133,6 +133,22 @@ public class ControladorMetaTest {
     }
 
     @Test
+    public void queAlQuererIrAMetasSiendoUsuarioFreeMeRedirijaAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Long idUsuario = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("FREE");
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.irAMetas(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
     public void queAlClickearEnLaOpcionAgregarMetaEnElMenuDirijaALaVistaAgregarMeta() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -152,6 +168,19 @@ public class ControladorMetaTest {
         ModelAndView modelAndView = controladorMeta.irAAgregarMetas(requestMock);
 
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlQuererIrAAgregarMetasSiendoUsuarioFreeMeRedirijaAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        Long idUsuario = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("FREE");
+
+        ModelAndView modelAndView = controladorMeta.irAAgregarMetas(requestMock);
+
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
     }
 
     @Test
@@ -278,6 +307,19 @@ public class ControladorMetaTest {
     }
 
     @Test
+    public void queAlQuererCrearUnaMetaSiendoUsuarioFreeMeRedirijaAPanel() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        Long idUsuario = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("FREE");
+
+        ModelAndView modelAndView = controladorMeta.crearMeta(new DatosMeta(), requestMock);
+
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
     public void editarMetaQueAlClickearEnLaOpcionEditarMetaEnElMenuDirijaAlFormularioEditarMeta() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
         //preparacion
         Long idUsuario = 1L;
@@ -341,6 +383,23 @@ public class ControladorMetaTest {
         assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMeta.irAFormularioEditarMetas(requestMock, 1L);
         });
+    }
+
+    @Test
+    public void queAlQuererIrAFormularioEditarMetasSiendoUsuarioFreeMeRedirijaAPanel() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
+        //preparacion
+        Long idUsuario = 1L;
+        Long idMeta = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("FREE");
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.irAFormularioEditarMetas(requestMock, idMeta);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
     }
 
     @Test
@@ -504,6 +563,22 @@ public class ControladorMetaTest {
 
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).actualizarMeta(datosEditarMeta);
+    }
+
+    @Test
+    public void queAlQuererEditarMetaSiendoUsuarioFreeMeRedirijaAPanel() throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente, UsuarioInexistente {
+        //preparacion
+        Long idUsuario = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("FREE");
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.editarMeta(new DatosEditarMeta(), requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
     }
 
     //eliminar
