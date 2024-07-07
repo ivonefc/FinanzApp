@@ -149,6 +149,89 @@ public class ControladorMetaTest {
     }
 
     @Test
+    public void queAlQuererObtenerMetaLaObtengaCorrectamente() throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Long idMeta = 1L;
+        Meta meta = new Meta();
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(idMeta)).thenReturn(meta);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.obtenerMeta(idMeta, requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("metas"));
+        assertThat(modelAndView.getModel().get("meta"), is(meta));
+        verify(servicioMetaMock, times(1)).obtenerMetaPorId(idMeta);
+    }
+
+    @Test
+    public void queAlQuererObtenerMetaSinUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.obtenerMeta(1L, requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlQuererObtenerMetaYNoExistaMetaConEseIdMeLanceExcepcionMetaNoExistente() throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Long idMeta = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(idMeta)).thenThrow(new ExcepcionMetaNoExistente());
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionMetaNoExistente.class, () -> {
+            controladorMeta.obtenerMeta(idMeta, requestMock);
+        });
+    }
+
+    @Test
+    public void queAlQuererObtenerMetaLanceExcepcionBaseDeDatos() throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Long idMeta = 1L;
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(servicioMetaMock.obtenerMetaPorId(idMeta)).thenThrow(new ExcepcionBaseDeDatos());
+
+        //ejecucion y validacion
+        assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            controladorMeta.obtenerMeta(idMeta, requestMock);
+        });
+    }
+
+    @Test
+    public void queAlClickearVolverAInicioMeRedirijaAPanel() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlClickearVolverAInicioYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
     public void queAlClickearEnLaOpcionAgregarMetaEnElMenuDirijaALaVistaAgregarMeta() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         Long idUsuario = 1L;
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -638,31 +721,6 @@ public class ControladorMetaTest {
 
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).eliminarMeta(1L);
-    }
-
-    @Test
-    public void queAlClickearVolverAInicioMeRedirijaAPanel() {
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
-    }
-
-    @Test
-    public void queAlClickearVolverAInicioYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(null);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 
 }
