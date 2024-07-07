@@ -45,6 +45,14 @@ public class ControladorMovimientoCompartido {
         return new ModelAndView("movimientos-compartidos", modelo);
     }
 
+    @GetMapping("/movimientos-compartidos/panel")
+    public ModelAndView volverAPanel(HttpServletRequest request){
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+
+        return new ModelAndView("redirect:/panel");
+    }
+
     @GetMapping("/movimientos-compartidos/agregar-amigo")
     public ModelAndView irAAgregarAmigo(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = request.getSession(false);

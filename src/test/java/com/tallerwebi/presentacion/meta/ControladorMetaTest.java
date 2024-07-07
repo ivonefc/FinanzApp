@@ -44,7 +44,6 @@ public class ControladorMetaTest {
         servicioMovimientoMock =  mock(ServicioMovimiento.class);
         controladorMeta = new ControladorMeta(servicioMetaMock, servicioMovimientoMock, servicioUsuarioMock);
         usuarioMock = mock(Usuario.class);
-
     }
 
     //Test Metas (SEGUIMIENTO Y TABLA DE METAS ESTABLECIDAS)
@@ -103,7 +102,6 @@ public class ControladorMetaTest {
         when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
         when(usuarioMock.getRol()).thenReturn("PREMIUM");
 
-
         //ejecucion
         ModelAndView modelAndView = controladorMeta.irAMetas(requestMock);
 
@@ -116,14 +114,9 @@ public class ControladorMetaTest {
         assertThat(modelAndView.getModel().get("totales"), is(mapEsperado));
         assertThat(modelAndView.getModel().get("metas"), is(listaEsperada));
 
-
-
-
         verify(requestMock, times(1)).getSession(false);
         verify(sessionMock, times(1)).getAttribute("idUsuario");
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
-
-
     }
 
 
@@ -171,7 +164,6 @@ public class ControladorMetaTest {
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
         doNothing().when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
-
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
 
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/metas"));
@@ -191,7 +183,6 @@ public class ControladorMetaTest {
         ExcepcionCamposInvalidos excepcionCamposInvalidos = new ExcepcionCamposInvalidos(errores);
         DatosMeta datosMeta = new DatosMeta();
         doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
-
 
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
         Map<String, String> erroresObtenidos = (Map<String, String>) modelAndView.getModel().get("errores");
@@ -240,7 +231,6 @@ public class ControladorMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         doThrow(excepcionCamposInvalidos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
-
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
         Map<String, String> erroresObtenidos = (Map<String, String>) modelAndView.getModel().get("errores");
 
@@ -261,7 +251,6 @@ public class ControladorMetaTest {
         DatosMeta datosMeta=  new DatosMeta("categoria", 200.0);
         doThrow(excepcionCategoriaConMetaExistente).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
 
-
         ModelAndView modelAndView = controladorMeta.crearMeta(datosMeta, requestMock);
 
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("agregar-meta"));
@@ -279,7 +268,6 @@ public class ControladorMetaTest {
         ExcepcionBaseDeDatos excepcionBaseDeDatos = new ExcepcionBaseDeDatos();
         DatosMeta datosMeta = new DatosMeta("categoria", 200.0);
         doThrow(excepcionBaseDeDatos).when(servicioMetaMock).guardarMeta(anyLong(), eq(datosMeta));
-
 
         ExcepcionBaseDeDatos thrownException = assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMeta.crearMeta(datosMeta, requestMock);
@@ -575,6 +563,31 @@ public class ControladorMetaTest {
 
         assertEquals(excepcionMetaNoExistente.getMessage(), thrownException.getMessage());
         verify(servicioMetaMock, times(1)).eliminarMeta(1L);
+    }
+
+    @Test
+    public void queAlClickearVolverAInicioMeRedirijaAPanel() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlClickearVolverAInicioYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorMeta.volverAPanel(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 
 }

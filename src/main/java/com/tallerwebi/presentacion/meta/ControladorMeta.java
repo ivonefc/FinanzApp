@@ -63,11 +63,11 @@ public class ControladorMeta {
         return new ModelAndView("metas", modelo);
     }
 
-    @GetMapping("/meta/panel")
+    @GetMapping("/metas/panel")
     public ModelAndView volverAPanel(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         return new ModelAndView("redirect:/panel");
     }
 

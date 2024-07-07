@@ -148,7 +148,6 @@ public class ControladorMovimientoCompartidoTest {
         verify(servicioMovimientoCompartidoMock, times(1)).agregarNuevoAmigo(idUsuario, amigo.getEmail());
     }
 
-
     @Test
     public void queLanceUnaExepcionCuandoAgregoDeAmigoAUnUsuarioQueNoExiste() throws Excepcion, ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad, ExcepcionUsuarioNoPremium, Excepcion {
         // Preparación
@@ -392,5 +391,30 @@ public class ControladorMovimientoCompartidoTest {
         assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorMovimientoCompartido.verMovimientosCompartidos(1L, requestMock);
         });
+    }
+
+    @Test
+    public void queAlClickearVolverAlInicioMeRedirijaAlPanel() {
+        // preparación
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+
+        // ejecución
+        ModelAndView modelAndView = controladorMovimientoCompartido.volverAPanel(requestMock);
+
+        // validación
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
+    }
+
+    @Test
+    public void queAlClickearVolverAlInicioYNoHayaUsuarioLogueadoMeRedirijaAlLoguin() {
+        // preparación
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        // ejecución
+        ModelAndView modelAndView = controladorMovimientoCompartido.volverAPanel(requestMock);
+
+        // validación
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
     }
 }
