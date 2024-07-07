@@ -202,4 +202,12 @@ public class ControladorLoginTest {
 		assertThat(erroresObtenidos, IsMapWithSize.aMapWithSize(1));
 		assertThat(erroresObtenidos, hasEntry("email", "El email es invalido"));
 	}
+
+	@Test
+	public void queAlClickearEnCancelarRegistroMeReirijaALogin(){
+		//ejecucion
+		ModelAndView modelAndView = controladorLogin.cancelarRegistro();
+		//validacion
+		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+	}
 }
