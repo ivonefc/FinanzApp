@@ -98,7 +98,7 @@ public class ControladorPremiumTest {
         when(sessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
         when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
         doNothing().when(servicioUsuarioMock).actualizarPlan(usuario);
-        when(servicioEmailMock.enviarEmail(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+        when(servicioEmailMock.enviarEmailPremium(anyString(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(new Response("En breve recibirás un email con todos los detalles de tu suscripción.\n" +
                         "\n" +
                         "¡Gracias por elegirnos para gestionar tus finanzas!"));
@@ -117,7 +117,7 @@ public class ControladorPremiumTest {
 
         verify(servicioUsuarioMock, times(1)).obtenerUsuarioPorId(idUsuario);
         verify(servicioUsuarioMock, times(1)).actualizarPlan(usuario);
-        verify(servicioEmailMock, times(1)).enviarEmail(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(servicioEmailMock, times(1)).enviarEmailPremium(anyString(), anyString(), anyString(), anyString(), anyString());
     }
 
 
