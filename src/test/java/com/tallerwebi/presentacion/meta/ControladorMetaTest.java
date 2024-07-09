@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.meta;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.RepositorioMetaVencida;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
@@ -34,6 +35,7 @@ public class ControladorMetaTest {
     private ServicioMovimiento servicioMovimientoMock;
     private ServicioUsuario servicioUsuarioMock;
     private Usuario usuarioMock;
+    private RepositorioMetaVencida repositorioMetaVencidaMock;
 
     @BeforeEach
     public void init(){
@@ -42,7 +44,7 @@ public class ControladorMetaTest {
         servicioMetaMock = mock(ServicioMeta.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioMovimientoMock =  mock(ServicioMovimiento.class);
-        controladorMeta = new ControladorMeta(servicioMetaMock, servicioMovimientoMock, servicioUsuarioMock);
+        controladorMeta = new ControladorMeta(servicioMetaMock, servicioMovimientoMock, servicioUsuarioMock, repositorioMetaVencidaMock);
         usuarioMock = mock(Usuario.class);
 
     }

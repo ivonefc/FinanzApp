@@ -3,6 +3,7 @@ package com.tallerwebi.dominio.meta;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
@@ -30,6 +31,7 @@ public class ServicioMetaTest {
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
     RepositorioMetaVencida repositorioMetaVencidaMock;
+    ServicioMovimiento servicioMovimientoMock;
 
 
     @BeforeEach
@@ -37,7 +39,7 @@ public class ServicioMetaTest {
         repositorioMetaMock = mock(RepositorioMeta.class);
         repositorioCategoriaMock = mock(RepositorioCategoria.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
-        servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaVencidaMock);
+        servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaVencidaMock, servicioMovimientoMock);
         usuarioMock = mock(Usuario.class);
         categoriaMock = mock(CategoriaMovimiento.class);
     }

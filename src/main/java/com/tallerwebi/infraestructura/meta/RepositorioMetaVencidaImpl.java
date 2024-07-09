@@ -9,6 +9,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+import java.util.List;
+
 @Repository
 public class RepositorioMetaVencidaImpl implements RepositorioMetaVencida {
 
@@ -20,7 +23,7 @@ public class RepositorioMetaVencidaImpl implements RepositorioMetaVencida {
     }
 
     @Override
-    public void guardarMetaVencida(Meta meta) throws ExcepcionBaseDeDatos {
+    public void guardarMetaVencida(Meta meta, Double totalGastado) throws ExcepcionBaseDeDatos {
         try {
             MetaVencida metaVencida = new MetaVencida();
             metaVencida.setUsuario(meta.getUsuario());
@@ -28,10 +31,19 @@ public class RepositorioMetaVencidaImpl implements RepositorioMetaVencida {
             metaVencida.setMontoMeta(meta.getMontoMeta());
             metaVencida.setFechaInicio(meta.getFechaInicio());
             metaVencida.setFechaFin(meta.getFechaFin());
+            metaVencida.setTotalGastado(totalGastado);
 
             sessionFactory.getCurrentSession().save(metaVencida);
         }catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos();
         }
+    }
+
+    @Transactional
+    @Override
+    public List<MetaVencida> obtenerMetasVencidas(Long idUsuario) {
+        return sessionFactory.getCurrentSession().createQuery("from MetaVencida where usuario.id = :idUsuario", MetaVencida.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
     }
 }

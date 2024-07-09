@@ -24,6 +24,7 @@ public class MetaVencida {
     private Double montoMeta;
     private Date fechaInicio;
     private Date fechaFin;
+    private Double totalGastado;
 
     public CategoriaMovimiento getCategoriaMovimiento() {
         return categoriaMovimiento;
@@ -71,6 +72,14 @@ public class MetaVencida {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public Double getTotalGastado() {
+        return totalGastado;
+    }
+
+    public void setTotalGastado(Double totalGastado) {
+        this.totalGastado = totalGastado;
     }
 
 }

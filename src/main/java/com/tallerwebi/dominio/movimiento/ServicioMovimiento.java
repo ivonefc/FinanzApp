@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,4 +32,6 @@ public interface ServicioMovimiento {
     Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     Map<String, Double> obtenerMetasConFecha(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    Double obtenerTotalGastado(Long idUsuario, Long idMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos;
 }

@@ -2,6 +2,8 @@ package com.tallerwebi.presentacion.meta;
 
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.MetaVencida;
+import com.tallerwebi.dominio.meta.RepositorioMetaVencida;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
@@ -24,12 +26,14 @@ public class ControladorMeta {
     private ServicioMovimiento servicioMovimiento;
     private ServicioMeta servicioMeta;
     private ServicioUsuario servicioUsuario;
+    private RepositorioMetaVencida repositorioMetaVencida;
 
     @Autowired
-    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento, ServicioUsuario servicioUsuario) {
+    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento, ServicioUsuario servicioUsuario, RepositorioMetaVencida repositorioMetaVencida) {
         this.servicioMeta = servicioMeta;
         this.servicioMovimiento = servicioMovimiento;
         this.servicioUsuario = servicioUsuario;
+        this.repositorioMetaVencida = repositorioMetaVencida;
     }
 
     @GetMapping("/metas")
@@ -84,6 +88,24 @@ public class ControladorMeta {
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("usuario", usuario);
         return new ModelAndView("agregar-meta", modelo);
+    }
+
+    @GetMapping("/metas/historial")
+    public ModelAndView irAHistorialDeMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        ModelMap modelo = new ModelMap();
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
+        modelo.put("usuario", usuario);
+        List <MetaVencida> metasVencidas = repositorioMetaVencida.obtenerMetasVencidas(idUsuario);
+        modelo.put("metasVencidas", metasVencidas);
+        return new ModelAndView("historial-metas", modelo);
     }
 
     @PostMapping("/metas/guardar")

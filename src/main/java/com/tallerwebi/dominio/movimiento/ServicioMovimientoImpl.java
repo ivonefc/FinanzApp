@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,5 +177,10 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
             }
         }
         return totalGastadoEnCategoriasConMetas;
+    }
+
+    @Override
+    public Double obtenerTotalGastado(Long idUsuario, Long idCategoriaMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerTotalPorCategoriaPorFecha(idUsuario, idCategoriaMeta, fechaInicio, fechaFin);
     }
 }
