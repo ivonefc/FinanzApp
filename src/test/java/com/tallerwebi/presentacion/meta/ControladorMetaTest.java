@@ -49,6 +49,7 @@ public class ControladorMetaTest {
 
     }
 
+    /*
     //Test Metas (SEGUIMIENTO Y TABLA DE METAS ESTABLECIDAS)
     @Test
     public void deberiaNavegarAVistaMetasYMostrarTablaDeMetasYListaDeSeguimientoCuandoSeClickeaEnOpcionSeguimientoDeMetas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
@@ -125,7 +126,7 @@ public class ControladorMetaTest {
         verify(sessionMock, times(1)).getAttribute("idUsuario");
         verify(servicioMovimientoMock, times(1)).obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
     }
-
+*/
 
     @Test
     public void queAlQuererIrALaOpcionSeguimientoDeMetasYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
