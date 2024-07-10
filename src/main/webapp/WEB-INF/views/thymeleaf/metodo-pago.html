@@ -19,7 +19,7 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/metodo-pago.css}"> !!!!
+    <link rel="stylesheet" th:href="@{/css/metodo-pago.css}">
 </head>
 
 <body>
@@ -40,28 +40,28 @@
             <div class="col-12 col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Tarjeta</h5>
+                        <h5 class="card-title">Ingrese datos de su tarjeta</h5>
                     </div>
                     <div class="card-body">
                         <form th:action="@{/pagar}" method="post">
                             <div class="mb-3">
                                 <label for="apellidoYNombre" class="form-label">Apellido y Nombre:</label>
-                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre" required>
+                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre">
                             </div>
 
                             <div class="mb-3">
                                 <label for="numero" class="form-label">Numero de Tarjeta:</label>
-                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta" required>
+                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta">
                             </div>
 
                             <div class="mb-3">
                                 <label for="fecha" class="form-label">Fecha de Vencimiento</label>
-                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa" required>
+                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa">
                             </div>
 
                             <div class="mb-3">
                                 <label for="cvv" class="form-label">CVV</label>
-                                <input type="password" class="form-control" id="cvv" placeholder="***" required>
+                                <input type="password" class="form-control" id="cvv" placeholder="***">
                             </div>
 
                             <div class="mb-3 button-container">
@@ -84,6 +84,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:src="@{/js/panel.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/tarjeta.js}"></script>
+
 
 </body>
 

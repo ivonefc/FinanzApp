@@ -47,6 +47,7 @@ public class ControladorMovimientoTest {
     ServicioDeExportacion servicioDeExportacionMock;
     ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
     ServicioUsuario servicioUsuarioMock;
+    Usuario usuarioMock;
 
     @BeforeEach
     public void init(){
@@ -59,6 +60,7 @@ public class ControladorMovimientoTest {
         httpSessionMock = mock(HttpSession.class);
         datosEditarMovimientoMock = mock(DatosEditarMovimiento.class);
         datosAgregarMovimientoMock = mock(DatosAgregarMovimiento.class);
+        usuarioMock = mock(Usuario.class);
 
     }
 
@@ -581,13 +583,15 @@ public class ControladorMovimientoTest {
 
     //DESCARGA DE ARCHIVO PDF
     @Test
-    public void queAlHacerClickEnElBotonExportarPDFDebeDescargarArchivoPDFConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException {
+    public void queAlHacerClickEnElBotonExportarPDFDebeDescargarArchivoPDFConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException, UsuarioInexistente {
         //preparacion
         Long idUsuario = 1L;
         byte[] bytesDelArchivo = "contenido del archivo".getBytes();
 
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
-        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         TipoDeArchivo tipoDeArchivo = TipoDeArchivo.PDF;
         when(servicioDeExportacionMock.generarArchivo(idUsuario, tipoDeArchivo)).thenReturn(bytesDelArchivo);
 
@@ -602,13 +606,15 @@ public class ControladorMovimientoTest {
 
     //DESCARGA DE ARCHIVO XLSX
     @Test
-    public void queAlHacerClickEnElBotonExportarXLSXDebeDescargarArchivoXLSXConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException {
+    public void queAlHacerClickEnElBotonExportarXLSXDebeDescargarArchivoXLSXConTodosLosMovimientos() throws ExcepcionExportacionDeArchivo, ExcepcionBaseDeDatos, DocumentException, UsuarioInexistente {
         //preparacion
         Long idUsuario = 1L;
         byte[] bytesDelArchivo = "contenido del archivo".getBytes();
 
         when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
-        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(1L);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuarioMock);
+        when(usuarioMock.getRol()).thenReturn("PREMIUM");
         TipoDeArchivo tipoDeArchivo = TipoDeArchivo.XLSX;
         when(servicioDeExportacionMock.generarArchivo(idUsuario, tipoDeArchivo)).thenReturn(bytesDelArchivo);
 
@@ -619,6 +625,25 @@ public class ControladorMovimientoTest {
         assertThat(respuesta.getStatusCode(), equalTo(HttpStatus.OK));
         assertThat(respuesta.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_OCTET_STREAM));
         assertThat(respuesta.getBody(), equalTo(bytesDelArchivo));
+    }
+
+    //INTENTO DE DESCARGA DE ARCHIVO SIENDO FREE
+    @Test
+    public void queAlDescargarDocumentoSiendoUsuarioFreeRetorneForbidden() throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, UsuarioInexistente {
+        // Preparación
+        Long idUsuario = 1L;
+        Usuario usuario = new Usuario();
+        usuario.setRol("FREE");
+        when(httpServletRequestMock.getSession(false)).thenReturn(httpSessionMock);
+        when(httpSessionMock.getAttribute("idUsuario")).thenReturn(idUsuario);
+        when(servicioUsuarioMock.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
+
+        // Ejecución
+        ResponseEntity<byte[]> respuesta = controladorMovimiento.descargarDocumentoDeMovimentos(TipoDeArchivo.PDF, httpServletRequestMock);
+
+        // Validación
+        assertEquals(HttpStatus.FORBIDDEN, respuesta.getStatusCode());
+        assertEquals("Los usuarios con rol FREE no pueden descargar documentos.", new String(respuesta.getBody()));
     }
 
     @Test

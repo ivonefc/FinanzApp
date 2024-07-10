@@ -21,7 +21,7 @@ public class ServicioEmailSendGrid implements ServicioEmail{
     private String APIKey;
 
     @Override
-    public Response enviarEmail(String from, String subject, String to, String contentType, String message, String responseMessage) throws ErrorEmail {
+    public Response enviarEmailPremium(String from, String subject, String to, String contentType, String message) throws ErrorEmail {
         Email fromEmail = new Email(from);
         Email toEmail = new Email(to);
         Content content = new Content(contentType, message);
@@ -33,7 +33,10 @@ public class ServicioEmailSendGrid implements ServicioEmail{
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             sendGrid.api(request);
-            return new Response(responseMessage);
+            String responseBody ="En breve recibirás un email con todos los detalles de tu suscripción.\n" +
+                    "\n" +
+                    "¡Gracias por elegirnos para gestionar tus finanzas!";
+            return new Response(responseBody);
         } catch (IOException e) {
             throw new ErrorEmail();
         }
