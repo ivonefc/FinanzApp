@@ -39,7 +39,7 @@
                 <span th:text="${solicitudRecibida.getDescripcion()}"></span>
                 <div class="d-flex">
                     <form th:object="${solicitudRecibida}" th:action="@{/movimientos-compartidos/aceptarSolicitud/{id}(id=${solicitudRecibida.id})}" method="POST">
-                        <button type="submit" th:if="${solicitudRecibida.estado == 'Pendiente'}" class="btn btn-primary mr-2">Aceptar</button>
+                        <button type="submit" th:if="${solicitudRecibida.estado == 'Pendiente'}" class="btn btn-primary mr-2" id="botonAceptar">Aceptar</button>
                     </form>
                     <form th:object="${solicitudRecibida}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${solicitudRecibida.id})}" method="POST">
                         <button type="submit" th:if="${solicitudRecibida.estado == 'Pendiente'}" class="btn btn-danger">Rechazar</button>

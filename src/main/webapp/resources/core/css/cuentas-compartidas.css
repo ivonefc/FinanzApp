@@ -15,5 +15,6 @@
     color: #fff;
     background-color: var(--azul-uno);
     border-color: var(--azul-uno);
-    margin-top: 10px;
+    margin-top: 0px;
+    margin-right:10px;
 }
