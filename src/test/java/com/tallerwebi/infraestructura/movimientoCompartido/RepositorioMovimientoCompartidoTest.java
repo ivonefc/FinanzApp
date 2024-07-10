@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.movimientoCompartido.RepositorioMovimientoComparti
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.infraestructura.RepositorioNotificacionImpl;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -43,7 +44,9 @@ public class RepositorioMovimientoCompartidoTest {
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     public void queAlSolicitarAlRepositorioObtenerAmigosDevuelvaUnaListaDeAmigos() throws ExcepcionBaseDeDatos {
         //preparacion
+        repositorioNotificacion = new RepositorioNotificacionImpl(sessionFactory);
         repositorioMovimientoCompartido = new RepositorioMovimientoCompartidoImpl(sessionFactory, repositorioNotificacion);
+
         // Crear un usuario y algunos amigos
         Usuario usuario = new Usuario();
         usuario.setNombre("Usuario de prueba");
@@ -272,6 +275,7 @@ public class RepositorioMovimientoCompartidoTest {
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     public void queAlSolicitarAlRepositorioObtenerNotificacionPorIdLaObtengaCorrectamente() throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
         //preparacion
+
         repositorioMovimientoCompartido = new RepositorioMovimientoCompartidoImpl(sessionFactory, repositorioNotificacion);
         // Crear un usuario y un amigo
         Usuario usuario = new Usuario();
@@ -291,6 +295,8 @@ public class RepositorioMovimientoCompartidoTest {
         notificacion.setUsuarioSolicitante(amigo); // El usuario que envía la solicitud
         notificacion.setEstado("Pendiente");
         notificacion.setTipo("Solicitud de amistad");
+        notificacion.setDatosAgregarMovimiento("{}");
+        notificacion.setDescripcion("prueba");
 
         // Guardar la notificación en la base de datos
         session.save(notificacion);

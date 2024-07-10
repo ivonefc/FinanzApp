@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio.movimiento;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
@@ -8,16 +10,21 @@ import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
+import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +34,19 @@ import java.util.Map;
 @Transactional
 public class ServicioMovimientoImpl implements ServicioMovimiento {
 
+    private final RepositorioNotificacion repositorioNotificacion;
     private RepositorioMovimiento repositorioMovimiento;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;
     private RepositorioMeta repositorioMeta;
 
     @Autowired
-    public ServicioMovimientoImpl(RepositorioMovimiento repositorioMovimiento, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMeta repositorioMeta) {
+    public ServicioMovimientoImpl(RepositorioMovimiento repositorioMovimiento, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMeta repositorioMeta, RepositorioNotificacion repositorioNotificacion) {
         this.repositorioMovimiento = repositorioMovimiento;
         this.repositorioCategoria = repositorioCategoria;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioMeta = repositorioMeta;
+        this.repositorioNotificacion = repositorioNotificacion;
     }
 
     @Transactional
@@ -128,16 +137,27 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
 
         // Movimiento para el amigo
         if(amigo != null){
-            Movimiento movimientoAmigo = new Movimiento(
-                    descripcion,
-                    montoAmigo,
-                    LocalDate.now(),
-                    categoriaMovimiento,
-                    amigo
-            );
-            movimientoAmigo.setAmigo(usuario);
-            movimientoAmigo.setMontoAmigo(monto);
-            repositorioMovimiento.guardarMovimiento(movimientoAmigo);
+
+            Notificacion notificacion = new Notificacion();
+
+            notificacion.setDescripcion("El usuario " + usuario.getNombre() + " ha compartido un movimiento contigo");
+            notificacion.setFecha(new Date());
+            notificacion.setEstado("Pendiente");
+            notificacion.setTipo("Movimiento");
+            notificacion.setUsuario(amigo);
+            notificacion.setUsuarioSolicitante(usuario);
+
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String datosAgregarMovimientoJson = objectMapper.writeValueAsString(datosAgregarMovimiento);
+                notificacion.setDatosAgregarMovimiento(datosAgregarMovimientoJson);
+            } catch (JsonProcessingException e) {
+               throw new ExcepcionBaseDeDatos("Error al guardar el movimiento");
+            }
+
+
+            repositorioNotificacion.guardar(notificacion);
+
         }
     }
 
@@ -167,4 +187,50 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         }
         return totalGastadoEnCategoriasConMetas;
     }
+
+    @Override
+    public List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerMovimientosCompartidos(idUsuario);
+    }
+
+    @Override
+    public void aceptarMovimiento(Long idNotificacion, String valor) throws ExcepcionBaseDeDatos {
+
+        repositorioNotificacion.actualizar(idNotificacion, valor);
+    }
+
+    @Override
+    public void guardarMovimientoDesdeNotificacion(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
+        datosAgregarMovimiento.validarCampos();
+
+        String descripcion = datosAgregarMovimiento.getDescripcion();
+        Double monto = datosAgregarMovimiento.getMonto();
+        String categoria = datosAgregarMovimiento.getCategoria();
+        Long idAmigo = datosAgregarMovimiento.getIdAmigo();
+        Double montoAmigo = datosAgregarMovimiento.getMontoAmigo();
+
+        Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
+        Usuario amigo = null;
+        if(idAmigo != null){
+            amigo = repositorioUsuario.obtenerUsuarioPorId(idAmigo);
+        }
+
+        CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(categoria);
+
+        // Movimiento para el usuario actual
+        Movimiento movimientoUsuario = new Movimiento(
+                descripcion,
+                monto,
+                LocalDate.now(),
+                categoriaMovimiento,
+                usuario
+        );
+        if(amigo != null){
+            movimientoUsuario.setAmigo(amigo);
+            movimientoUsuario.setMontoAmigo(montoAmigo);
+        }
+        repositorioMovimiento.guardarMovimiento(movimientoUsuario);
+    }
+
+
 }

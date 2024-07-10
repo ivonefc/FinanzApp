@@ -203,7 +203,6 @@
           align-items: center;
           padding: 1em;
       }
-}
 
 /* Estilos para pantallas extra grandes (pantallas grandes de escritorio) */
 @media (min-width: 1200px) {
@@ -233,4 +232,5 @@
        align-items: center;
        padding: 1em;
    }
+}
 }

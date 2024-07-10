@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @ControllerAdvice
@@ -27,7 +29,7 @@ public class ControladorNotificacionHeader {
     }
 
     @ModelAttribute("notificacionesRecibidas")
-    public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos {
+    public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (httpSession == null) {
             return Collections.emptyList();
@@ -39,22 +41,22 @@ public class ControladorNotificacionHeader {
             return Collections.emptyList();
         }
 
-        return servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
-    }
+        List<Notificacion> solicitudes_recibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
 
-    @ModelAttribute("notificacionesAceptadas")
-    public List<Notificacion> obtenerNotificacionesAceptadas(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
-            return Collections.emptyList();
+        List<Notificacion> solicitudes_aceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
+
+        List<Notificacion> notificaciones = new ArrayList<>();
+
+        notificaciones.addAll(solicitudes_recibidas);
+        notificaciones.addAll(solicitudes_aceptadas);
+
+        notificaciones.sort(Comparator.comparing(Notificacion::getFecha));
+
+        if(notificaciones.size() > 10){
+            notificaciones = notificaciones.subList(0, 10);
         }
 
-        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        return notificaciones;
 
-        if(idUsuario == null) {
-            return Collections.emptyList();
-        }
-
-        return servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
     }
 }

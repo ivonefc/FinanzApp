@@ -4,6 +4,8 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
+import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Repository("repositorioMovimiento")
 public class RepositorioMovimientoImpl implements RepositorioMovimiento {
@@ -151,5 +155,21 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
             throw new ExcepcionBaseDeDatos(he);
         }
     }
+
+    @Override
+public List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws ExcepcionBaseDeDatos {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM Notificacion N WHERE N.usuario.id = :idUsuario AND N.tipo = 'movimiento' ORDER BY N.fecha DESC", Notificacion.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+}
 
 }

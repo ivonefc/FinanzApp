@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.meta.Meta;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
+import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.tipo.TipoMovimiento;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -37,6 +38,7 @@ public class ServicioMovimientoTest {
     RepositorioUsuario repositorioUsuarioMock;
     HttpServletRequest httpServletRequestMock;
     RepositorioMeta repositorioMetaMock;
+    RepositorioNotificacion repositorioNotificacionMock;
     HttpSession httpSessionMock;
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
@@ -47,7 +49,8 @@ public class ServicioMovimientoTest {
          repositorioCategoriaMock = mock(RepositorioCategoria.class);
          repositorioUsuarioMock = mock(RepositorioUsuario.class);
          repositorioMetaMock = mock(RepositorioMeta.class);
-         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
+         repositorioNotificacionMock = mock(RepositorioNotificacion.class);
+         servicioMovimiento = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock, repositorioNotificacionMock);
          httpServletRequestMock = mock(HttpServletRequest.class);
          httpSessionMock = mock(HttpSession.class);
          usuarioMock = mock(Usuario.class);
@@ -154,7 +157,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock, repositorioNotificacionMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.actualizarMovimiento(datosActualizar));
@@ -253,7 +256,7 @@ public class ServicioMovimientoTest {
         servicioMovimiento.nuevoMovimiento(1L, datosAgregarMovimiento);
 
         //validacion
-        verify(repositorioMovimientoMock, times(2)).guardarMovimiento(any());
+        verify(repositorioMovimientoMock, times(1)).guardarMovimiento(any());
     }
 
     @Test
@@ -284,7 +287,7 @@ public class ServicioMovimientoTest {
         RepositorioUsuario repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Usamos la implementación real del servicio con repositorios mock
-        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock);
+        ServicioMovimiento servicioMovimientoReal = new ServicioMovimientoImpl(repositorioMovimientoMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaMock, repositorioNotificacionMock);
 
         // Ejecución y validación
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMovimientoReal.nuevoMovimiento(1L, datosAgregarMovimiento));

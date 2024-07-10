@@ -29,4 +29,20 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible", e);
         }
     }
+
+    @Override
+    public void actualizar(Long idNotificacion, String estado) throws ExcepcionBaseDeDatos {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Notificacion notificacion = session.get(Notificacion.class, idNotificacion);
+            if (notificacion != null) {
+                notificacion.setEstado(estado);
+                session.update(notificacion);
+            } else {
+                throw new ExcepcionBaseDeDatos("No se encontró la notificación con el ID: " + idNotificacion);
+            }
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos("Error al actualizar el estado de la notificación", e);
+        }
+    }
 }

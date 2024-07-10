@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionCamposInvalidos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import java.time.LocalDate;
@@ -29,4 +30,10 @@ public interface ServicioMovimiento {
     List<Movimiento> obtenerMovimientosPorPagina(Long idUsuario, int pagina, int tamanioDePagina) throws ExcepcionBaseDeDatos;
 
     Map<String, Double> obtenerTotalGastadoEnCategoriasConMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    void aceptarMovimiento(Long idNotificacion, String estado) throws ExcepcionBaseDeDatos;
+
+    void guardarMovimientoDesdeNotificacion(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente;
 }
