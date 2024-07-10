@@ -34,7 +34,7 @@ import java.util.Map;
 @Transactional
 public class ServicioMovimientoImpl implements ServicioMovimiento {
 
-    private final RepositorioNotificacion repositorioNotificacion;
+    private RepositorioNotificacion repositorioNotificacion;
     private RepositorioMovimiento repositorioMovimiento;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;

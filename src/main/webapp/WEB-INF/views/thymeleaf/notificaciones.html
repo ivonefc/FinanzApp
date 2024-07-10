@@ -45,7 +45,8 @@
                         <button type="submit" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Solicitud de amistad'}" class="btn btn-danger">Rechazar</button>
                     </form>
                     <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Solicitud de amistad'}">Amigo agregado exitosamente!</span>
-
+                    <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Movimiento'}">Movimiento agregado exitosamente!</span>
+                    <span th:if="${notificacion.estado == 'Rechazada' and notificacion.tipo == 'Movimiento'}">Movimiento rechazado!</span>
                     <button class="btn btn-info mr-2" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#collapse'+${notificacion.id}" aria-expanded="false" aria-controls="collapseExample" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Movimiento'}">
                         Ver detalles
                     </button>
@@ -65,10 +66,12 @@
                                 <input type="hidden" name="idUsuarioSolicitante" th:value="${notificacion.usuarioSolicitante.id}">
                                 <button type="submit" class="btn btn-primary mr-2">Aceptar</button>
                             </form>
-                            <form th:object="${notificacion}" th:action="@{/movimientos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                            <form th:object="${DatosNotificacion}" th:action="@{/movimientos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                                <input type="hidden" name="id" th:value="${notificacion.id}">
                                 <button type="submit" class="btn btn-danger">Rechazar</button>
                             </form>
                         </div>
+
                     </div>
                 </div>
             </li>

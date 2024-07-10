@@ -1,7 +1,9 @@
 package com.tallerwebi.presentacion.notificaciones;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
@@ -28,6 +30,7 @@ public class ControladorNotificacionesTest {
     private HttpSession sessionMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
+    private ServicioMovimiento servicioMovimientoMock;
 
     @BeforeEach
     public void init(){
@@ -35,11 +38,12 @@ public class ControladorNotificacionesTest {
         sessionMock = mock(HttpSession.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
-        controladorNotificaciones = new ControladorNotificaciones(servicioMovimientoCompartidoMock, servicioUsuarioMock);
+        servicioMovimientoMock = mock(ServicioMovimiento.class);
+        controladorNotificaciones = new ControladorNotificaciones(servicioMovimientoCompartidoMock, servicioUsuarioMock, servicioMovimientoMock);
     }
 
     @Test
-    public void queAlQuererIrANotificacionesMeLleveCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlQuererIrANotificacionesMeLleveCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente, JsonProcessingException {
         // Preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L); // Assuming 1L is a valid user ID in your system
@@ -48,6 +52,7 @@ public class ControladorNotificacionesTest {
         List<Notificacion> notificacionesMock = new ArrayList<>();
         when(servicioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(anyLong())).thenReturn(notificacionesMock);
         when(servicioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenReturn(notificacionesMock);
+        when(servicioMovimientoMock.obtenerMovimientosCompartidos(anyLong())).thenReturn(notificacionesMock);
 
         // Ejecucion
         ModelAndView modelAndView = controladorNotificaciones.irANotificaciones(requestMock);
@@ -55,12 +60,13 @@ public class ControladorNotificacionesTest {
         // Validacion
         assertEquals("notificaciones", modelAndView.getViewName());
         assertTrue(modelAndView.getModel().containsKey("usuario"));
-        assertTrue(modelAndView.getModel().containsKey("solicitudesRecibidas"));
-        assertTrue(modelAndView.getModel().containsKey("solicitudesAceptadas"));
+        assertTrue(modelAndView.getModel().containsKey("notificaciones"));
+        assertTrue(modelAndView.getModel().containsKey("DatosNotificacion"));
+
     }
 
     @Test
-    public void queAlQuererIrANotificacionesSinSesionMeRedirijaALogin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+    public void queAlQuererIrANotificacionesSinSesionMeRedirijaALogin() throws ExcepcionBaseDeDatos, UsuarioInexistente, JsonProcessingException {
         // Preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 

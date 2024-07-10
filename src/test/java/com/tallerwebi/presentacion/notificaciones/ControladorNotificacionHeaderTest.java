@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.meta.ServicioMeta;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,7 @@ public class ControladorNotificacionHeaderTest {
     private HttpSession sessionMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
     private ServicioMeta servicioMetaMock;
+    private ServicioMovimiento servicioMovimientoMock;
 
     @BeforeEach
     public void init(){
@@ -34,11 +36,12 @@ public class ControladorNotificacionHeaderTest {
         sessionMock = mock(HttpSession.class);
         servicioMetaMock = mock(ServicioMeta.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
-        controladorNotificacionHeader = new ControladorNotificacionHeader(servicioMovimientoCompartidoMock, servicioMetaMock);
+        servicioMovimientoMock = mock(ServicioMovimiento.class);
+        controladorNotificacionHeader = new ControladorNotificacionHeader(servicioMovimientoCompartidoMock, servicioMetaMock, servicioMovimientoMock);
     }
 
     @Test
-    public void queAlQuererObtenerNotificacionesRecibidasLasObtengaCorrectamente() throws ExcepcionBaseDeDatos {
+    public void queAlQuererObtenerNotificacionesRecibidasLasObtengaCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -53,7 +56,7 @@ public class ControladorNotificacionHeaderTest {
     }
 
     @Test
-    public void queAlQuererObtenerNotificacionesRecibidasDevuelvaUnaListaVaciaAlNoTenerNotificaciones() throws ExcepcionBaseDeDatos {
+    public void queAlQuererObtenerNotificacionesRecibidasDevuelvaUnaListaVaciaAlNoTenerNotificaciones() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
         when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
@@ -67,7 +70,7 @@ public class ControladorNotificacionHeaderTest {
     }
 
     @Test
-    public void queAlQuererObtenerNotificacionesRecibidasDevuelvaUnaListaVaciaAlNoTenerSesion() throws ExcepcionBaseDeDatos {
+    public void queAlQuererObtenerNotificacionesRecibidasDevuelvaUnaListaVaciaAlNoTenerSesion() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         // Preparacion
         when(requestMock.getSession(false)).thenReturn(null);
 
@@ -88,60 +91,6 @@ public class ControladorNotificacionHeaderTest {
         // Ejecucion y validacion
         assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorNotificacionHeader.obtenerNotificaciones(requestMock);
-        });
-    }
-
-    @Test
-    public void queAlQuererObtenerNotificacionesAceptadasLasObtengaCorrectamente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
-        // Preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        List<Notificacion> notificacionesMock = new ArrayList<>();
-        when(servicioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenReturn(notificacionesMock);
-
-        // Ejecucion
-        List<Notificacion> notificacionesAceptadas = controladorNotificacionHeader.obtenerNotificacionesAceptadas(requestMock);
-
-        // Validacion
-        assertEquals(notificacionesMock, notificacionesAceptadas);
-    }
-
-    @Test
-    public void queAlQuererObtenerNotificacionesAceptadasDevuelvaUnaListaVaciaAlNoTenerNotificacionesAcepatadas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
-        // Preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenReturn(new ArrayList<>());
-
-        // Ejecucion
-        List<Notificacion> notificacionesAceptadas = controladorNotificacionHeader.obtenerNotificacionesAceptadas(requestMock);
-
-        // Validacion
-        assertEquals(0, notificacionesAceptadas.size());
-    }
-
-    @Test
-    public void queAlQuererObtenerNotificacionesAceptadasDevuelvaUnaListaVaciaAlNoTenerSesion() throws ExcepcionBaseDeDatos, UsuarioInexistente {
-        // Preparacion
-        when(requestMock.getSession(false)).thenReturn(null);
-
-        // Ejecucion
-        List<Notificacion> notificacionesAceptadas = controladorNotificacionHeader.obtenerNotificacionesAceptadas(requestMock);
-
-        // Validacion
-        assertEquals(0, notificacionesAceptadas.size());
-    }
-
-    @Test
-    public void queAlQuererObtenerNotificacionesAceptadasLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
-        // Preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
-        when(servicioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
-
-        // Ejecucion y validacion
-        assertThrows(ExcepcionBaseDeDatos.class, () -> {
-            controladorNotificacionHeader.obtenerNotificacionesAceptadas(requestMock);
         });
     }
 

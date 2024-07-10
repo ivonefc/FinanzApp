@@ -1,11 +1,14 @@
 package com.tallerwebi.presentacion.notificaciones;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.meta.ServicioMeta;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,20 +16,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @ControllerAdvice
 public class ControladorNotificacionHeader {
+
+    private ServicioMovimiento servicioMovimiento;
     private ServicioMovimientoCompartido servicioMovimientoCompartido;
     private ServicioMeta servicioMeta;
 
     @Autowired
-    public ControladorNotificacionHeader(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioMeta servicioMeta) {
+    public ControladorNotificacionHeader(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento) {
         this.servicioMovimientoCompartido = servicioMovimientoCompartido;
         this.servicioMeta = servicioMeta;
+        this.servicioMovimiento = servicioMovimiento;
     }
 
     public ControladorNotificacionHeader() {
@@ -53,22 +57,32 @@ public class ControladorNotificacionHeader {
             return Collections.emptyList();
         }
 
-        List<Notificacion> solicitudes_recibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
+        List<Notificacion> solicitudes_Recibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
+        List<Notificacion> solicitudes_Aceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
+        List<Notificacion> movimientos_Compartidos = servicioMovimiento.obtenerMovimientosCompartidos(idUsuario);
 
-        List<Notificacion> solicitudes_aceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
+        ObjectMapper objectMapper = new ObjectMapper();
+        for (Notificacion notificacion : movimientos_Compartidos) {
+            try {
+                DatosAgregarMovimiento datosAM = objectMapper.readValue(notificacion.getDatosAgregarMovimiento(), DatosAgregarMovimiento.class);
+                notificacion.setDatosAgregarMovimientoObject(datosAM);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         List<Notificacion> notificaciones = new ArrayList<>();
 
-        notificaciones.addAll(solicitudes_recibidas);
-        notificaciones.addAll(solicitudes_aceptadas);
+        notificaciones.addAll(solicitudes_Recibidas);
+        notificaciones.addAll(solicitudes_Aceptadas);
+        notificaciones.addAll(movimientos_Compartidos);
 
-        notificaciones.sort(Comparator.comparing(Notificacion::getFecha));
+        notificaciones.sort(Comparator.comparing(Notificacion::getFecha).reversed());
 
         if(notificaciones.size() > 10){
             notificaciones = notificaciones.subList(0, 10);
         }
 
         return notificaciones;
-
     }
 }

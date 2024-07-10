@@ -42,7 +42,7 @@
             </li>
             <li th:each="notificacion, stat : ${notificacionesRecibidas}">
                 <hr class="dropdown-divider">
-                <a class="dropdown-item d-flex align-items-center">
+                <a th:href="@{/notificaciones}" class="dropdown-item d-flex align-items-center">
                     <span th:text="${notificacion.descripcion}"></span>
                 </a>
             </li>

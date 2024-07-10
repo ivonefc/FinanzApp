@@ -44,7 +44,6 @@ public class HibernateTestInfraestructuraConfig {
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.format_sql", "true");
         properties.setProperty("hibernate.hbm2ddl.auto", "create");
-        properties.setProperty("hibernate.auto_quote_table_names", "false");
         return properties;
     }
 }

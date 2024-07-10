@@ -241,6 +241,18 @@ public class ControladorMovimiento {
 
         return new ModelAndView("redirect:/movimientos");
     }
+
+    @PostMapping("/movimientos/eliminarSolicitud/{id}")
+    public ModelAndView rechazarSolicitud(@PathVariable Long id, @ModelAttribute DatosNotificacion notificacion) {
+
+        try {
+            servicioMovimiento.aceptarMovimiento(notificacion.getId(), "Rechazada");
+        } catch (ExcepcionBaseDeDatos e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/movimientos");
+    }
 }
 
 
