@@ -112,4 +112,14 @@ public class RepositorioMetaImpl implements RepositorioMeta {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
         }
     }
+
+    @Override
+    public Meta obtenerMetaPorCategoria(String categoria) throws ExcepcionBaseDeDatos {
+        try {
+            Meta meta = sessionFactory.getCurrentSession().get(Meta.class, categoria);
+            return meta;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos();
+        }
+    }
 }

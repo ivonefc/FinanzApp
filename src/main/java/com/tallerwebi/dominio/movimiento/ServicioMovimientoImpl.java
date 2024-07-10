@@ -129,6 +129,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
                 categoriaMovimiento,
                 usuario
         );
+
         if(amigo != null){
             movimientoUsuario.setAmigo(amigo);
             movimientoUsuario.setMontoAmigo(montoAmigo);
@@ -159,6 +160,35 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
             repositorioNotificacion.guardar(notificacion);
 
         }
+    }
+
+    private void crearNotificacion(Meta meta) throws ExcepcionBaseDeDatos {
+        Notificacion notificacion = new Notificacion();
+        notificacion.setDescripcion("Has superado la meta de la categoría " + meta.getCategoriaMovimiento().getNombre());
+        notificacion.setFecha(new Date());
+        notificacion.setEstado("Pendiente");
+        notificacion.setTipo("Meta");
+        notificacion.setUsuario(meta.getUsuario());
+        repositorioNotificacion.guardar(notificacion);
+    }
+
+    private boolean calcularSiSuperoMeta(Meta meta, List<Movimiento> movimientos) {
+
+        Double total = 0.0;
+        for (Movimiento movimiento : movimientos) {
+            total += movimiento.getMonto();
+        }
+
+        return total >= meta.getMontoMeta();
+
+    }
+
+    private List<Movimiento> traerMovimientosDeLaMeta(String categoria, Date fechaInicio, Date fechaFin, Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerMovimientosFiltradosCategoriaFecha(categoria,fechaInicio,fechaFin, idUsuario);
+    }
+
+    private Meta traerMeta(String Categoria) throws ExcepcionBaseDeDatos {
+        return repositorioMeta.obtenerMetaPorCategoria(Categoria);
     }
 
     @Transactional
@@ -248,5 +278,28 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public Double obtenerTotalGastado(Long idUsuario, Long idCategoriaMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerTotalPorCategoriaPorFecha(idUsuario, idCategoriaMeta, fechaInicio, fechaFin);
+    }
+
+    @Override
+    public void calcularTodasLasMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        for (Meta meta : metas) {
+            List<Movimiento> movimientos = traerMovimientosDeLaMeta(meta.getCategoriaMovimiento().getNombre(), meta.getFechaInicio(), meta.getFechaFin(), meta.getUsuario().getId());
+            if(calcularSiSuperoMeta(meta, movimientos)){
+                List<Notificacion> notificaciones = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Pendiente", meta.getCategoriaMovimiento().getNombre());
+                List<Notificacion> notificacionesLeidas = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Leído", meta.getCategoriaMovimiento().getNombre());
+                if(!notificaciones.isEmpty()){
+                    for (Notificacion notificacion : notificaciones) {
+                        repositorioNotificacion.actualizar(notificacion.getId(), "Leído");
+                    }
+                }else if(notificacionesLeidas.isEmpty()){
+                    crearNotificacion(meta);
+                }
+            }
+        }
+    }
+
+    private List<Notificacion> contieneNotificacionEnRangoDeFecha(Date fechaInicio, Date fechaFin, Long idUsuario, String estado,String nombre) {
+       return  repositorioNotificacion.obtenerNotificacionesMetaFiltradaPorFecha(idUsuario, fechaInicio, fechaFin, estado,nombre);
     }
 }

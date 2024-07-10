@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository("repositorioNotificacion")
 public class RepositorioNotificacionImpl implements RepositorioNotificacion {
 
@@ -44,5 +47,29 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
         } catch (HibernateException e) {
             throw new ExcepcionBaseDeDatos("Error al actualizar el estado de la notificación", e);
         }
+    }
+
+    @Override
+    public List<Notificacion> obtenerNotificacionesMetaFiltradaPorFecha(Long idUsuario, Date fechaInicio, Date fechaFin, String estado, String nombre) {
+
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT n FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.fecha BETWEEN :fechaInicio AND :fechaFin AND n.estado = :estado and n.descripcion LIKE :nombre", Notificacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("fechaInicio", fechaInicio)
+                .setParameter("fechaFin", fechaFin)
+                .setParameter("estado", estado)
+                .setParameter("nombre", "%" + nombre + "%")
+                .getResultList();
+
+    }
+
+    @Override
+    public List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario) {
+
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT n FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.estado = 'Pendiente' or n.estado = 'Leído'", Notificacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+
     }
 }

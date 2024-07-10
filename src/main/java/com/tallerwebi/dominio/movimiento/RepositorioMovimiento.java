@@ -32,4 +32,6 @@ public interface RepositorioMovimiento {
     List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     Double obtenerTotalPorCategoriaPorFecha(Long idUsuario, Long idCategoria, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos;
+
+    List<Movimiento> obtenerMovimientosFiltradosCategoriaFecha(String categoria, Date fechaInicio, Date fechaFin, Long idUsuario) throws ExcepcionBaseDeDatos;
 }
