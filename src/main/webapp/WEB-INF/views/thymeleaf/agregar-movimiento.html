@@ -36,12 +36,12 @@
                 <fieldset>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre: </label>
-                        <input th:field="*{descripcion}" id="nombre" type="text" class="form-control">
+                        <input th:field="*{descripcion}" id="nombre" type="text" class="form-control" required>
                         <p th:if="${errores != null && errores.get('descripcion') != null}" class="alert alert-danger" th:text="${errores.get('descripcion')}"></p>
                     </div>
                     <div class="mb-3">
                         <label for="tipoMovimiento" class="form-label">Tipo: </label>
-                        <select th:field="*{tipo}" id="tipoMovimiento" class="form-select">
+                        <select th:field="*{tipo}" id="tipoMovimiento" class="form-select" required>
                             <option value="">Seleccione el tipo de movimiento</option>
                             <option value="INGRESO">INGRESO</option>
                             <option value="EGRESO">EGRESO</option>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="categoriaMovimiento" class="form-label">Categoría: </label>
-                        <select th:field="*{categoria}" id="categoriaMovimiento" class="form-select">
+                        <select th:field="*{categoria}" id="categoriaMovimiento" class="form-select" required>
                             <option value="">Seleccione la categoría</option>
                             <!-- Las opciones de categoría se generarán dinámicamente -->
                         </select>
@@ -58,7 +58,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="monto" class="form-label">Monto: </label>
-                        <input th:field="*{monto}" id="monto" type="number" class="form-control">
+                        <input th:field="*{monto}" id="monto" type="number" class="form-control" required>
                         <p th:if="${errores != null && errores.get('monto') != null}" class="alert alert-danger" th:text="${errores.get('monto')}"></p>
                     </div>
                     <div class="mb-3" th:if="${usuario.rol != 'FREE'}">
@@ -72,7 +72,7 @@
                         <div id="compartirDetalles" style="display: none;">
                             <div class="mb-3">
                                 <label for="amigo" class="form-label">Amigo:</label>
-                                <select th:field="*{idAmigo}" id="amigo" class="form-select">
+                                <select th:field="*{idAmigo}" id="amigo" class="form-select" >
                                     <option value="">Seleccione un amigo</option>
                                     <option th:each="amigo : ${amigos}" th:value="${amigo.id}" th:text="${amigo.nombre}"></option>
                                 </select>

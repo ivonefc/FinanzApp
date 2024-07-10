@@ -1,12 +1,17 @@
 package com.tallerwebi.dominio.notificacion;
 
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "notificaciones")
 public class Notificacion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +22,14 @@ public class Notificacion {
 
     private String tipo;
 
+    private Date fecha;
+
+    @Column(columnDefinition = "TEXT")
+    private String datosAgregarMovimientoJson;
+
+    @Transient
+    private DatosAgregarMovimiento datosAgregarMovimiento;
+
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
@@ -25,22 +38,35 @@ public class Notificacion {
     @JoinColumn(name = "id_usuario_solicitante")
     private Usuario usuarioSolicitante;
 
-    public Notificacion(Long id, String descripcion) {
+    public Notificacion(Long id,Date fecha, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
+        this.fecha = fecha;
     }
 
-    public Notificacion(Long id, String descripcion, String estado) {
+    public Notificacion(Long id, String descripcion,Date fecha, String estado) {
         this.id = id;
         this.descripcion = descripcion;
         this.estado = estado;
+        this.fecha = fecha;
     }
 
-    public Notificacion(Long id, String descripcion, String estado, String tipo, Usuario usuario, Usuario usuarioSolicitante) {
+    public Notificacion(Long id, String descripcion, String estado, String tipo,Date fecha, Usuario usuario, Usuario usuarioSolicitante) {
         this.id = id;
         this.descripcion = descripcion;
         this.estado = estado;
         this.tipo = tipo;
+        this.usuario = usuario;
+        this.usuarioSolicitante = usuarioSolicitante;
+        this.fecha = fecha;
+    }
+
+    public Notificacion(Long id, String descripcion, Date fecha, String estado, Usuario usuario, Usuario usuarioSolicitante, String datosAgregarMovimiento) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+        this.estado = estado;
+        this.datosAgregarMovimientoJson = datosAgregarMovimiento;
         this.usuario = usuario;
         this.usuarioSolicitante = usuarioSolicitante;
     }
@@ -95,5 +121,29 @@ public class Notificacion {
 
     public void setUsuarioSolicitante(Usuario usuarioSolicitante) {
         this.usuarioSolicitante = usuarioSolicitante;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getDatosAgregarMovimiento() {
+        return datosAgregarMovimientoJson;
+    }
+
+    public void setDatosAgregarMovimiento(String datosAgregarMovimiento) {
+        this.datosAgregarMovimientoJson = datosAgregarMovimiento;
+    }
+
+    public DatosAgregarMovimiento getDatosAgregarMovimientoObject() {
+        return datosAgregarMovimiento;
+    }
+
+    public void setDatosAgregarMovimientoObject(DatosAgregarMovimiento datosAgregarMovimiento) {
+        this.datosAgregarMovimiento = datosAgregarMovimiento;
     }
 }

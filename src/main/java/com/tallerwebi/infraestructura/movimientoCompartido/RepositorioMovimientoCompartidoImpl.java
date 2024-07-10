@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository("repositorioMovimientoCompartido")
@@ -84,6 +85,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             Notificacion notificacion = new Notificacion();
             notificacion.setUsuario(amigo);
             notificacion.setUsuarioSolicitante(usuario);
+            notificacion.setFecha(new Date());
             notificacion.setEstado("Pendiente");
             notificacion.setDescripcion("El usuario " + usuario.getNombre() + " quiere ser tu amigo!");
             notificacion.setTipo("Solicitud de amistad");
@@ -193,6 +195,7 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
             notificacionAceptada.setUsuario(amigo); // El usuario que recibe la notificación es el que envió la solicitud
             notificacionAceptada.setUsuarioSolicitante(usuario); // El usuario que aceptó la solicitud
             notificacionAceptada.setEstado("Aceptada");
+            notificacionAceptada.setFecha(new Date());
             notificacionAceptada.setDescripcion("El usuario " + usuario.getNombre() + " ha aceptado tu solicitud de amistad!");
             notificacionAceptada.setTipo("Solicitud de amistad");
 

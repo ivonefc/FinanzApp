@@ -4,6 +4,8 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
@@ -23,6 +25,7 @@ import java.util.Map;
 @Transactional
 @Service
 public class ServicioMetaImpl implements ServicioMeta{
+    private RepositorioNotificacion repositorioNotificacion;
     private RepositorioMeta repositorioMeta;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;
@@ -30,12 +33,13 @@ public class ServicioMetaImpl implements ServicioMeta{
     private ServicioMovimiento servicioMovimiento;
 
     @Autowired
-    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMetaVencida repositorioMetaVencida, ServicioMovimiento servicioMovimiento) {
+    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMetaVencida repositorioMetaVencida, ServicioMovimiento servicioMovimiento, RepositorioNotificacion repositorioNotificacion) {
         this.repositorioMeta = repositorioMeta;
         this.repositorioCategoria = repositorioCategoria;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioMetaVencida = repositorioMetaVencida;
         this.servicioMovimiento = servicioMovimiento;
+        this.repositorioNotificacion = repositorioNotificacion;
     }
 
     @Override
@@ -48,6 +52,11 @@ public class ServicioMetaImpl implements ServicioMeta{
         }
     }
 
+    @Override
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMetaVencida.obtenerNotificacionMetasVencidas(idUsuario);
+    }
+
     public void eliminarMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
         LocalDate hoy = LocalDate.now();
@@ -58,8 +67,25 @@ public class ServicioMetaImpl implements ServicioMeta{
                 Double totalGastado = servicioMovimiento.obtenerTotalGastado(idUsuario, meta.getCategoriaMovimiento().getId(), meta.getFechaInicio(), meta.getFechaFin());
                 repositorioMetaVencida.guardarMetaVencida(meta, totalGastado);
                 eliminarMeta(meta.getId());
+
+                MetaVencida metaVencida = this.obtenerMetaVencida();
+
+                this.crearNotificacion(metaVencida);
+
             }
         }
+    }
+
+    private MetaVencida obtenerMetaVencida() {
+        return repositorioMetaVencida.obtenerMetaVencida();
+    }
+
+    private void crearNotificacion(MetaVencida metaVencida) throws ExcepcionBaseDeDatos {
+        Notificacion notificacion = new Notificacion();
+        notificacion.setDescripcion("La meta de la categoría " + metaVencida.getCategoriaMovimiento().getNombre() + " ha sido vencida" + " con un total gastado de " + metaVencida.getTotalGastado() + " y un monto de " + metaVencida.getMontoMeta() + " en el periodo de " + metaVencida.getFechaInicio() + " a " + metaVencida.getFechaFin());
+        notificacion.setFecha(new Date());
+        notificacion.setUsuario(metaVencida.getUsuario());
+        repositorioNotificacion.guardar(notificacion);
     }
 
     @Transactional
@@ -108,6 +134,11 @@ public class ServicioMetaImpl implements ServicioMeta{
     @Override
     public List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
         return repositorioMeta.obtenerMetas(idUsuario);
+    }
+
+    @Override
+    public List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario) {
+        return repositorioNotificacion.obtenerNotificacionMetasConcretadas(idUsuario);
     }
 
     @Transactional

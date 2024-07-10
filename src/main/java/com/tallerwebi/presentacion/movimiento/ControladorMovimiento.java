@@ -1,5 +1,8 @@
 package com.tallerwebi.presentacion.movimiento;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.itextpdf.text.DocumentException;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
@@ -9,6 +12,7 @@ import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
+import com.tallerwebi.presentacion.notificaciones.DatosNotificacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -211,6 +215,43 @@ public class ControladorMovimiento {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(bytesDelArchivo);
+    }
+
+    @PostMapping("/movimientos/aceptarSolicitud/{id}")
+    public ModelAndView aceptarSolicitud(@PathVariable Long id, @ModelAttribute DatosNotificacion notificacion) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        DatosAgregarMovimiento datosAgregarMovimiento = null;
+        try {
+            datosAgregarMovimiento = objectMapper.readValue(notificacion.getJson(), DatosAgregarMovimiento.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        Double montoAmigo = datosAgregarMovimiento.getMonto();
+        datosAgregarMovimiento.setIdAmigo(notificacion.getIdUsuarioSolicitante());
+        datosAgregarMovimiento.setMonto(datosAgregarMovimiento.getMontoAmigo());
+        datosAgregarMovimiento.setMontoAmigo(montoAmigo);
+
+        try {
+            servicioMovimiento.guardarMovimientoDesdeNotificacion(notificacion.getIdUsuario(), datosAgregarMovimiento);
+            servicioMovimiento.aceptarMovimiento(notificacion.getId(), "Aceptada");
+        } catch (ExcepcionBaseDeDatos | ExcepcionCamposInvalidos | UsuarioInexistente e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/movimientos");
+    }
+
+    @PostMapping("/movimientos/eliminarSolicitud/{id}")
+    public ModelAndView rechazarSolicitud(@PathVariable Long id, @ModelAttribute DatosNotificacion notificacion) {
+
+        try {
+            servicioMovimiento.aceptarMovimiento(notificacion.getId(), "Rechazada");
+        } catch (ExcepcionBaseDeDatos e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/movimientos");
     }
 }
 

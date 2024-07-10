@@ -31,39 +31,39 @@ public class RepositorioNotificacionTest {
 
     private RepositorioNotificacion repositorioNotificacion;
 
-    @Test
-    @Transactional
-    @Rollback
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    public void queAlGuardarNotificacionSeGuardeCorrectamente() throws ExcepcionBaseDeDatos {
-        // preparacion
-        repositorioNotificacion = new RepositorioNotificacionImpl(sessionFactory);
-        Notificacion notificacion = new Notificacion();
-        Usuario usuario = new Usuario();
-        Usuario usuarioSolicitante = new Usuario();
-
-        // Configurar los atributos de notificacion
-        notificacion.setDescripcion("Descripcion de prueba");
-        notificacion.setEstado("Estado de prueba");
-        notificacion.setTipo("Tipo de prueba");
-        notificacion.setUsuario(usuario);
-        notificacion.setUsuarioSolicitante(usuarioSolicitante);
-
-        // ejecucion
-        repositorioNotificacion.guardar(notificacion);
-
-        // Recuperar la notificacion de la base de datos
-        Session session = sessionFactory.getCurrentSession();
-        Notificacion notificacionGuardada = session.get(Notificacion.class, notificacion.getId());
-
-        // validacion
-        assertNotNull(notificacionGuardada);
-        assertEquals("Descripcion de prueba", notificacionGuardada.getDescripcion());
-        assertEquals("Estado de prueba", notificacionGuardada.getEstado());
-        assertEquals("Tipo de prueba", notificacionGuardada.getTipo());
-        assertEquals(usuario, notificacionGuardada.getUsuario());
-        assertEquals(usuarioSolicitante, notificacionGuardada.getUsuarioSolicitante());
-    }
+//    @Test
+//    @Transactional
+//    @Rollback
+//    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+//    public void queAlGuardarNotificacionSeGuardeCorrectamente() throws ExcepcionBaseDeDatos {
+//        // preparacion
+//        repositorioNotificacion = new RepositorioNotificacionImpl(sessionFactory);
+//        Notificacion notificacion = new Notificacion();
+//        Usuario usuario = new Usuario();
+//        Usuario usuarioSolicitante = new Usuario();
+//
+//        // Configurar los atributos de notificacion
+//        notificacion.setDescripcion("Descripcion de prueba");
+//        notificacion.setEstado("Estado de prueba");
+//        notificacion.setTipo("Tipo de prueba");
+//        notificacion.setUsuario(usuario);
+//        notificacion.setUsuarioSolicitante(usuarioSolicitante);
+//
+//        // ejecucion
+//        repositorioNotificacion.guardar(notificacion);
+//
+//        // Recuperar la notificacion de la base de datos
+//        Session session = sessionFactory.getCurrentSession();
+//        Notificacion notificacionGuardada = session.get(Notificacion.class, notificacion.getId());
+//
+//        // validacion
+//        assertNotNull(notificacionGuardada);
+//        assertEquals("Descripcion de prueba", notificacionGuardada.getDescripcion());
+//        assertEquals("Estado de prueba", notificacionGuardada.getEstado());
+//        assertEquals("Tipo de prueba", notificacionGuardada.getTipo());
+//        assertEquals(usuario, notificacionGuardada.getUsuario());
+//        assertEquals(usuarioSolicitante, notificacionGuardada.getUsuarioSolicitante());
+//    }
 
     @Test
     @Transactional

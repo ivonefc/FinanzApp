@@ -4,6 +4,8 @@ import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.movimiento.Movimiento;
 import com.tallerwebi.dominio.movimiento.RepositorioMovimiento;
+import com.tallerwebi.dominio.notificacion.Notificacion;
+import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +15,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Repository("repositorioMovimiento")
 public class RepositorioMovimientoImpl implements RepositorioMovimiento {
@@ -155,6 +159,22 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
     }
 
     @Override
+public List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws ExcepcionBaseDeDatos {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM Notificacion N WHERE N.usuario.id = :idUsuario AND N.tipo = 'movimiento' ORDER BY N.fecha DESC", Notificacion.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+}
+
+    @Override
     public Double obtenerTotalPorCategoriaPorFecha(Long idUsuario, Long idCategoria, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
         try {
             LocalDate fechaInicioParse = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -173,5 +193,24 @@ public class RepositorioMovimientoImpl implements RepositorioMovimiento {
         } catch (HibernateException he) {
             throw new ExcepcionBaseDeDatos(he);
         }
+    }
+
+    @Override
+    public List<Movimiento> obtenerMovimientosFiltradosCategoriaFecha(String categoria, Date fechaInicio, Date fechaFin, Long idUsuario) throws ExcepcionBaseDeDatos {
+
+        LocalDate fechaInicioParse = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaFinParse = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        try {
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM Movimiento M WHERE M.usuario.id = :idUsuario AND M.categoria.nombre = :categoria AND M.fechayHora BETWEEN :fechaInicio AND :fechaFin", Movimiento.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("categoria", categoria)
+                    .setParameter("fechaInicio", fechaInicioParse)
+                    .setParameter("fechaFin", fechaFinParse)
+                    .getResultList();
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+
     }
 }

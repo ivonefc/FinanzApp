@@ -31,31 +31,48 @@
 
 <main id="main" class="main">
     <h2 class="pt-3 text-center">Notificaciones</h2> <br>
-    <div class="card-body" th:if="${not #lists.isEmpty(solicitudesRecibidas)}">
-        <ul class="list-group" id="lista-solicitudes">
-            <li th:each="solicitudRecibida : ${solicitudesRecibidas}"
-                th:classappend="${solicitudRecibida.estado == 'Pendiente' ? 'amigo-pendiente' : ''}"
+    <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
+        <ul class="list-group" id="lista-notificaciones">
+            <li th:each="notificacion : ${notificaciones}"
+                th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : notificacion.estado == 'Aceptada' ? 'amigo-aceptado' : ''}"
                 class="list-group-item item d-flex justify-content-between">
-                <span th:text="${solicitudRecibida.getDescripcion()}"></span>
+                <span th:text="${notificacion.getDescripcion()}"></span>
                 <div class="d-flex">
-                    <form th:object="${solicitudRecibida}" th:action="@{/movimientos-compartidos/aceptarSolicitud/{id}(id=${solicitudRecibida.id})}" method="POST">
-                        <button type="submit" th:if="${solicitudRecibida.estado == 'Pendiente'}" class="btn btn-primary mr-2" id="botonAceptar">Aceptar</button>
+                    <form th:object="${notificacion}" th:action="@{/movimientos-compartidos/aceptarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                        <button type="submit" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Solicitud de amistad'}" class="btn btn-primary mr-2">Aceptar</button>
                     </form>
-                    <form th:object="${solicitudRecibida}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${solicitudRecibida.id})}" method="POST">
-                        <button type="submit" th:if="${solicitudRecibida.estado == 'Pendiente'}" class="btn btn-danger">Rechazar</button>
+                    <form th:object="${notificacion}" th:action="@{/movimientos-compartidos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                        <button type="submit" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Solicitud de amistad'}" class="btn btn-danger">Rechazar</button>
                     </form>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="card-body" th:if="${not #lists.isEmpty(solicitudesAceptadas)}">
-        <ul class="list-group" id="lista-solicitudesAceptadas">
-            <li th:each="solicitudAceptada : ${solicitudesAceptadas}"
-                th:classappend="${solicitudAceptada.estado == 'Aceptada' ? 'amigo-aceptado' : ''}"
-                class="list-group-item item d-flex justify-content-between">
-                <span th:text="${solicitudAceptada.getDescripcion()}"></span>
-                <div class="d-flex">
-                    Amigo agregado exitosamente!
+                    <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Solicitud de amistad'}">Amigo agregado exitosamente!</span>
+                    <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Movimiento'}">Movimiento agregado exitosamente!</span>
+                    <span th:if="${notificacion.estado == 'Rechazada' and notificacion.tipo == 'Movimiento'}">Movimiento rechazado!</span>
+                    <button class="btn btn-info mr-2" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#collapse'+${notificacion.id}" aria-expanded="false" aria-controls="collapseExample" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Movimiento'}">
+                        Ver detalles
+                    </button>
+                    <!-- Contenido del colapso -->
+                    <div th:id="'collapse'+${notificacion.id}" class="collapse" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Movimiento'}">
+                        <div class="card card-body">
+                            <!-- Aquí puedes agregar los detalles del movimiento -->
+                            <p th:text="${notificacion.datosAgregarMovimientoObject.getDescripcion()}"></p>
+                            <p th:text="${notificacion.datosAgregarMovimientoObject.getTipo()}"></p>
+                            <p th:text="${notificacion.datosAgregarMovimientoObject.getCategoria()}"></p>
+                            <p th:text="${notificacion.datosAgregarMovimientoObject.getMontoAmigo()}"></p>
+
+                            <form th:object="${DatosNotificacion}" th:action="@{/movimientos/aceptarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                                <input type="hidden" name="id" th:value="${notificacion.id}">
+                                <input type="hidden" name="json" th:value="${notificacion.datosAgregarMovimiento}">
+                                <input type="hidden" name="idUsuario" th:value="${notificacion.usuario.id}">
+                                <input type="hidden" name="idUsuarioSolicitante" th:value="${notificacion.usuarioSolicitante.id}">
+                                <button type="submit" class="btn btn-primary mr-2">Aceptar</button>
+                            </form>
+                            <form th:object="${DatosNotificacion}" th:action="@{/movimientos/eliminarSolicitud/{id}(id=${notificacion.id})}" method="POST">
+                                <input type="hidden" name="id" th:value="${notificacion.id}">
+                                <button type="submit" class="btn btn-danger">Rechazar</button>
+                            </form>
+                        </div>
+
+                    </div>
                 </div>
             </li>
         </ul>

@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.meta;
 
 import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface ServicioMeta {
     @Scheduled(cron = "0 0 0 * * *")
     void eliminarMetasVencidasParaTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionMetaNoExistente;
-
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
     void guardarMeta(Long idUsuario, DatosMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente;
 
     Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
@@ -22,4 +23,5 @@ public interface ServicioMeta {
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
+    List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario);
 }
