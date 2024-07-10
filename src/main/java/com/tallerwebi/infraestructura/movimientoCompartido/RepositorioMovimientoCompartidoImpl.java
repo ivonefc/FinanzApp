@@ -51,8 +51,8 @@ public class RepositorioMovimientoCompartidoImpl implements RepositorioMovimient
                     .setParameter("email", email)
                     .uniqueResult();
 
-            if(amigo == null){
-                throw new UsuarioInexistente();
+            if(amigo==null){
+                throw new UsuarioInexistente("El usuario no existe");
             }
 
             if(amigo.getRol().equals("FREE"))
