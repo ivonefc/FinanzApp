@@ -23,6 +23,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -47,7 +49,6 @@ public class ServicioMovimientoCompartidoTest {
         usuarioMock = mock(Usuario.class);
     }
 
-
     @Test
     public void queAlSolicitarAlServicioObtenerAmigosDevuelvaUnaListaDeAmigos() throws ExcepcionBaseDeDatos {
         //preparacion
@@ -67,11 +68,35 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
+    public void queAlSolicitarAlServicioObtenerAmigosDevuelvaUnaListaVacíaDeAmigos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerAmigos(anyLong())).thenReturn(Arrays.asList());
+
+        //ejecucion
+        List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(1L);
+
+        //validacion
+        assertThat(amigos, notNullValue());
+        assertThat(amigos, empty());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerAmigosLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+        // Preparación
+        when(repositorioMovimientoCompartidoMock.obtenerAmigos(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        // Ejecución y validación
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.obtenerAmigos(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
     public void queAlSolicitarAlServicioObtenerLasSolicitudesEnviadasMeDevuelvaUnaListaDeSolicitudesEnviadas() throws ExcepcionBaseDeDatos {
         //preparacion
         Notificacion solicitudMock1 = mock(Notificacion.class);
         Notificacion solicitudMock2 = mock(Notificacion.class);
-
         when(repositorioMovimientoCompartidoMock.obtenerSolicitudesEnviadas(anyLong())).thenReturn(Arrays.asList(solicitudMock1, solicitudMock2));
 
         //ejecucion
@@ -85,11 +110,128 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
+    public void queAlSolicitarAlServicioObtenerLasSolicitudesEnviadasMeDevuelvaUnaListaVaciaDeSolicitudesEnviadas() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesEnviadas(anyLong())).thenReturn(Arrays.asList());
+
+        //ejecucion
+        List<Notificacion> solicitudes = servicioMovimientoCompartido.obtenerSolicitudesEnviadas(1L);
+
+        //validacion
+        assertThat(solicitudes, notNullValue());
+        assertThat(solicitudes, empty());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerLasSolicitudesEnviadasLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesEnviadas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.obtenerSolicitudesEnviadas(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, Excepcion {
+        // Preparación
+        Usuario amigoMock = mock(Usuario.class);
+        when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
+        doThrow(ExcepcionBaseDeDatos.class).when(repositorioMovimientoCompartidoMock).agregarNuevoAmigo(anyLong(), anyString());
+
+        // Ejecución y validación
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.agregarNuevoAmigo(1L, amigoMock.getEmail());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionSoliciutdEnviada() throws ExcepcionBaseDeDatos, Excepcion {
+        // Preparación
+        Usuario amigoMock = mock(Usuario.class);
+        when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
+        doThrow(ExcepcionSolicitudEnviada.class).when(repositorioMovimientoCompartidoMock).agregarNuevoAmigo(anyLong(), anyString());
+
+        // Ejecución y validación
+        ExcepcionSolicitudEnviada exception = assertThrows(ExcepcionSolicitudEnviada.class, () -> {
+            servicioMovimientoCompartido.agregarNuevoAmigo(1L, amigoMock.getEmail());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionAutoAmistad() throws ExcepcionBaseDeDatos, Excepcion {
+        // Preparación
+        Usuario amigoMock = mock(Usuario.class);
+        when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
+        doThrow(ExcepcionAutoAmistad.class).when(repositorioMovimientoCompartidoMock).agregarNuevoAmigo(anyLong(), anyString());
+
+        // Ejecución y validación
+        ExcepcionAutoAmistad exception = assertThrows(ExcepcionAutoAmistad.class, () -> {
+            servicioMovimientoCompartido.agregarNuevoAmigo(1L, amigoMock.getEmail());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAgregarAmigoLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, Excepcion {
+        // Preparación
+        Usuario amigoMock = mock(Usuario.class);
+        when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
+        doThrow(UsuarioInexistente.class).when(repositorioMovimientoCompartidoMock).agregarNuevoAmigo(anyLong(), anyString());
+
+        // Ejecución y validación
+        UsuarioInexistente exception = assertThrows(UsuarioInexistente.class, () -> {
+            servicioMovimientoCompartido.agregarNuevoAmigo(1L, amigoMock.getEmail());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionNotificacionInexistente {
+        //preparacion
+        Notificacion solicitud = mock(Notificacion.class);
+        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);
+
+        //ejecucion
+        servicioMovimientoCompartido.eliminarSolicitud(1L);
+
+        //validacion
+        verify(repositorioMovimientoCompartidoMock).eliminarSolicitud(solicitud);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarUnaSolicitudLanceExceptionNotificacionInexistente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(null);
+
+        //ejecucion y validacion
+        ExcepcionNotificacionInexistente exception = assertThrows(ExcepcionNotificacionInexistente.class, () -> {
+            servicioMovimientoCompartido.eliminarSolicitud(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarUnaSolicitudLanceExceptionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.eliminarSolicitud(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
     public void queAlSolicitarAlServicioObtenerLasSolicitudesRecibidasMeDevuelvaUnaListaDeSolicitudesRecibidas() throws ExcepcionBaseDeDatos {
         //preparacion
         Notificacion solicitudMock1 = mock(Notificacion.class);
         Notificacion solicitudMock2 = mock(Notificacion.class);
-
         when(repositorioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(anyLong())).thenReturn(Arrays.asList(solicitudMock1, solicitudMock2));
 
         //ejecucion
@@ -103,30 +245,66 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, Excepcion {
+    public void queAlSolicitarAlServicioObtenerLasSolicitudesRecibidasDevuelvaUnaListaVacíaDeSolicitudesRecibidas() throws ExcepcionBaseDeDatos {
+//    public void queAlSolicitarAlServicioAgregarAmigoSeGuardeElAmigo() throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, Excepcion {
         //preparacion
-        Long idUsuario = 1L;
-        Usuario amigoMock = mock(Usuario.class);
-        when(amigoMock.getEmail()).thenReturn("amigo@ejemplo.com");
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(anyLong())).thenReturn(Arrays.asList());
 
         //ejecucion
-        servicioMovimientoCompartido.agregarNuevoAmigo(1L, amigoMock.getEmail());
+        List<Notificacion> solicitudes = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(1L);
 
         //validacion
-        verify(repositorioMovimientoCompartidoMock).agregarNuevoAmigo(1L, amigoMock.getEmail());
+        assertThat(solicitudes, notNullValue());
+        assertThat(solicitudes, empty());
     }
 
     @Test
-    public void queAlSolicitarAlServicioEliminarUnaSolicitudElimineLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+    public void queAlSolicitarAlServicioObtenerLasSolicitudesRecibidasLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesRecibidas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.obtenerSolicitudesRecibidas(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAceptarUnaSolicitudAcepteLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
         //preparacion
         Notificacion solicitud = mock(Notificacion.class);
         when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);
 
         //ejecucion
-        servicioMovimientoCompartido.eliminarSolicitud(1L);
+        servicioMovimientoCompartido.aceptarSolicitud(1L);
 
         //validacion
-        verify(repositorioMovimientoCompartidoMock).eliminarSolicitud(solicitud);
+        verify(repositorioMovimientoCompartidoMock).aceptarSolicitud(solicitud);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAceptarUnaSolicitudLanceExceptionNotificacionInexistente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(null);
+
+        //ejecucion y validacion
+        ExcepcionNotificacionInexistente exception = assertThrows(ExcepcionNotificacionInexistente.class, () -> {
+            servicioMovimientoCompartido.aceptarSolicitud(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioAceptarUnaSolicitudLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.aceptarSolicitud(1L);
+        });
+        assertNotNull(exception);
     }
 
     @Test
@@ -146,15 +324,133 @@ public class ServicioMovimientoCompartidoTest {
     }
 
     @Test
-    public void queAlSolicitarAlServicioAceptarUnaSolicitudAcepteLaSolicitud() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, ExcepcionNotificacionInexistente {
+    public void queAlSolicitarAlServicioEliminarUnAmigoLanceExceptionUsuarioInexistente() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, UsuarioInexistente {
         //preparacion
-        Notificacion solicitud = mock(Notificacion.class);
-        when(repositorioMovimientoCompartidoMock.obtenerNotificacionPorId(anyLong())).thenReturn(solicitud);
+        Usuario amigo = mock(Usuario.class);
+        Long idAmigo = 1L;
+        Long idUsuario = 2L;
+        when(amigo.getId()).thenReturn(idAmigo);
+        when(usuarioMock.getId()).thenReturn(idUsuario);
+        doThrow(UsuarioInexistente.class).when(repositorioMovimientoCompartidoMock).eliminarAmigo(anyLong(), anyLong());
+
+        //ejecucion y validacion
+        UsuarioInexistente exception = assertThrows(UsuarioInexistente.class, () -> {
+            servicioMovimientoCompartido.eliminarAmigo(amigo.getId(), usuarioMock.getId());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioEliminarUnAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, ExcepcionMovimientoNoEncontrado, UsuarioInexistente {
+        //preparacion
+        Usuario amigo = mock(Usuario.class);
+        Long idAmigo = 1L;
+        Long idUsuario = 2L;
+        when(amigo.getId()).thenReturn(idAmigo);
+        when(usuarioMock.getId()).thenReturn(idUsuario);
+        doThrow(ExcepcionBaseDeDatos.class).when(repositorioMovimientoCompartidoMock).eliminarAmigo(anyLong(), anyLong());
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.eliminarAmigo(amigo.getId(), usuarioMock.getId());
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerLosMovimientosCompartidosMeDevuelvaUnaListaDeMovimientosCompartidos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        Movimiento movimientoMock1 = mock(Movimiento.class);
+        Movimiento movimientoMock2 = mock(Movimiento.class);
+        when(repositorioMovimientoCompartidoMock.obtenerMovimientosCompartidos(anyLong(), anyLong())).thenReturn(Arrays.asList(movimientoMock1, movimientoMock2));
 
         //ejecucion
-        servicioMovimientoCompartido.aceptarSolicitud(1L);
+        List<Movimiento> movimientos = servicioMovimientoCompartido.obtenerMovimientosCompartidos(1L, 2L);
 
         //validacion
-        verify(repositorioMovimientoCompartidoMock).aceptarSolicitud(solicitud);
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, not(empty()));
+        assertThat(movimientos, containsInAnyOrder(movimientoMock1, movimientoMock2));
+        assertThat(movimientos, hasSize(2));
     }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerLosMovimientosCompartidosMeDevuelvaUnaListaVaciaDeMovimientosCompartidos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerMovimientosCompartidos(anyLong(), anyLong())).thenReturn(Arrays.asList());
+
+        //ejecucion
+        List<Movimiento> movimientos = servicioMovimientoCompartido.obtenerMovimientosCompartidos(1L, 2L);
+
+        //validacion
+        assertThat(movimientos, notNullValue());
+        assertThat(movimientos, empty());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerLosMovimientosCompartidosLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerMovimientosCompartidos(anyLong(), anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.obtenerMovimientosCompartidos(1L, 2L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerSolicitudesAceptadasMeDevuelvaUnaListaDeSolicitudesAceptadas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        Notificacion solicitudMock1 = mock(Notificacion.class);
+        Notificacion solicitudMock2 = mock(Notificacion.class);
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenReturn(Arrays.asList(solicitudMock1, solicitudMock2));
+
+        //ejecucion
+        List<Notificacion> solicitudes = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(1L);
+
+        //validacion
+        assertThat(solicitudes, notNullValue());
+        assertThat(solicitudes, not(empty()));
+        assertThat(solicitudes, containsInAnyOrder(solicitudMock1, solicitudMock2));
+        assertThat(solicitudes, hasSize(2));
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerSolicitudesAceptadasMeDevuelvaUnaListaVaciaDeSolicitudesAceptadas() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenReturn(Arrays.asList());
+
+        //ejecucion
+        List<Notificacion> solicitudes = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(1L);
+
+        //validacion
+        assertThat(solicitudes, notNullValue());
+        assertThat(solicitudes, empty());
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerSolicitudesAceptadasLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenThrow(ExcepcionBaseDeDatos.class);
+
+        //ejecucion y validacion
+        ExcepcionBaseDeDatos exception = assertThrows(ExcepcionBaseDeDatos.class, () -> {
+            servicioMovimientoCompartido.obtenerSolicitudesAceptadas(1L);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void queAlSolicitarAlServicioObtenerSolicitudesAceptadasLanceExcepcionUsuarioInexistente() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(repositorioMovimientoCompartidoMock.obtenerSolicitudesAceptadas(anyLong())).thenThrow(UsuarioInexistente.class);
+
+        //ejecucion y validacion
+        UsuarioInexistente exception = assertThrows(UsuarioInexistente.class, () -> {
+            servicioMovimientoCompartido.obtenerSolicitudesAceptadas(1L);
+        });
+        assertNotNull(exception);
+    }
+
 }

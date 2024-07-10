@@ -54,30 +54,6 @@ public class ControladorAjustesTest {
     }
 
     @Test
-    public void queAlClickearVolverAPaginaDeInicioMeRedirijaAPanel(){
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(sessionMock);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorAjustes.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/panel"));
-    }
-
-    @Test
-    public void queAlQuererVolverAPanelYNoExistaUsuarioLogueadoMeRedirijaAlLoguin(){
-        //preparacion
-        when(requestMock.getSession(false)).thenReturn(null);
-
-        //ejecucion
-        ModelAndView modelAndView = controladorAjustes.volverAPanel(requestMock);
-
-        //validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
-    }
-
-    @Test
     public void queAlClickearIrAMiPerfilMeRedirijaAMiPerfil() throws ExcepcionBaseDeDatos, UsuarioInexistente {
         //preparacion
         when(requestMock.getSession(false)).thenReturn(sessionMock);
@@ -120,6 +96,54 @@ public class ControladorAjustesTest {
 
         //ejecucion
         ModelAndView modelAndView = controladorAjustes.irAEditarColores(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlClickearIrAPremiumMeRedirijaAPremium() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAPremium(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/premium"));
+    }
+
+    @Test
+    public void queAlQuererIrAPremiumYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAPremium(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+    }
+
+    @Test
+    public void queAlClickearIrAAgregarMovimientoMeRedirijaAAgregarMovimiento() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAAgregarMovimiento(requestMock);
+
+        //validacion
+        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/agregar-movimiento"));
+    }
+
+    @Test
+    public void queAlQuererIrAAgregarMovimientoYNoExistaUsuarioLogueadoMeRedirijaAlLoguin() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        //preparacion
+        when(requestMock.getSession(false)).thenReturn(null);
+
+        //ejecucion
+        ModelAndView modelAndView = controladorAjustes.irAAgregarMovimiento(requestMock);
 
         //validacion
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));

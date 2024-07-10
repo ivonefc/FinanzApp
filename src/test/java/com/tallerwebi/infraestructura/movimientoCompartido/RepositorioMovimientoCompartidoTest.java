@@ -126,68 +126,6 @@ public class RepositorioMovimientoCompartidoTest {
         );
     }
 
-//    @Test
-//    @Transactional
-//    @Rollback
-//    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//    public void queAlSolicitarAlRepositorioAgregarNuevoAmigoSeAgregueUnNuevoAmigo() throws ExcepcionBaseDeDatos, ExcepcionAmigoYaExistente, ExcepcionSolicitudEnviada, UsuarioInexistente, ExcepcionAutoAmistad {
-//        //preparacion
-//        repositorioMovimientoCompartido = new RepositorioMovimientoCompartidoImpl(sessionFactory, repositorioNotificacion);
-//        // Crear un usuario y un amigo
-//        Usuario usuario = new Usuario();
-//        usuario.setId(1L);
-//        usuario.setNombre("Usuario de prueba");
-//        usuario.setEmail("usuario@prueba.com");
-//
-//        Usuario amigo = new Usuario();
-//        amigo.setId(2L);
-//        amigo.setNombre("Amigo de prueba");
-//        amigo.setEmail("amigo@prueba.com");
-//
-//        // Guardar el usuario y el amigo en la base de datos
-//        Session session = sessionFactory.getCurrentSession();
-//        session.save(usuario);
-//        session.save(amigo);
-//
-//        // Forzar la sincronización para obtener los IDs
-//        session.flush();
-//
-//        // Ahora los IDs deberían estar disponibles
-//        assertNotNull(usuario.getId());
-//        assertNotNull(amigo.getId());
-//
-//        //ejecucion
-//        repositorioMovimientoCompartido.agregarNuevoAmigo(usuario.getId(), amigo.getEmail());
-//
-//        //verificacion
-//        List<Usuario> amigos = repositorioMovimientoCompartido.obtenerAmigos(usuario.getId());
-//        assertEquals(1, amigos.size());
-//        assertTrue(amigos.stream().anyMatch(amigoGuardado -> amigoGuardado.getEmail().equals(amigo.getEmail())));
-//    }
-
-//    @Test
-//    @Transactional
-//    @Rollback
-//    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//    public void queAlSolicitarAlRepositorioAgregarNuevoAmigoLanceExcepcionBaseDeDatos() throws ExcepcionBaseDeDatos {
-//        //preparacion
-//        SessionFactory sessionFactoryMock = Mockito.mock(SessionFactory.class);
-//        Session sessionMock = Mockito.mock(Session.class);
-//        RepositorioNotificacion repositorioNotificacionMock = Mockito.mock(RepositorioNotificacion.class);
-//        when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
-//        when(sessionMock.createQuery(Mockito.anyString(), Mockito.eq(Usuario.class))).thenThrow(new HibernateException("Base de datos no disponible"));
-//
-//        // Aquí configuramos el comportamiento de repositorioNotificacionMock
-//        doNothing().when(repositorioNotificacionMock).guardar(any(Notificacion.class));
-//
-//        repositorioMovimientoCompartido = new RepositorioMovimientoCompartidoImpl(sessionFactoryMock, repositorioNotificacionMock);
-//
-//        //ejecucion y verificacion
-//        assertThrows(ExcepcionBaseDeDatos.class, () ->
-//                repositorioMovimientoCompartido.agregarNuevoAmigo(1L, "amigo@prueba")
-//        );
-//    }
-
     @Test
     @Transactional
     @Rollback
@@ -631,7 +569,7 @@ public class RepositorioMovimientoCompartidoTest {
                 repositorioMovimientoCompartido.aceptarSolicitud(notificacion)
         );
     }
-/*
+
     @Test
     @Transactional
     @Rollback
@@ -652,8 +590,8 @@ public class RepositorioMovimientoCompartidoTest {
         session.save(amigo);
 
         // Agregar el amigo al conjunto de amigos del usuario
-        usuario.getAmigos().add(amigo);
-        amigo.getAmigos().add(usuario);
+        usuario.agregarAmigo(amigo);
+        amigo.agregarAmigo(usuario);
 
         // Guardar el usuario y el amigo en la base de datos
         session.save(usuario);
@@ -667,7 +605,7 @@ public class RepositorioMovimientoCompartidoTest {
         assertTrue(amigos.isEmpty());
         assertNotNull(usuario.getId());
         assertNotNull(amigo.getId());
-    }*/
+    }
 
     @Test
     @Transactional
@@ -682,50 +620,6 @@ public class RepositorioMovimientoCompartidoTest {
                 repositorioMovimientoCompartido.eliminarAmigo(1L, 2L)
         );
     }
-
-//    @Test
-//    @Transactional
-//    @Rollback
-//    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//    public void queAlSolicitarAlRepositorioliminarAmigoLanceExcepcionBaseDeDatos() {
-//        //preparacion
-//        SessionFactory sessionFactoryMock = Mockito.mock(SessionFactory.class);
-//        Session sessionMock = Mockito.mock(Session.class);
-//        NativeQuery nativeQueryMock = Mockito.mock(NativeQuery.class);
-//        when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
-//        when(sessionMock.createNativeQuery(Mockito.anyString())).thenReturn(nativeQueryMock);
-//        doThrow(new HibernateException("Base de datos no disponible")).when(nativeQueryMock).executeUpdate();
-//
-//        repositorioMovimientoCompartido = new RepositorioMovimientoCompartidoImpl(sessionFactoryMock, repositorioNotificacion);
-//
-//        // Crear un usuario y un amigo
-//        Usuario usuario = new Usuario();
-//        usuario.setNombre("Usuario de prueba");
-//        usuario.setId(1L);
-//
-//        Usuario amigo = new Usuario();
-//        amigo.setNombre("Amigo de prueba");
-//        amigo.setId(2L);
-//
-//        // Configurar el mock de Session para que devuelva el objeto que se pasa como argumento cuando se llama a save
-//        when(sessionMock.save(Mockito.any(Usuario.class))).thenReturn(null);
-//
-//        // Guardar el usuario y el amigo en la base de datos
-//        Session session = sessionFactoryMock.getCurrentSession();
-//        session.save(usuario);
-//        session.save(amigo);
-//
-//        // Agregar una entrada en la tabla de unión para cada amigo
-//        session.createNativeQuery("INSERT INTO amigos (usuario_id, amigo_id) VALUES (:usuarioId, :amigoId)")
-//                .setParameter("usuarioId", usuario.getId())
-//                .setParameter("amigoId", amigo.getId())
-//                .executeUpdate();
-//
-//        //ejecucion y verificacion
-//        assertThrows(ExcepcionBaseDeDatos.class, () ->
-//                repositorioMovimientoCompartido.eliminarAmigo(amigo.getId(), usuario.getId())
-//        );
-//    }
 
     @Test
     @Transactional

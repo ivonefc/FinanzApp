@@ -1,10 +1,13 @@
 package com.tallerwebi.presentacion.notificaciones;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -18,14 +21,23 @@ import java.util.List;
 @ControllerAdvice
 public class ControladorNotificacionHeader {
     private ServicioMovimientoCompartido servicioMovimientoCompartido;
+    private ServicioMeta servicioMeta;
 
     @Autowired
-    public ControladorNotificacionHeader(ServicioMovimientoCompartido servicioMovimientoCompartido) {
-
-    this.servicioMovimientoCompartido = servicioMovimientoCompartido;
-
+    public ControladorNotificacionHeader(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioMeta servicioMeta) {
+        this.servicioMovimientoCompartido = servicioMovimientoCompartido;
+        this.servicioMeta = servicioMeta;
     }
+
     public ControladorNotificacionHeader() {
+    }
+
+    @ModelAttribute
+    public void eliminarMetasVencidasParaTodosLosUsuarios(HttpServletRequest request) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession != null)
+            servicioMeta.eliminarMetasVencidasParaTodosLosUsuarios();
+
     }
 
     @ModelAttribute("notificacionesRecibidas")

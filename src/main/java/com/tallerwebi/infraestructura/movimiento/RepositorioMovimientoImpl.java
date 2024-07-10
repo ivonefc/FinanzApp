@@ -12,6 +12,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -172,4 +174,24 @@ public List<Notificacion> obtenerMovimientosCompartidos(Long idUsuario) throws E
         }
 }
 
+    @Override
+    public Double obtenerTotalPorCategoriaPorFecha(Long idUsuario, Long idCategoria, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
+        try {
+            LocalDate fechaInicioParse = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate fechaFinParse = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            Double total =  sessionFactory.getCurrentSession()
+                    .createQuery("SELECT SUM(M.monto) FROM Movimiento M WHERE M.usuario.id = :idUsuario AND M.categoria.id = :idCategoria AND M.fechayHora BETWEEN :fechaInicio AND :fechaFin", Double.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .setParameter("idCategoria", idCategoria)
+                    .setParameter("fechaInicio", fechaInicioParse)
+                    .setParameter("fechaFin", fechaFinParse)
+                    .uniqueResult();
+            if(total==null){
+                return 0.0;
+            }
+            return total;
+        } catch (HibernateException he) {
+            throw new ExcepcionBaseDeDatos(he);
+        }
+    }
 }

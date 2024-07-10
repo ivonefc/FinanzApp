@@ -80,13 +80,13 @@ public class ControladorLoginTest {
 	}
 
 	@Test
-	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYVolverAlLogin() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
+	public void registrameSiUsuarioNoExisteDeberiaCrearUsuarioYMostrarMensajeDeExito() throws UsuarioExistente, ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente {
 		//preparacion
 		doNothing().when(servicioLoginMock).registrar(datosRegistroUsuarioMock);
 		//ejecucion
 		ModelAndView modelAndView =  controladorLogin.registrarme(datosRegistroUsuarioMock);
 		//validacion
-		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/registro-exitoso"));
 		verify(servicioLoginMock, times(1)).registrar(datosRegistroUsuarioMock);
 	}
 
@@ -201,5 +201,13 @@ public class ControladorLoginTest {
 		assertThat(modelAndView.getViewName(), equalToIgnoringCase("nuevo-usuario"));
 		assertThat(erroresObtenidos, IsMapWithSize.aMapWithSize(1));
 		assertThat(erroresObtenidos, hasEntry("email", "El email es invalido"));
+	}
+
+	@Test
+	public void queAlClickearEnCancelarRegistroMeReirijaALogin(){
+		//ejecucion
+		ModelAndView modelAndView = controladorLogin.cancelarRegistro();
+		//validacion
+		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
 	}
 }

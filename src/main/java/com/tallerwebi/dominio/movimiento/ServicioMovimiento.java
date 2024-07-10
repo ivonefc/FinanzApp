@@ -9,6 +9,7 @@ import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.presentacion.movimiento.DatosAgregarMovimiento;
 import com.tallerwebi.presentacion.movimiento.DatosEditarMovimiento;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,4 +37,8 @@ public interface ServicioMovimiento {
     void aceptarMovimiento(Long idNotificacion, String estado) throws ExcepcionBaseDeDatos;
 
     void guardarMovimientoDesdeNotificacion(Long idUsuario, DatosAgregarMovimiento datosAgregarMovimiento) throws ExcepcionBaseDeDatos, ExcepcionCamposInvalidos, UsuarioInexistente;
+
+    Map<String, Double> obtenerMetasConFecha(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    Double obtenerTotalGastado(Long idUsuario, Long idMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos;
 }

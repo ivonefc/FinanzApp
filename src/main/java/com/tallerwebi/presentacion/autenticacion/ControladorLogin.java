@@ -9,6 +9,7 @@ import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,7 +56,7 @@ public class ControladorLogin {
 
         try {
             servicioLogin.registrar(datosRegistroUsuario);
-            return new ModelAndView("redirect:/login");
+            return new ModelAndView("redirect:/registro-exitoso");
         } catch (UsuarioExistente e) {
             model.put("error", e.getMessage());
             return new ModelAndView("nuevo-usuario", model);
@@ -66,6 +67,17 @@ public class ControladorLogin {
             model.put("error", "");
             return new ModelAndView("nuevo-usuario", model);
         }
+    }
+
+    @RequestMapping(path = "/registro-exitoso", method = RequestMethod.GET)
+    public ModelAndView registroExitoso() {
+        return new ModelAndView("registro-exitoso");
+    }
+
+    @GetMapping("/registro/login")
+    public ModelAndView cancelarRegistro() {
+        ModelMap modelo = new ModelMap();
+        return new ModelAndView("redirect:/login", modelo);
     }
 
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)

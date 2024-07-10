@@ -2,6 +2,8 @@ package com.tallerwebi.presentacion.meta;
 
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.MetaVencida;
+import com.tallerwebi.dominio.meta.RepositorioMetaVencida;
 import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -23,30 +26,32 @@ public class ControladorMeta {
     private ServicioMovimiento servicioMovimiento;
     private ServicioMeta servicioMeta;
     private ServicioUsuario servicioUsuario;
+    private RepositorioMetaVencida repositorioMetaVencida;
 
     @Autowired
-    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento, ServicioUsuario servicioUsuario) {
+    public ControladorMeta(ServicioMeta servicioMeta, ServicioMovimiento servicioMovimiento, ServicioUsuario servicioUsuario, RepositorioMetaVencida repositorioMetaVencida) {
         this.servicioMeta = servicioMeta;
         this.servicioMovimiento = servicioMovimiento;
         this.servicioUsuario = servicioUsuario;
+        this.repositorioMetaVencida = repositorioMetaVencida;
     }
 
     @GetMapping("/metas")
     public ModelAndView irAMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
-        if(usuario.getRol().equals("FREE")){
+        if(usuario.getRol().equals("FREE"))
             return new ModelAndView("redirect:/panel");
-        }
+
         List<Meta> metas = servicioMeta.obtenerMetas(idUsuario);
         modelo.put("metas", metas);
         modelo.put("usuario", usuario);
-        Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerTotalGastadoEnCategoriasConMetas(idUsuario);
+        Map<String, Double> totalGastadoPorCategoria = servicioMovimiento.obtenerMetasConFecha(idUsuario);
         modelo.put("totales", totalGastadoPorCategoria);
         return new ModelAndView("metas", modelo);
     }
@@ -63,11 +68,11 @@ public class ControladorMeta {
         return new ModelAndView("metas", modelo);
     }
 
-    @GetMapping("/meta/panel")
+    @GetMapping("/metas/panel")
     public ModelAndView volverAPanel(HttpServletRequest request){
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         return new ModelAndView("redirect:/panel");
     }
 
@@ -76,22 +81,47 @@ public class ControladorMeta {
         HttpSession httpSession = request.getSession(false);
         ModelMap modelo = new ModelMap();
         modelo.put("meta", new DatosMeta());
+        if (request.getSession(false) == null)
+            return new ModelAndView("redirect:/login");
+
+        Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE"))
+            return new ModelAndView("redirect:/panel");
+
+        modelo.put("usuario", usuario);
+        return new ModelAndView("agregar-meta", modelo);
+    }
+
+    @GetMapping("/metas/historial")
+    public ModelAndView irAHistorialDeMetas(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        ModelMap modelo = new ModelMap();
         if (request.getSession(false) == null) {
             return new ModelAndView("redirect:/login");
         }
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE")){
+            return new ModelAndView("redirect:/panel");
+        }
         modelo.put("usuario", usuario);
-        return new ModelAndView("agregar-meta", modelo);
+        List <MetaVencida> metasVencidas = repositorioMetaVencida.obtenerMetasVencidas(idUsuario);
+        modelo.put("metasVencidas", metasVencidas);
+        return new ModelAndView("historial-metas", modelo);
     }
 
     @PostMapping("/metas/guardar")
-    public ModelAndView crearMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos {
+    public ModelAndView crearMeta(@ModelAttribute("meta") DatosMeta datosMeta, HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = request.getSession(false);
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE"))
+            return new ModelAndView("redirect:/panel");
+
         ModelMap modelo = new ModelMap();
         try {
             servicioMeta.guardarMeta(idUsuario, datosMeta);
@@ -104,10 +134,6 @@ public class ControladorMeta {
             modelo.put("error", e.getMessage());
             modelo.put("meta", new DatosMeta());
             return new ModelAndView("agregar-meta", modelo);
-        } catch (UsuarioInexistente e) {
-            modelo.put("error", "El usuario no existe");
-            modelo.put("meta", new DatosMeta());
-            return new ModelAndView("agregar-meta", modelo);
         }
     }
 
@@ -116,20 +142,17 @@ public class ControladorMeta {
         //obtenerModelo y Sesión iniciada
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
-
-
-        //Verificacion de sesion
-        if (httpSession == null) {
+        if (httpSession == null)
             return new ModelAndView("redirect:/login");
-        }
 
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE"))
+            return new ModelAndView("redirect:/panel");
+
         modelo.put("usuario", usuario);
         Meta meta = servicioMeta.obtenerMetaPorId(id);
-
         DatosEditarMeta datosEditarMeta = DatosEditarMeta.construirDesdeMeta(meta);
-
         modelo.put("meta",datosEditarMeta);
         return new ModelAndView("editar-meta",modelo);
     }
@@ -138,11 +161,14 @@ public class ControladorMeta {
     public ModelAndView editarMeta(@ModelAttribute("meta") DatosEditarMeta datosEditarMeta, HttpServletRequest httpServletRequest) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
         ModelMap modelo = new ModelMap();
-
         if (httpSession == null)
             return new ModelAndView("redirect:/login");
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        if(usuario.getRol().equals("FREE"))
+            return new ModelAndView("redirect:/panel");
+
         modelo.put("usuario", usuario);
 
         try {

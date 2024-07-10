@@ -36,7 +36,10 @@
             <a th:href="@{/metas/agregar}" class="btn btn-primary">Agregar meta</a>
         </div>
         <div class="pt-3">
-            <a th:href="@{/ajustes/panel}" class="btn btn-primary">Volver a página de inicio</a>
+            <a th:href="@{/metas/historial}" class="btn btn-primary">Historial de Metas</a>
+        </div>
+        <div class="pt-3">
+            <a th:href="@{/metas/panel}" class="btn btn-primary">Volver a página de inicio</a>
         </div>
     </div>
     <div class="contenedor-tablas">
@@ -44,6 +47,7 @@
             <div class="card-body">
 
                 <div class="d-flex justify-content-around border-bottom align-items-center p-3" th:if="${not #lists.isEmpty(metas)}">
+                        <a th:href="@{/metas/historial}" class="btn btn-primary fw-semibold">Historial</a>
                         <h2 class="card-title">Metas</h2>
                         <a th:href="@{/metas/agregar}" class="btn btn-primary fw-semibold">Agregar</a>
                     </div>

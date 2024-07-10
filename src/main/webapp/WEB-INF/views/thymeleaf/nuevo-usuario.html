@@ -35,7 +35,7 @@
 <!-- Formulario de registro -->
 <main role="main" class="container">
   <div class = "container">
-    <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+    <div id="loginbox" style="margin-top:2em; margin-bottom: 2em" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
       <form action="#" th:action="@{/registrarme}" method="POST" th:object="${usuario}">
         <h3 class="form-signin-heading">Nuevo Usuario</h3>
         <h5>Ingrese sus datos</h5>
@@ -73,7 +73,7 @@
 
         <div>
           <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-          <input type="date" th:field="*{fechaNacimiento}" id="fechaNacimiento" class="form-control"/>
+          <input type="date" th:field="*{fechaNacimiento}" id="fechaNacimiento" class="form-control">
           <p th:if="${errores != null && errores.get('fechaNacimiento') != null}" class="alert alert-danger" th:text="${errores.get('fechaNacimiento')}"></p>
         </div>
 
@@ -91,6 +91,8 @@
 
         <button id="btn-registrarme" class="btn btn-lg btn-primary btn-block" Type="Submit">Registrarme</button>
         <p th:if="${error != null}" class="alert alert-danger" th:text="${error}"></p>
+        <br>
+        <a th:href="@{/registro/login}" class="btn btn-lg btn-primary btn-block">Cancelar</a>
       </form>
 
     </div>

@@ -3,13 +3,19 @@ package com.tallerwebi.dominio.meta;
 import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +26,40 @@ public class ServicioMetaImpl implements ServicioMeta{
     private RepositorioMeta repositorioMeta;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;
+    private RepositorioMetaVencida repositorioMetaVencida;
+    private ServicioMovimiento servicioMovimiento;
 
     @Autowired
-    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario) {
+    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMetaVencida repositorioMetaVencida, ServicioMovimiento servicioMovimiento) {
         this.repositorioMeta = repositorioMeta;
         this.repositorioCategoria = repositorioCategoria;
         this.repositorioUsuario = repositorioUsuario;
+        this.repositorioMetaVencida = repositorioMetaVencida;
+        this.servicioMovimiento = servicioMovimiento;
+    }
+
+    @Override
+    public void eliminarMetasVencidasParaTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionMetaNoExistente {
+        List<Usuario> usuarios = repositorioUsuario.obtenerTodosLosUsuarios();
+        if(usuarios.isEmpty())
+            throw new UsuarioInexistente();
+        for (Usuario usuario : usuarios) {
+            eliminarMetasVencidas(usuario.getId());
+        }
+    }
+
+    public void eliminarMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        LocalDate hoy = LocalDate.now();
+        for (Meta meta : metas) {
+            Date fechaFin = meta.getFechaFin();
+            LocalDate fechaFinParse = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (fechaFinParse.isBefore(hoy)) {
+                Double totalGastado = servicioMovimiento.obtenerTotalGastado(idUsuario, meta.getCategoriaMovimiento().getId(), meta.getFechaInicio(), meta.getFechaFin());
+                repositorioMetaVencida.guardarMetaVencida(meta, totalGastado);
+                eliminarMeta(meta.getId());
+            }
+        }
     }
 
     @Transactional
@@ -35,7 +69,7 @@ public class ServicioMetaImpl implements ServicioMeta{
         Usuario usuario = repositorioUsuario.obtenerUsuarioPorId(idUsuario);
         CategoriaMovimiento categoriaMovimiento = repositorioCategoria.obtenerCategoriaPorNombre(datosMeta.getCategoria());
         repositorioMeta.existeMetaConUsuarioYCategoria(usuario, categoriaMovimiento);
-        Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto());
+        Meta meta = new Meta(usuario, categoriaMovimiento, datosMeta.getMonto(), datosMeta.getFechaInicio(), datosMeta.getFechaFin());
         repositorioMeta.guardar(meta);
     }
 

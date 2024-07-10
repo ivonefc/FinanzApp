@@ -233,4 +233,20 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     }
 
 
+
+    public Map<String, Double> obtenerMetasConFecha(Long idUsuario) throws ExcepcionBaseDeDatos {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        Map<String, Double> totalGastadoEnCategoriasConMetas = new HashMap<>();
+        if(!metas.isEmpty()){
+            for (Meta meta : metas) {
+                totalGastadoEnCategoriasConMetas.put(meta.getCategoriaMovimiento().getNombre(), repositorioMovimiento.obtenerTotalPorCategoriaPorFecha(idUsuario, meta.getCategoriaMovimiento().getId(), meta.getFechaInicio(), meta.getFechaFin()));
+            }
+        }
+        return totalGastadoEnCategoriasConMetas;
+    }
+
+    @Override
+    public Double obtenerTotalGastado(Long idUsuario, Long idCategoriaMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerTotalPorCategoriaPorFecha(idUsuario, idCategoriaMeta, fechaInicio, fechaFin);
+    }
 }

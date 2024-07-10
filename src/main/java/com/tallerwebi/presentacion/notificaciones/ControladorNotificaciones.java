@@ -44,9 +44,9 @@ public class ControladorNotificaciones {
     public ModelAndView irANotificaciones(HttpServletRequest request) throws ExcepcionBaseDeDatos, UsuarioInexistente, JsonProcessingException {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = request.getSession(false);
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("usuario", usuario);
@@ -77,14 +77,6 @@ public class ControladorNotificaciones {
         modelo.put("DatosNotificacion", new DatosNotificacion());
 
         return new ModelAndView("notificaciones", modelo);
-    }
-
-    @GetMapping("/notificaciones/panel")
-    public ModelAndView volverAPanel(HttpServletRequest request) {
-        if (request.getSession(false) == null) {
-            return new ModelAndView("redirect:/login");
-        }
-        return new ModelAndView("redirect:/panel");
     }
 
 }

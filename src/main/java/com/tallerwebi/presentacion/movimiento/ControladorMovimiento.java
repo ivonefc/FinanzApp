@@ -7,22 +7,20 @@ import com.itextpdf.text.DocumentException;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.exportar.ServicioDeExportacion;
 import com.tallerwebi.dominio.exportar.TipoDeArchivo;
-import com.tallerwebi.dominio.movimiento.*;
+import com.tallerwebi.dominio.movimiento.Movimiento;
+import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
-import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.dominio.usuario.ServicioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.notificaciones.DatosNotificacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -147,16 +145,16 @@ public class ControladorMovimiento {
     public ModelAndView irAAgregarMovimiento(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         ModelMap modelo = new ModelMap();
         HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpServletRequest.getSession(false) == null) {
+        if (httpServletRequest.getSession(false) == null)
             return new ModelAndView("redirect:/login");
-        }
+
         Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
         Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
         modelo.put("agregarMovimiento", new DatosAgregarMovimiento());
         List<Usuario> amigos = servicioMovimientoCompartido.obtenerAmigos(idUsuario);
-        if (amigos != null) {
+        if (amigos != null)
             modelo.put("amigos", amigos);
-        }
+
         modelo.put("usuario", usuario);
         return new ModelAndView("agregar-movimiento", modelo);
     }
@@ -200,11 +198,19 @@ public class ControladorMovimiento {
 
     @GetMapping("/movimientos/exportar/{tipoDeDoc}")
     @ResponseBody
-    public ResponseEntity<byte[]> descargarDocumentoDeMovimentos(@PathVariable TipoDeArchivo tipoDeDoc, HttpServletRequest request) throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo {
+    public ResponseEntity<byte[]> descargarDocumentoDeMovimentos(@PathVariable TipoDeArchivo tipoDeDoc, HttpServletRequest request) throws DocumentException, ExcepcionBaseDeDatos, ExcepcionExportacionDeArchivo, UsuarioInexistente {
         Long idUsuario = (Long) request.getSession(false).getAttribute("idUsuario");
+        Usuario usuario = servicioUsuario.obtenerUsuarioPorId(idUsuario);
+        HttpHeaders headers = new HttpHeaders();
+        if(usuario.getRol().equals("FREE")){
+            headers.setContentType(MediaType.TEXT_PLAIN);
+            String mensajeDeError = "Los usuarios con rol FREE no pueden descargar documentos.";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .headers(headers)
+                    .body(mensajeDeError.getBytes());
+        }
 
         byte[] bytesDelArchivo = servicioDeExportacion.generarArchivo(idUsuario, tipoDeDoc);
-        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok()
                 .headers(headers)

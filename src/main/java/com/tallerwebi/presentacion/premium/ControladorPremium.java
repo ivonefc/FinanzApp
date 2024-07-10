@@ -23,10 +23,6 @@ public class ControladorPremium {
     private ServicioUsuario servicioUsuario;
     private ServicioEmail servicioEmail;
 
-    public ControladorPremium(ServicioUsuario servicioUsuario) {
-        this.servicioUsuario = servicioUsuario;
-    }
-
     @Autowired
     public ControladorPremium(ServicioUsuario servicioUsuario, ServicioEmail servicioEmail) {
         this.servicioUsuario = servicioUsuario;
@@ -92,17 +88,13 @@ public class ControladorPremium {
                 "\n" +
                 "El equipo de FinanzApp";
 
-        String responseBody ="En breve recibirás un email con todos los detalles de tu suscripción.\n" +
-                "\n" +
-                "¡Gracias por elegirnos para gestionar tus finanzas!";
 
-        Response response = servicioEmail.enviarEmail(
+        Response response = servicioEmail.enviarEmailPremium(
                 "finanzapp29@gmail.com",
                 "Bienvenido a Premium: ¡Disfrutá de todas las ventajas exclusivas!",
                 emailUsuario,
                 "text/plain",
-                mensaje,
-                responseBody);
+                mensaje);
         //fin envio de mail
 
         model.put("mensajePremium", response.getResponseBody());

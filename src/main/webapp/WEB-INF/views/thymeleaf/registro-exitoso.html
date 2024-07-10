@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Registro Exitoso</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Bootstrap css / Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Mi CSS-->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-lateral.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+
+<!-- Nav -->
+<nav class="navbar navbar-expand-md navbar-custom fixed-top">
+    <a th:href="@{/login}" class="logo d-flex align-items-center">
+        <img th:src="@{/img/logo.png}" alt="logo">
+        <span class="d-none d-lg-block">FinanzApp</span>
+    </a>
+</nav>
+
+<!-- Mensaje de éxito -->
+<main role="main" class="container">
+    <div class = "container">
+        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <h3 class="form-signin-heading">Registro Exitoso!</h3>
+            <h5>Tu cuenta ha sido creada con éxito.</h5>
+            <hr class="colorgraph"><br>
+
+            <form th:action="@{/login}" method="GET">
+                <button id="btn-login" class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Boostrap core js -->
+<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.excepcion.ExcepcionCategoriaConMetaExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.excepcion.ExcepcionMovimientoNoEncontrado;
 import com.tallerwebi.dominio.meta.Meta;
+import com.tallerwebi.dominio.meta.MetaVencida;
 import com.tallerwebi.dominio.meta.RepositorioMeta;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;

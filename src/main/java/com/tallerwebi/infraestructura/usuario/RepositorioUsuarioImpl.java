@@ -1,6 +1,5 @@
 package com.tallerwebi.infraestructura.usuario;
 
-import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
@@ -84,6 +83,21 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
+    public boolean validarQueUsuarioNoExista(String email) {
+            Session session = sessionFactory.getCurrentSession();
+            Usuario usuario = (Usuario) session.createQuery("FROM Usuario u WHERE u.email = :email")
+                    .setParameter("email", email)
+                    .uniqueResult();
+
+            if(usuario != null) {
+                return true;
+            } else {
+                return false;
+            }
+
+    }
+
+    @Override
     public List<Usuario> obtenerAmigosDeUnUsuario(Long idUsuario) throws ExcepcionBaseDeDatos {
         try {
             Session session = sessionFactory.getCurrentSession();
@@ -130,11 +144,21 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     public void actualizarPlan(Usuario usuario) throws ExcepcionBaseDeDatos {
-
         try {
             entityManager.merge(usuario);
         } catch (Exception e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
+    @Override
+    public List<Usuario> obtenerTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            List<Usuario> usuarios = session.createQuery("FROM Usuario", Usuario.class).getResultList();
+            return usuarios;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
         }
     }
 
