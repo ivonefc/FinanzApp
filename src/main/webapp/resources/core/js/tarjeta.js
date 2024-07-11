@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.querySelector("form");
     const apellidoYNombre = document.getElementById("apellidoYNombre");
-    const numero = document.getElementById("numero");
+    const numero = document.getElementById("numeroTarjeta");
     const fecha = document.getElementById("fecha");
     const cvv = document.getElementById("cvv");
 
@@ -76,8 +76,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         return expirationDate > sixMonthsFromNow;
     }
+
     function isValidDateFormat(date) {
         const regex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
         return regex.test(date);
+    }
+
+    function isPasswordType(input) {
+        return input.type === 'password';
     }
 });
