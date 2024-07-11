@@ -54,6 +54,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         // ejecucion
@@ -79,7 +81,7 @@ public class ServicioMetaTest {
 
         // ejecucion y validacion
         ExcepcionCamposInvalidos thrown = assertThrows(ExcepcionCamposInvalidos.class, () -> servicioMeta.guardarMeta(idUsuario, datosMeta));
-        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(2));
+        assertThat(thrown.getErrores(), IsMapWithSize.aMapWithSize(4));
         assertThat(thrown.getErrores(), hasEntry("categoria", "El campo es requerido"));
         assertThat(thrown.getErrores(), hasEntry("monto", "El campo es requerido"));
     }
@@ -90,6 +92,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         doThrow(ExcepcionCategoriaConMetaExistente.class).when(repositorioMetaMock).existeMetaConUsuarioYCategoria(any(), any());
@@ -104,6 +108,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         doThrow(ExcepcionBaseDeDatos.class).when(repositorioMetaMock).guardar(any());
@@ -118,6 +124,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         doThrow(ExcepcionBaseDeDatos.class).when(repositorioMetaMock).existeMetaConUsuarioYCategoria(any(), any());
@@ -132,6 +140,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         doThrow(ExcepcionBaseDeDatos.class).when(repositorioCategoriaMock).obtenerCategoriaPorNombre(any());
@@ -146,6 +156,8 @@ public class ServicioMetaTest {
         DatosMeta datosMeta = new DatosMeta();
         datosMeta.setCategoria("Comida");
         datosMeta.setMonto(1000.0);
+        datosMeta.setFechaInicio(new Date());
+        datosMeta.setFechaFin(new Date());
         Long idUsuario = 1L;
 
         doThrow(ExcepcionBaseDeDatos.class).when(repositorioUsuarioMock).obtenerUsuarioPorId(any());
