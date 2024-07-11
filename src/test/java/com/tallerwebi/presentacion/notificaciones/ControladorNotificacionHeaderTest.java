@@ -1,7 +1,9 @@
 package com.tallerwebi.presentacion.notificaciones;
 
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
+import com.tallerwebi.dominio.excepcion.ExcepcionMetaNoExistente;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ControladorNotificacionHeaderTest {
 
@@ -25,13 +26,15 @@ public class ControladorNotificacionHeaderTest {
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
+    private ServicioMeta servicioMetaMock;
 
     @BeforeEach
     public void init(){
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
+        servicioMetaMock = mock(ServicioMeta.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
-        controladorNotificacionHeader = new ControladorNotificacionHeader(servicioMovimientoCompartidoMock);
+        controladorNotificacionHeader = new ControladorNotificacionHeader(servicioMovimientoCompartidoMock, servicioMetaMock);
     }
 
     @Test
@@ -140,6 +143,24 @@ public class ControladorNotificacionHeaderTest {
         assertThrows(ExcepcionBaseDeDatos.class, () -> {
             controladorNotificacionHeader.obtenerNotificacionesAceptadas(requestMock);
         });
+    }
+
+    @Test
+    public void queAlCrearUnaMetaConFechaDeInicioYFechaDeFinCuandoLaMetaSeVenceSeElimineLaMisma() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionMetaNoExistente {
+        // Preparacion
+        HttpServletRequest requestMock = mock(HttpServletRequest.class);
+        HttpSession sessionMock = mock(HttpSession.class);
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("idUsuario")).thenReturn(1L);
+
+        // Configurar el mock de ServicioMeta para que no haga nada cuando se llame a eliminarMetasVencidasParaTodosLosUsuarios
+        doNothing().when(servicioMetaMock).eliminarMetasVencidasParaTodosLosUsuarios();
+
+        // Ejecucion
+        controladorNotificacionHeader.eliminarMetasVencidasParaTodosLosUsuarios(requestMock);
+
+        // Validacion
+        verify(servicioMetaMock, times(1)).eliminarMetasVencidasParaTodosLosUsuarios();
     }
 
 

@@ -25,5 +25,6 @@ public interface RepositorioUsuario {
 
     public boolean validarQueUsuarioNoExista(String email);
 
-    }
+    List<Usuario> obtenerTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente;
+}
 

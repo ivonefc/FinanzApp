@@ -1,6 +1,5 @@
 package com.tallerwebi.infraestructura.usuario;
 
-import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
@@ -149,6 +148,17 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
             entityManager.merge(usuario);
         } catch (Exception e) {
             throw new ExcepcionBaseDeDatos("Base de datos no disponible");
+        }
+    }
+
+    @Override
+    public List<Usuario> obtenerTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            List<Usuario> usuarios = session.createQuery("FROM Usuario", Usuario.class).getResultList();
+            return usuarios;
+        } catch (HibernateException e) {
+            throw new ExcepcionBaseDeDatos(e);
         }
     }
 

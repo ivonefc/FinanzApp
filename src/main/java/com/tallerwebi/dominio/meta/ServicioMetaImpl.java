@@ -8,8 +8,13 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +25,37 @@ public class ServicioMetaImpl implements ServicioMeta{
     private RepositorioMeta repositorioMeta;
     private RepositorioCategoria repositorioCategoria;
     private RepositorioUsuario repositorioUsuario;
+    private RepositorioMetaVencida repositorioMetaVencida;
 
     @Autowired
-    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario) {
+    public ServicioMetaImpl(RepositorioMeta repositorioMeta, RepositorioCategoria repositorioCategoria, RepositorioUsuario repositorioUsuario, RepositorioMetaVencida repositorioMetaVencida) {
         this.repositorioMeta = repositorioMeta;
         this.repositorioCategoria = repositorioCategoria;
         this.repositorioUsuario = repositorioUsuario;
+        this.repositorioMetaVencida = repositorioMetaVencida;
+    }
+
+    @Override
+    public void eliminarMetasVencidasParaTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionMetaNoExistente {
+        List<Usuario> usuarios = repositorioUsuario.obtenerTodosLosUsuarios();
+        if(usuarios.isEmpty())
+            throw new UsuarioInexistente();
+        for (Usuario usuario : usuarios) {
+            eliminarMetasVencidas(usuario.getId());
+        }
+    }
+
+    public void eliminarMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        LocalDate hoy = LocalDate.now();
+        for (Meta meta : metas) {
+            Date fechaFin = meta.getFechaFin();
+            LocalDate fechaFinParse = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (fechaFinParse.isBefore(hoy)) {
+                repositorioMetaVencida.guardarMetaVencida(meta);
+                eliminarMeta(meta.getId());
+            }
+        }
     }
 
     @Transactional
