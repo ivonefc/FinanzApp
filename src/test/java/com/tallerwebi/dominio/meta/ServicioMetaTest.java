@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.categoria.CategoriaMovimiento;
 import com.tallerwebi.dominio.excepcion.*;
 import com.tallerwebi.dominio.categoria.RepositorioCategoria;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
+import com.tallerwebi.dominio.notificacion.RepositorioNotificacion;
 import com.tallerwebi.dominio.usuario.RepositorioUsuario;
 import com.tallerwebi.dominio.usuario.Usuario;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
@@ -28,6 +29,7 @@ public class ServicioMetaTest {
     RepositorioMeta repositorioMetaMock;
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
+    RepositorioNotificacion repositorioNotificacionMock;
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
     RepositorioMetaVencida repositorioMetaVencidaMock;
@@ -39,7 +41,10 @@ public class ServicioMetaTest {
         repositorioMetaMock = mock(RepositorioMeta.class);
         repositorioCategoriaMock = mock(RepositorioCategoria.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
-        servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaVencidaMock, servicioMovimientoMock);
+        repositorioMetaVencidaMock = mock(RepositorioMetaVencida.class);
+        servicioMovimientoMock = mock(ServicioMovimiento.class);
+        repositorioNotificacionMock = mock(RepositorioNotificacion.class);
+        servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaVencidaMock, servicioMovimientoMock, repositorioNotificacionMock);
         usuarioMock = mock(Usuario.class);
         categoriaMock = mock(CategoriaMovimiento.class);
     }

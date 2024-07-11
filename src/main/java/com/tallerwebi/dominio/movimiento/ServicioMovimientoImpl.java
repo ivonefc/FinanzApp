@@ -161,6 +161,36 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         }
     }
 
+    private void crearNotificacion(Meta meta) throws ExcepcionBaseDeDatos {
+        Notificacion notificacion = new Notificacion();
+        notificacion.setDescripcion("Has superado la meta de la categoría " + meta.getCategoriaMovimiento().getNombre());
+        notificacion.setFecha(new Date());
+        notificacion.setEstado("Expectante");
+        notificacion.setTipo("Meta");
+        notificacion.setUsuario(meta.getUsuario());
+        repositorioNotificacion.guardar(notificacion);
+    }
+
+    private boolean calcularSiSuperoMeta(Meta meta, List<Movimiento> movimientos) {
+
+        Double total = 0.0;
+        for (Movimiento movimiento : movimientos) {
+            total += movimiento.getMonto();
+        }
+
+        return total >= meta.getMontoMeta();
+
+    }
+
+    private List<Movimiento> traerMovimientosDeLaMeta(String categoria, Date fechaInicio, Date fechaFin, Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMovimiento.obtenerMovimientosFiltradosCategoriaFecha(categoria,fechaInicio,fechaFin, idUsuario);
+    }
+
+    private Meta traerMeta(String Categoria) throws ExcepcionBaseDeDatos {
+        return repositorioMeta.obtenerMetaPorCategoria(Categoria);
+    }
+
+
     @Transactional
     @Override
     public int calcularCantidadDePaginas(Long idUsuario, int tamanioDePaginas) throws ExcepcionBaseDeDatos{
@@ -248,5 +278,28 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     @Override
     public Double obtenerTotalGastado(Long idUsuario, Long idCategoriaMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos {
         return repositorioMovimiento.obtenerTotalPorCategoriaPorFecha(idUsuario, idCategoriaMeta, fechaInicio, fechaFin);
+    }
+
+    @Override
+    public void calcularTodasLasMetas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
+        for (Meta meta : metas) {
+            List<Movimiento> movimientos = traerMovimientosDeLaMeta(meta.getCategoriaMovimiento().getNombre(), meta.getFechaInicio(), meta.getFechaFin(), meta.getUsuario().getId());
+            if(calcularSiSuperoMeta(meta, movimientos)){
+                List<Notificacion> notificaciones = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Expectante", meta.getCategoriaMovimiento().getNombre());
+                List<Notificacion> notificacionesLeidas = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Leido", meta.getCategoriaMovimiento().getNombre());
+                if(!notificaciones.isEmpty()){
+                    for (Notificacion notificacion : notificaciones) {
+                        repositorioNotificacion.actualizar(notificacion.getId(), "Leido");
+                    }
+                }else if(notificacionesLeidas.isEmpty()){
+                    crearNotificacion(meta);
+                }
+            }
+        }
+    }
+
+    private List<Notificacion> contieneNotificacionEnRangoDeFecha(Date fechaInicio, Date fechaFin, Long idUsuario, String estado,String nombre) {
+        return  repositorioNotificacion.obtenerNotificacionesMetaFiltradaPorFecha(idUsuario, fechaInicio, fechaFin, estado,nombre);
     }
 }

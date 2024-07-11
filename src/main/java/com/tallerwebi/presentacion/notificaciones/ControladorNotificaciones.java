@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
@@ -29,15 +30,17 @@ import java.util.List;
 @Controller
 public class ControladorNotificaciones {
 
-    private final ServicioMovimiento servicioMovimiento;
     private ServicioMovimientoCompartido servicioMovimientoCompartido;
     private ServicioUsuario servicioUsuario;
+    private ServicioMovimiento servicioMovimiento;
+    private ServicioMeta servicioMeta;
 
     @Autowired
-    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento) {
+    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento, ServicioMeta servicioMeta) {
         this.servicioMovimientoCompartido = servicioMovimientoCompartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioMovimiento = servicioMovimiento;
+        this.servicioMeta = servicioMeta;
     }
 
     @GetMapping("/notificaciones")
@@ -57,16 +60,9 @@ public class ControladorNotificaciones {
         List<Notificacion> solicitudesRecibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
         List<Notificacion> solicitudesAceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
         List<Notificacion> movimientosCompartidos = servicioMovimiento.obtenerMovimientosCompartidos(idUsuario);
+        List<Notificacion> metas_concretadas = servicioMeta.obtenerNotificacionMetasConcretadas(idUsuario);
+        List<Notificacion> metas_Vencidas = servicioMeta.obtenerNotificacionMetasVencidas(idUsuario);
 
-        if (solicitudesRecibidas == null) {
-            solicitudesRecibidas = new ArrayList<>();
-        }
-        if (solicitudesAceptadas == null) {
-            solicitudesAceptadas = new ArrayList<>();
-        }
-        if(movimientosCompartidos == null) {
-            movimientosCompartidos = new ArrayList<>();
-        }else {
             ObjectMapper objectMapper = new ObjectMapper();
             for (Notificacion notificacion : movimientosCompartidos) {
                 try {
@@ -76,12 +72,14 @@ public class ControladorNotificaciones {
                     e.printStackTrace();
                 }
             }
-        }
+
         List<Notificacion> notificaciones = new ArrayList<>();
 
         notificaciones.addAll(solicitudesRecibidas);
         notificaciones.addAll(solicitudesAceptadas);
         notificaciones.addAll(movimientosCompartidos);
+        notificaciones.addAll(metas_concretadas);
+        notificaciones.addAll(metas_Vencidas);
 
         notificaciones.sort(Comparator.comparing(Notificacion::getFecha).reversed());
 

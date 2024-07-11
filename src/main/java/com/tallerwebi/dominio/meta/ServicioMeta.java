@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.meta;
 
 import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.notificacion.Notificacion;
 import com.tallerwebi.presentacion.meta.DatosEditarMeta;
 import com.tallerwebi.presentacion.meta.DatosMeta;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,4 +23,7 @@ public interface ServicioMeta {
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario);
 }

@@ -24,4 +24,6 @@ public interface RepositorioMeta {
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
+    Meta obtenerMetaPorCategoria(String Categoria) throws ExcepcionBaseDeDatos;
+
 }

@@ -41,4 +41,6 @@ public interface ServicioMovimiento {
     Map<String, Double> obtenerMetasConFecha(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     Double obtenerTotalGastado(Long idUsuario, Long idMeta, Date fechaInicio, Date fechaFin) throws ExcepcionBaseDeDatos;
+
+    void calcularTodasLasMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
 }

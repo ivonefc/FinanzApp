@@ -44,6 +44,15 @@ public class ControladorNotificacionHeader {
 
     }
 
+    @ModelAttribute
+    public void generarNotificacionSiSeSuperoUnaMeta(HttpServletRequest request) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        if(httpSession != null){
+            Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+            servicioMovimiento.calcularTodasLasMetas(idUsuario);
+        }
+    }
+
     @ModelAttribute("notificacionesRecibidas")
     public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
@@ -60,6 +69,8 @@ public class ControladorNotificacionHeader {
         List<Notificacion> solicitudes_Recibidas = servicioMovimientoCompartido.obtenerSolicitudesRecibidas(idUsuario);
         List<Notificacion> solicitudes_Aceptadas = servicioMovimientoCompartido.obtenerSolicitudesAceptadas(idUsuario);
         List<Notificacion> movimientos_Compartidos = servicioMovimiento.obtenerMovimientosCompartidos(idUsuario);
+        List<Notificacion> metas_concretadas = servicioMeta.obtenerNotificacionMetasConcretadas(idUsuario);
+        List<Notificacion> metas_Vencidas = servicioMeta.obtenerNotificacionMetasVencidas(idUsuario);
 
         ObjectMapper objectMapper = new ObjectMapper();
         for (Notificacion notificacion : movimientos_Compartidos) {
@@ -76,6 +87,8 @@ public class ControladorNotificacionHeader {
         notificaciones.addAll(solicitudes_Recibidas);
         notificaciones.addAll(solicitudes_Aceptadas);
         notificaciones.addAll(movimientos_Compartidos);
+        notificaciones.addAll(metas_Vencidas);
+        notificaciones.addAll(metas_concretadas);
 
         notificaciones.sort(Comparator.comparing(Notificacion::getFecha).reversed());
 

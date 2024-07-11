@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion.notificaciones;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tallerwebi.dominio.excepcion.ExcepcionBaseDeDatos;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.meta.ServicioMeta;
 import com.tallerwebi.dominio.movimiento.ServicioMovimiento;
 import com.tallerwebi.dominio.movimientoCompartido.ServicioMovimientoCompartido;
 import com.tallerwebi.dominio.notificacion.Notificacion;
@@ -31,6 +32,7 @@ public class ControladorNotificacionesTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioMovimientoCompartido servicioMovimientoCompartidoMock;
     private ServicioMovimiento servicioMovimientoMock;
+    private ServicioMeta servicioMetaMock;
 
     @BeforeEach
     public void init(){
@@ -39,7 +41,8 @@ public class ControladorNotificacionesTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioMovimientoCompartidoMock = mock(ServicioMovimientoCompartido.class);
         servicioMovimientoMock = mock(ServicioMovimiento.class);
-        controladorNotificaciones = new ControladorNotificaciones(servicioMovimientoCompartidoMock, servicioUsuarioMock, servicioMovimientoMock);
+        servicioMetaMock = mock(ServicioMeta.class);
+        controladorNotificaciones = new ControladorNotificaciones(servicioMovimientoCompartidoMock, servicioUsuarioMock, servicioMovimientoMock, servicioMetaMock);
     }
 
     @Test
