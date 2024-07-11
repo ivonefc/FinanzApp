@@ -56,36 +56,40 @@
             </li>
         </ul>
             </li>
+            <!-- Diamante Premium -->
+            <div class="nav-icon">
+                <a th:if="${usuario.rol == 'PREMIUM'}" th:href="@{/premium}" style="margin-left: 10%;">
+                    <i class="bi bi-gem"></i>
+                </a>
+            </div>
 
             <!-- Usuario -->
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#menu-colapsado" data-bs-toggle="dropdown">
-                    <span class="d-none d-md-block dropdown-toggle ps-2">Usuario</span>
+                    <span class="d-none d-md-block dropdown-toggle ps-2" th:text="${usuario.nombreUsuario}">Usuario</span>
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" id="menu-colapsado">
                     <li class="dropdown-header">
-                        <h6>Usuario</h6>
-                        <span>Estudiante Taller Web I</span>
+                        <span class="d-none d-md-block ps-2" th:text="${usuario.nombre + ' ' + usuario.apellido}">Usuario</span>
                     </li>
-                    <li>
+                    <li style="padding:0">
                         <hr class="dropdown-divider">
                     </li>
 
-                    <li>
+                    <li style="padding:0">
                         <a class="dropdown-item d-flex align-items-center" th:href="@{/mi-perfil}">
                             <i class="bi bi-person"></i>
                             <span>Mi Perfil</span>
                         </a>
                     </li>
-                    <li>
+                    <li style="padding:0">
                         <hr class="dropdown-divider">
                     </li>
-                    <li>
+                    <li style="padding:0">
                         <a class="dropdown-item d-flex align-items-center" th:href="@{/cerrar-sesion}">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Cerrar sesión</span>
-                        </a>
                     </li>
                 </ul>
             </li>
