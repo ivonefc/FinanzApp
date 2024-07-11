@@ -53,15 +53,6 @@ public class ControladorNotificacionHeader {
         }
     }
 
-    @ModelAttribute
-    public void generarNotificacionSiSeSuperoUnaMeta(HttpServletRequest request) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
-        HttpSession httpSession = request.getSession(false);
-        if(httpSession != null){
-            Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
-            servicioMovimiento.calcularTodasLasMetas(idUsuario);
-        }
-    }
-
     @ModelAttribute("notificacionesRecibidas")
     public List<Notificacion> obtenerNotificaciones(HttpServletRequest httpServletRequest) throws ExcepcionBaseDeDatos, UsuarioInexistente {
         HttpSession httpSession = httpServletRequest.getSession(false);
