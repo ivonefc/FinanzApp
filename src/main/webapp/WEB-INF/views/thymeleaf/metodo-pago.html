@@ -9,6 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <script th:src="@{/js/tarjeta.js}"></script>
 
     <!-- Bootstrap css / Bootstrap Icons -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
@@ -46,22 +47,22 @@
                         <form th:action="@{/pagar}" method="post">
                             <div class="mb-3">
                                 <label for="apellidoYNombre" class="form-label">Apellido y Nombre:</label>
-                                <input type="text" class="form-control" id="apellidoYNombre" placeholder="Apellido, Nombre">
+                                <input type="text" class="form-control" id="apellidoYNombre" name="apellidoYNombre" placeholder="Apellido, Nombre">
                             </div>
 
                             <div class="mb-3">
-                                <label for="numero" class="form-label">Numero de Tarjeta:</label>
-                                <input type="number" class="form-control" id="numero" placeholder="Numero de Tarjeta">
+                                <label for="numeroTarjeta" class="form-label">Numero de Tarjeta:</label>
+                                <input type="text" class="form-control" id="numeroTarjeta" name="numeroTarjeta" placeholder="Numero de Tarjeta">
                             </div>
 
                             <div class="mb-3">
                                 <label for="fecha" class="form-label">Fecha de Vencimiento</label>
-                                <input type="text" class="form-control" id="fecha" placeholder="mm/aa">
+                                <input type="text" class="form-control" id="fecha" name="fecha" placeholder="mm/aa">
                             </div>
 
                             <div class="mb-3">
                                 <label for="cvv" class="form-label">CVV</label>
-                                <input type="password" class="form-control" id="cvv" placeholder="***">
+                                <input type="password" class="form-control" id="cvv" name="cvv" placeholder="***">
                             </div>
 
                             <div class="mb-3 button-container">
@@ -84,7 +85,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:src="@{/js/panel.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.js}"></script>
-<script th:src="@{/js/tarjeta.js}"></script>
 
 
 </body>
