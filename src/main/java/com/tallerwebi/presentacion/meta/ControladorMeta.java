@@ -129,10 +129,12 @@ public class ControladorMeta {
         } catch (ExcepcionCamposInvalidos e) {
             modelo.put("errores", e.getErrores());
             modelo.put("meta", new DatosMeta());
+            modelo.put("usuario",usuario);
             return new ModelAndView("agregar-meta", modelo);
         } catch (ExcepcionCategoriaConMetaExistente e) {
             modelo.put("error", e.getMessage());
             modelo.put("meta", new DatosMeta());
+            modelo.put("usuario",usuario);
             return new ModelAndView("agregar-meta", modelo);
         }
     }

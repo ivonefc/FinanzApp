@@ -51,6 +51,15 @@ public class DatosMeta {
         if(!tieneMonto()){
             errores.put("monto", "El campo es requerido");
         }
+        if(fechaInicio == null){
+            errores.put("fechaInicio", "La fecha de inicio es requerida");
+        }
+        if(fechaFin == null){
+            errores.put("fechaFin", "La fecha de fin es requerida");
+        }
+        if(!(fechaFin == null) && fechaFin.before(fechaInicio)){
+            errores.put("fechaFin", "La fecha de fin es incorrecta");
+        }
         if(!errores.isEmpty()){
             throw new ExcepcionCamposInvalidos(errores);
         }

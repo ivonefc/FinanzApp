@@ -93,6 +93,11 @@
                                         <i th:classappend="${meta.categoriaMovimiento.getIcono()}"></i>
                                         <span th:text="${total.key}"></span>
                                     </span>
+                                    <!--FECHA DE INICIO Y DE FIN DE LA META-->
+                                    <span class="contenedor-fechas">
+                                        <span th:text="${#dates.format(meta.fechaInicio, 'dd/MM/yyyy' + ' - ')}"></span>
+                                        <span th:text="${#dates.format(meta.fechaFin, 'dd/MM/yyyy')}"></span>
+                                    </span>
                                    <!--MONTO GASTADO Y MONTO META DE LA CATEGORIA-->
                                     <span class="contenedor-montos">
                                         <span th:text="'$ ' + ${total.value}" class="fw-semibold"></span>

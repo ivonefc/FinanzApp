@@ -129,6 +129,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
                 categoriaMovimiento,
                 usuario
         );
+
         if(amigo != null){
             movimientoUsuario.setAmigo(amigo);
             movimientoUsuario.setMontoAmigo(montoAmigo);

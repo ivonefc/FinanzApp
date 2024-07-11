@@ -63,6 +63,13 @@
                 </a>
             </div>
 
+            <!-- Diamante Premium -->
+            <div class="nav-icon">
+                <a th:if="${usuario.rol == 'PREMIUM'}" th:href="@{/premium}" style="margin-left: 10%;">
+                    <i class="bi bi-gem"></i>
+                </a>
+            </div>
+
             <!-- Usuario -->
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#menu-colapsado" data-bs-toggle="dropdown">

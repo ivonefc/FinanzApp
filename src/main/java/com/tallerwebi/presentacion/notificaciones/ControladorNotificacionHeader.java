@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,7 +42,15 @@ public class ControladorNotificacionHeader {
         HttpSession httpSession = request.getSession(false);
         if (httpSession != null)
             servicioMeta.eliminarMetasVencidasParaTodosLosUsuarios();
+    }
 
+    @ModelAttribute
+    public void generarNotificacionSiSeSuperoUnaMeta(HttpServletRequest request) throws ExcepcionMetaNoExistente, ExcepcionBaseDeDatos, UsuarioInexistente {
+        HttpSession httpSession = request.getSession(false);
+        if(httpSession != null){
+            Long idUsuario = (Long) httpSession.getAttribute("idUsuario");
+            servicioMovimiento.calcularTodasLasMetas(idUsuario);
+        }
     }
 
     @ModelAttribute

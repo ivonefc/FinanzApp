@@ -36,7 +36,7 @@ public class ControladorNotificaciones {
     private ServicioMeta servicioMeta;
 
     @Autowired
-    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento, ServicioMeta servicioMeta) {
+    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento,ServicioMeta servicioMeta) {
         this.servicioMovimientoCompartido = servicioMovimientoCompartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioMovimiento = servicioMovimiento;

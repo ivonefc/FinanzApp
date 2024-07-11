@@ -10,6 +10,10 @@ public interface RepositorioMetaVencida {
 
     void guardarMetaVencida(Meta meta, Double totalGastado) throws ExcepcionBaseDeDatos;
 
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    MetaVencida obtenerMetaVencida();
+
     List<MetaVencida> obtenerMetasVencidas(Long idUsuario);
 
     public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
