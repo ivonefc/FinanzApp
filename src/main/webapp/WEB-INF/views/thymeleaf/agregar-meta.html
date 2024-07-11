@@ -55,12 +55,14 @@
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label" for="fechaInicio">Fecha de inicio:</label>
-                        <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required>
+                        <input type="date" id="fechaInicio" name="fechaInicio" class="form-control">
+                        <p th:if="${errores != null && errores.get('fechaInicio') != null}" class="alert alert-danger" th:text="${errores.get('fechaInicio')}"></p>
                     </div>
 
                     <div class="form-group mb-3">
                         <label class="form-label" for="fechaFin">Fecha de fin:</label>
-                        <input type="date" id="fechaFin" name="fechaFin" class="form-control" required>
+                        <input type="date" id="fechaFin" name="fechaFin" class="form-control">
+                        <p th:if="${errores != null && errores.get('fechaFin') != null}" class="alert alert-danger" th:text="${errores.get('fechaFin')}"></p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <a href="/spring/metas" class="btn btn-warning" style="color:white">Cancelar</a>
