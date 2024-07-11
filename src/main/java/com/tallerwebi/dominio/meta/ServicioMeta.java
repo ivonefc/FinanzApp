@@ -12,7 +12,7 @@ import java.util.List;
 public interface ServicioMeta {
     @Scheduled(cron = "0 0 0 * * *")
     void eliminarMetasVencidasParaTodosLosUsuarios() throws ExcepcionBaseDeDatos, UsuarioInexistente, ExcepcionMetaNoExistente;
-    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
     void guardarMeta(Long idUsuario, DatosMeta datosMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionCategoriaConMetaExistente, UsuarioInexistente;
 
     Meta obtenerMetaPorId(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
@@ -22,6 +22,8 @@ public interface ServicioMeta {
     void actualizarMeta(DatosEditarMeta datosEditarMeta) throws ExcepcionCamposInvalidos, ExcepcionBaseDeDatos, ExcepcionMetaNoExistente;
 
     List<Meta> obtenerMetas(Long idUsuario) throws ExcepcionBaseDeDatos;
+
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos;
 
     List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario);
 }

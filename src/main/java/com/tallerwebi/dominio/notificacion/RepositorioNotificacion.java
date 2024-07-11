@@ -11,7 +11,7 @@ public interface RepositorioNotificacion {
 
     public void actualizar(Long idNotificacion, String estado) throws ExcepcionBaseDeDatos;
 
-    List<Notificacion> obtenerNotificacionesMetaFiltradaPorFecha(Long idUsuario, Date fechaInicio, Date fechaFin, String estado,String nombre);
+    List<Notificacion> obtenerNotificacionesMetaFiltradaPorFecha(Long idUsuario, Date fechaInicio, Date fechaFin, String estado, String nombre);
 
     List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario);
 }

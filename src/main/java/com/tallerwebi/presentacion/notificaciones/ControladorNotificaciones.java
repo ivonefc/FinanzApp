@@ -30,13 +30,13 @@ import java.util.List;
 @Controller
 public class ControladorNotificaciones {
 
-    private ServicioMovimiento servicioMovimiento;
-    private ServicioMeta servicioMeta;
     private ServicioMovimientoCompartido servicioMovimientoCompartido;
     private ServicioUsuario servicioUsuario;
+    private ServicioMovimiento servicioMovimiento;
+    private ServicioMeta servicioMeta;
 
     @Autowired
-    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento, ServicioMeta servicioMeta) {
+    public ControladorNotificaciones(ServicioMovimientoCompartido servicioMovimientoCompartido, ServicioUsuario servicioUsuario, ServicioMovimiento servicioMovimiento,ServicioMeta servicioMeta) {
         this.servicioMovimientoCompartido = servicioMovimientoCompartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioMovimiento = servicioMovimiento;
@@ -63,22 +63,6 @@ public class ControladorNotificaciones {
         List<Notificacion> metas_concretadas = servicioMeta.obtenerNotificacionMetasConcretadas(idUsuario);
         List<Notificacion> metas_Vencidas = servicioMeta.obtenerNotificacionMetasVencidas(idUsuario);
 
-
-        if (solicitudesRecibidas == null) {
-            solicitudesRecibidas = new ArrayList<>();
-        }
-        if (solicitudesAceptadas == null) {
-            solicitudesAceptadas = new ArrayList<>();
-        }
-        if(metas_concretadas == null) {
-            metas_concretadas = new ArrayList<>();
-        }
-        if(metas_Vencidas == null) {
-            metas_Vencidas = new ArrayList<>();
-        }
-        if(movimientosCompartidos == null) {
-            movimientosCompartidos = new ArrayList<>();
-        }else {
             ObjectMapper objectMapper = new ObjectMapper();
             for (Notificacion notificacion : movimientosCompartidos) {
                 try {
@@ -88,7 +72,7 @@ public class ControladorNotificaciones {
                     e.printStackTrace();
                 }
             }
-        }
+
         List<Notificacion> notificaciones = new ArrayList<>();
 
         notificaciones.addAll(solicitudesRecibidas);

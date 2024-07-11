@@ -65,11 +65,9 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
 
     @Override
     public List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario) {
-
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT n FROM Notificacion n WHERE n.usuario.id = :idUsuario AND n.estado = 'Pendiente' or n.estado = 'Leído'", Notificacion.class)
+                .createQuery("SELECT n FROM Notificacion n WHERE n.usuario.id = :idUsuario AND (n.estado = 'Expectante' or n.estado = 'Leido') and n.tipo = 'Meta'", Notificacion.class)
                 .setParameter("idUsuario", idUsuario)
                 .getResultList();
-
     }
 }

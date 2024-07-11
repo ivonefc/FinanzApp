@@ -52,11 +52,6 @@ public class ServicioMetaImpl implements ServicioMeta{
         }
     }
 
-    @Override
-    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos {
-        return repositorioMetaVencida.obtenerNotificacionMetasVencidas(idUsuario);
-    }
-
     public void eliminarMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
         List<Meta> metas = repositorioMeta.obtenerMetas(idUsuario);
         LocalDate hoy = LocalDate.now();
@@ -84,6 +79,7 @@ public class ServicioMetaImpl implements ServicioMeta{
         Notificacion notificacion = new Notificacion();
         notificacion.setDescripcion("La meta de la categoría " + metaVencida.getCategoriaMovimiento().getNombre() + " ha sido vencida" + " con un total gastado de " + metaVencida.getTotalGastado() + " y un monto de " + metaVencida.getMontoMeta() + " en el periodo de " + metaVencida.getFechaInicio() + " a " + metaVencida.getFechaFin());
         notificacion.setFecha(new Date());
+        notificacion.setTipo("MetaVencida");
         notificacion.setUsuario(metaVencida.getUsuario());
         repositorioNotificacion.guardar(notificacion);
     }
@@ -136,11 +132,6 @@ public class ServicioMetaImpl implements ServicioMeta{
         return repositorioMeta.obtenerMetas(idUsuario);
     }
 
-    @Override
-    public List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario) {
-        return repositorioNotificacion.obtenerNotificacionMetasConcretadas(idUsuario);
-    }
-
     @Transactional
     @Override
     public void eliminarMeta(Long idMeta) throws ExcepcionBaseDeDatos, ExcepcionMetaNoExistente {
@@ -150,5 +141,12 @@ public class ServicioMetaImpl implements ServicioMeta{
         repositorioMeta.eliminarMeta(meta);
     }
 
-
+    @Override
+    public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) throws ExcepcionBaseDeDatos {
+        return repositorioMetaVencida.obtenerNotificacionMetasVencidas(idUsuario);
+    }
+    @Override
+    public List<Notificacion> obtenerNotificacionMetasConcretadas(Long idUsuario) {
+        return repositorioNotificacion.obtenerNotificacionMetasConcretadas(idUsuario);
+    }
 }

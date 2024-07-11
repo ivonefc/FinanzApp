@@ -29,11 +29,11 @@ public class ServicioMetaTest {
     RepositorioMeta repositorioMetaMock;
     RepositorioCategoria repositorioCategoriaMock;
     RepositorioUsuario repositorioUsuarioMock;
+    RepositorioNotificacion repositorioNotificacionMock;
     Usuario usuarioMock;
     CategoriaMovimiento categoriaMock;
     RepositorioMetaVencida repositorioMetaVencidaMock;
     ServicioMovimiento servicioMovimientoMock;
-    RepositorioNotificacion repositorioNotificacionMock;
 
 
     @BeforeEach
@@ -43,6 +43,7 @@ public class ServicioMetaTest {
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         repositorioMetaVencidaMock = mock(RepositorioMetaVencida.class);
         servicioMovimientoMock = mock(ServicioMovimiento.class);
+        repositorioNotificacionMock = mock(RepositorioNotificacion.class);
         servicioMeta = new ServicioMetaImpl(repositorioMetaMock, repositorioCategoriaMock, repositorioUsuarioMock, repositorioMetaVencidaMock, servicioMovimientoMock, repositorioNotificacionMock);
         usuarioMock = mock(Usuario.class);
         categoriaMock = mock(CategoriaMovimiento.class);

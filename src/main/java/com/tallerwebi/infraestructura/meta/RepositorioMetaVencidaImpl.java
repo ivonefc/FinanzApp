@@ -41,6 +41,14 @@ public class RepositorioMetaVencidaImpl implements RepositorioMetaVencida {
         }
     }
 
+    @Transactional
+    @Override
+    public List<MetaVencida> obtenerMetasVencidas(Long idUsuario) {
+        return sessionFactory.getCurrentSession().createQuery("from MetaVencida where usuario.id = :idUsuario", MetaVencida.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
     @Override
     public MetaVencida obtenerMetaVencida() {
         try {
@@ -51,14 +59,6 @@ public class RepositorioMetaVencidaImpl implements RepositorioMetaVencida {
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-    @Transactional
-    @Override
-    public List<MetaVencida> obtenerMetasVencidas(Long idUsuario) {
-        return sessionFactory.getCurrentSession().createQuery("from MetaVencida where usuario.id = :idUsuario", MetaVencida.class)
-                .setParameter("idUsuario", idUsuario)
-                .getResultList();
     }
 
     public List<Notificacion> obtenerNotificacionMetasVencidas(Long idUsuario) {

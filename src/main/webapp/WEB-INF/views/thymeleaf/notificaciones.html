@@ -33,7 +33,7 @@
     <h2 class="pt-3 text-center">Notificaciones</h2> <br>
     <div class="card-body" th:if="${not #lists.isEmpty(notificaciones)}">
         <ul class="list-group" id="lista-notificaciones">
-            <li th:each="notificacion : ${notificaciones}"
+            <li th:each="notificacion, stat : ${notificaciones}"
                 th:classappend="${notificacion.estado == 'Pendiente' ? 'amigo-pendiente' : notificacion.estado == 'Aceptada' ? 'amigo-aceptado' : ''}"
                 class="list-group-item item d-flex justify-content-between">
                 <span th:text="${notificacion.getDescripcion()}"></span>
@@ -47,6 +47,7 @@
                     <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Solicitud de amistad'}">Amigo agregado exitosamente!</span>
                     <span th:if="${notificacion.estado == 'Aceptada' and notificacion.tipo == 'Movimiento'}">Movimiento agregado exitosamente!</span>
                     <span th:if="${notificacion.estado == 'Rechazada' and notificacion.tipo == 'Movimiento'}">Movimiento rechazado!</span>
+
                     <button class="btn btn-info mr-2" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#collapse'+${notificacion.id}" aria-expanded="false" aria-controls="collapseExample" th:if="${notificacion.estado == 'Pendiente' and notificacion.tipo == 'Movimiento'}">
                         Ver detalles
                     </button>
@@ -73,6 +74,8 @@
                         </div>
 
                     </div>
+
+
                 </div>
             </li>
         </ul>

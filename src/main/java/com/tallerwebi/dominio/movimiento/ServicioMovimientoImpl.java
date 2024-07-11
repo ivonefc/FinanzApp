@@ -166,7 +166,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         Notificacion notificacion = new Notificacion();
         notificacion.setDescripcion("Has superado la meta de la categoría " + meta.getCategoriaMovimiento().getNombre());
         notificacion.setFecha(new Date());
-        notificacion.setEstado("Pendiente");
+        notificacion.setEstado("Expectante");
         notificacion.setTipo("Meta");
         notificacion.setUsuario(meta.getUsuario());
         repositorioNotificacion.guardar(notificacion);
@@ -190,6 +190,7 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     private Meta traerMeta(String Categoria) throws ExcepcionBaseDeDatos {
         return repositorioMeta.obtenerMetaPorCategoria(Categoria);
     }
+
 
     @Transactional
     @Override
@@ -286,11 +287,11 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
         for (Meta meta : metas) {
             List<Movimiento> movimientos = traerMovimientosDeLaMeta(meta.getCategoriaMovimiento().getNombre(), meta.getFechaInicio(), meta.getFechaFin(), meta.getUsuario().getId());
             if(calcularSiSuperoMeta(meta, movimientos)){
-                List<Notificacion> notificaciones = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Pendiente", meta.getCategoriaMovimiento().getNombre());
-                List<Notificacion> notificacionesLeidas = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Leído", meta.getCategoriaMovimiento().getNombre());
+                List<Notificacion> notificaciones = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Expectante", meta.getCategoriaMovimiento().getNombre());
+                List<Notificacion> notificacionesLeidas = contieneNotificacionEnRangoDeFecha(meta.getFechaInicio(),meta.getFechaFin(),idUsuario,"Leido", meta.getCategoriaMovimiento().getNombre());
                 if(!notificaciones.isEmpty()){
                     for (Notificacion notificacion : notificaciones) {
-                        repositorioNotificacion.actualizar(notificacion.getId(), "Leído");
+                        repositorioNotificacion.actualizar(notificacion.getId(), "Leido");
                     }
                 }else if(notificacionesLeidas.isEmpty()){
                     crearNotificacion(meta);
@@ -300,6 +301,6 @@ public class ServicioMovimientoImpl implements ServicioMovimiento {
     }
 
     private List<Notificacion> contieneNotificacionEnRangoDeFecha(Date fechaInicio, Date fechaFin, Long idUsuario, String estado,String nombre) {
-       return  repositorioNotificacion.obtenerNotificacionesMetaFiltradaPorFecha(idUsuario, fechaInicio, fechaFin, estado,nombre);
+        return  repositorioNotificacion.obtenerNotificacionesMetaFiltradaPorFecha(idUsuario, fechaInicio, fechaFin, estado,nombre);
     }
 }
